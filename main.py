@@ -35,10 +35,11 @@ def OutFileUTF16(fileOut,Input):
         f.write(Input + '\n')
 
 def SignalExc (NomeSegnale,AccessName):
-    """_summary_
+    """Stampa su File un gruppo di di segnali di scambio
 
     Args:
-        NomeSegnale (_type_): _description_
+        NomeSegnale (str): nome della struttura del segnale di scambio (ES: SignalFILFromBSI)
+        AccessName (str): access name del plc da cui proviene la struttura
     """
     # cancello il file di output se esiste
     if os.path.exists(fileIOMESSAGE):
@@ -83,8 +84,13 @@ def SignalExc (NomeSegnale,AccessName):
             case 'SINT':
                 PRE = 'A'
         
+        # aggiungo lo zero se sono entro la decina all'incrementale
         if n in range(1,10):
             n = '0' + str(n)
+        
+        # separo in blocchi da 28
+        if n > 28:
+            n = 1
 
         #compongo l'uscita
         Out = FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
