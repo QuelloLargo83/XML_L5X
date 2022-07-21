@@ -147,13 +147,13 @@ nomi_cicli = struttura.keys()
 
 
 #### FILE CON I NOMI DEI CICLI
-with open(fileCicliProd,'w',encoding='utf-16-le') as f:
+with open(fileCicliProd,'w',encoding=IntouchEncoding) as f:
     for n in nomi_cicli:
         f.write(n + '\n')
 
 #### FILE CON LE TAGS LIVELLO CONTROLLORE
 #stampa lista tag a livello controllore
-with open(fileControllerTags,'w',encoding='utf-16-le') as f:
+with open(fileControllerTags,'w',encoding=IntouchEncoding) as f:
     for tag in tag_names:
         f.write(tag + '\n')
 
