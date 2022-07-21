@@ -1,5 +1,9 @@
 import os
+import sys
 import l5x
+import configparser
+import utils
+
 ###########
 ## DATI ###
 ###########
@@ -10,12 +14,10 @@ fileControllerTags = 'ControllerTags.txt'
 fileIOMESSAGE = 'IOMESSAGES_PLXXXX.ENG'
 PLCProdCycleVAR = 'D40_00'
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
+IntouchEncoding = 'utf-16-le'
 
 ###########################################################
 
-
-
-#####
 
 def OutFileUTF16(fileOut,Input):
     """Crea un file di output in utf-16-le e scrive la stringa passata
@@ -29,7 +31,7 @@ def OutFileUTF16(fileOut,Input):
     with open(fileOut,'a',encoding='utf-16-le') as f:
         f.write(Input + '\n')
 
-def SignalExc (NomeSegnale,AccessName):
+def SignalExc(NomeSegnale,AccessName):
     """Stampa su File un gruppo di di segnali di scambio
 
     Args:
@@ -79,22 +81,48 @@ def SignalExc (NomeSegnale,AccessName):
             case 'SINT':
                 PRE = 'A'
         
-        # aggiungo lo zero se sono entro la decina all'incrementale
-        if n in range(1,10):
-            n = '0' + str(n)
-        
-        # separo in blocchi da 28
-        if n > 28:
+        #separo in blocchi da 28
+        if int(n) > 28:
             n = 1
 
+        # aggiungo lo zero all'incrementale se sono entro la decina 
+        if n in range(1,10):
+            n = '0' + str(n)
+
         #compongo l'uscita
-        Out = FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
+        if int(n) == 1:
+            Out = '\n' + FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
+        else:
+            Out =  FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
         OutFileUTF16(fileIOMESSAGE,Out)
         n = int(n) + 1 
 
 ##########
 ## MAIN ##
 ##########
+
+# leggo il file originale .ENG
+config = configparser.ConfigParser()
+dc = 'IOMessages_PL01447.ENG'
+
+config.read_file(open(dc,encoding='utf-16')) # anche se è utf-16-le, il cfg parser funziona con utf-16
+
+lista_sezioni = config.sections()               # lista con le sezioni
+lista_item = config.items(lista_sezioni[0])     # lista della prima sezione
+lista_itemDICT = dict(lista_item)               # converto in dizionario
+#print (lista_itemDICT)
+
+
+lista_macc = []
+
+# leggo la lista delle macchine di cui leggere i segnali di scambio
+for k in range(1,len(lista_itemDICT.keys())):
+    if (lista_itemDICT.get(str(k)) is not None):
+        lista_macc.append(utils.left(lista_itemDICT.get(str(k)),3))
+
+#print(lista_macc)
+
+########
 
 # carico il file L5X in memoria
 prj = l5x.Project(file)
@@ -104,11 +132,11 @@ ctl_tags = prj.controller.tags
 # lista tag name livello controllore
 tag_names = ctl_tags.names
 
-# lista nomi programmi
-programs_names = prj.programs.names
-
-# ELEMENTDICT 
+# ELEMENTDICT con i programmi
 programs = prj.programs
+
+# lista nomi programmi
+programs_names = programs.names
 
 # definisco un dizionario vuoto in cui mettere le variabili che mi interessano
 struttura = {}
@@ -130,6 +158,10 @@ with open(fileControllerTags,'w',encoding='utf-16-le') as f:
         f.write(tag + '\n')
 
 
+# TO DO: trovare il modo di leggere ACCESSNAME
+#      : passare la lista delle macchine direttamente dal file ENG originale
 
 # creo il fiel IOMESSAGE
-SignalExc('SignalFILFromBSI','ABFIL1')
+SignalExc('SignalFILToBSI','ABFIL1')
+
+
