@@ -15,11 +15,6 @@ Sep = '..'                                          # separatore per parti della
 
 
 
-
-
-
-
-
 #####
 
 def OutFileUTF16(fileOut,Input):
