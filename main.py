@@ -1,5 +1,6 @@
 import os
 import sys
+from unittest.mock import DEFAULT
 import l5x
 import configparser
 import utils
@@ -66,7 +67,7 @@ def SignalExc(NomeSegnale,AccessName,Mac):
     try: 
         scambio = ctl_tags[NomeSegnale].value
     except KeyError:   # interecetto l'assenza del sengnale nel PLCs
-        print(NomeSegnale + ' NOT PRESENT')
+        print('INFO> ' + NomeSegnale + ' NOT PRESENT')
 
   
     #le chiavi rappresentano i campi dei segnali di scambio
@@ -95,6 +96,9 @@ def SignalExc(NomeSegnale,AccessName,Mac):
                 PRE = 'A'
             case 'SINT':
                 PRE = 'A'
+            case _:         #default
+                PRE = 'D'
+
         
         #separo in blocchi da 28
         if int(n) > 28:
@@ -107,15 +111,15 @@ def SignalExc(NomeSegnale,AccessName,Mac):
         # gestione nome sezione
         Header = ''
         if FirstCol == 'SX' and int(n) == startPos:
-            Header = '\n' + '['+ Mac + ']' + '\n'
+            Header = '\n' + '['+ Mac + ']'
         else:
             Header = ''
 
         # gestione prima riga di SX o DX
         if FirstCol == 'DX' and int(n) == startPos:
-            Nome01 = FirstCol +'01 = B..FILLER\n'
+            Nome01 = '\n' + FirstCol +'01 = B..FILLER\n'
         else:
-            Nome01 = FirstCol +'01 = B..\n'
+            Nome01 = '\n' + FirstCol +'01 = B..\n'
 
         #compongo l'uscita
         if int(n) == startPos:
