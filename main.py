@@ -1,6 +1,5 @@
 import os
 import sys
-from turtle import right
 import l5x
 import configparser
 import utils
