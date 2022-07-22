@@ -1,9 +1,11 @@
 import os
 import sys
-from unittest.mock import DEFAULT
+from turtle import right
 import l5x
 import configparser
 import utils
+from os import listdir
+from os.path import isfile, join
 
 ###########
 ## DATI ###
@@ -15,7 +17,7 @@ fileControllerTags = 'ControllerTags.txt'
 fileIOMESSAGE_Pre = 'IOMESSAGES_PLXXXX.ENG'
 PLCProdCycleVAR = 'D40_00'
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
-IntouchEncoding = 'utf-16-le'
+IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini 
 
 ###########################################################
 
@@ -32,8 +34,29 @@ def OutFileUTF16(fileOut,Input):
     with open(fileOut,'a',encoding=IntouchEncoding) as f:
         f.write(Input + '\n')
 
-def SignalExc(NomeSegnale,AccessName,Mac):
-    """Stampa su File un gruppo di di segnali di scambio
+def MergeFiles(dir,mac):
+    """Unisce i file dei segnali
+
+    Args:
+        dir (str): Directory da cui leggere i file singoli
+        mac (str): Codice Macchina (ES: BSI)
+    """
+    # ricavo la lista dei file nella cartella
+    files = [f for f in listdir(dir) if isfile(join(dir, f))]
+    
+    coppie = filter(lambda f: mac in f,files) # in list(coppie) ho la coppia FromTo
+        
+    #print (list(coppie))
+
+    # scrivo un file solo
+    with open('OUIT_'+ mac +'.ENG','w', encoding=IntouchEncoding) as outfile:
+        for c in list(coppie):
+            # Open each file in read mode
+                with open(os.getcwd() +'\OUT\\' + c,encoding=IntouchEncoding) as infile:
+                    outfile.write(infile.read())
+
+def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile):
+    """Stampa su File un gruppo di segnali di scambio
 
     Args:
         NomeSegnale (str): nome della struttura del segnale di scambio (ES: SignalFILFromBSI)
@@ -42,10 +65,6 @@ def SignalExc(NomeSegnale,AccessName,Mac):
     """
     startPos = 2 #posizione iniziale dell'incrementale per SXxx e DXxx
 
-    # cancello il file di output se esiste
-    # if os.path.exists(fileIOMESSAGE):
-    #         os.remove(fileIOMESSAGE)
-    
     # ricavo la prima parte (SX o DX in base al nome del segnale FROM or TO)
     FromTo = NomeSegnale[9:11] # puo essere Fr o To
     match FromTo.lower():
@@ -57,8 +76,8 @@ def SignalExc(NomeSegnale,AccessName,Mac):
             FromTo = 'To'   #poi viene usato nel nome File
 
     # cancello il file di output se esiste
-    if os.path.exists(fileIOMESSAGE_Pre + '_' + FromTo + Mac):
-        os.remove(fileIOMESSAGE_Pre + '_' + FromTo + Mac)
+    if os.path.exists(OutDirFile + fileIOMESSAGE_Pre + '_' + FromTo + Mac):
+        os.remove(OutDirFile + fileIOMESSAGE_Pre + '_' + FromTo + Mac)
 
     scambio = {}
     PRE = ''
@@ -128,9 +147,10 @@ def SignalExc(NomeSegnale,AccessName,Mac):
         else:
             Out =  FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
         
-        OutFileUTF16(fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
-        n = int(n) + 1 
+        OutFileUTF16(os.getcwd() +'\OUT\\' +fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
+        n = int(n) + 1
 
+   
 ##########
 ## MAIN ##
 ##########
@@ -166,30 +186,37 @@ fileCFG_PAGE = 'CFG_PAGE.INI'
 config.read_file(open(fileCFG_PAGE,encoding='utf-8')) 
 
 lista_sezioni = config.sections()               # lista con le sezioni
-lista_item = config.items(lista_sezioni[4])     # lista della prima sezione [LIST]
-lista_itemDICT = dict(lista_item)               # converto in dizionario
+lista_item = config.items(lista_sezioni[4])     # lista della prima sezione CFG_IOMAC
+lista_itemDICT = dict(lista_item)               
 
-
-lista_macc = []     # lista delle macchine gia assegnate nel file ENG originale
-lista_macc_en = []  # lista delle sole macchine abilitate
+lista_macc = []     # lista delle macchine 
 
 # leggo la lista delle macchine di cui leggere i segnali di scambio
 for k in range(1,len(lista_itemDICT.keys())):
-    if (lista_itemDICT.get(str(k)) is not None): # salto eventuali buchi
-        lista_macc.append(lista_itemDICT.get(str(k))) #prendo le prime tre lettere che indicano la macchina 
+    if (lista_itemDICT.get(str(k)) is not None):      # salto eventuali buchi
+        lista_macc.append(lista_itemDICT.get(str(k))) # prendo le prime tre lettere che indicano la macchina 
 #print(lista_macc)
 
 
-
 # TO DO: trovare il modo di leggere ACCESSNAME
+#      : Unire a modo le coppie di files
 #      : 
 
-# creo il file IOMESSAGE
+# creo la cartella temporanea di uscita se non esiste
+OutDir = os.getcwd() +'\OUT\\'
+if not os.path.exists (OutDir):
+    os.makedirs(OutDir)
+
+# creo i file IOMESSAGE singoli
 for a in lista_macc:
-    SignalExc('SignalFILFrom'+a,'ABFIL1',a)
-    SignalExc('SignalFILTo'+a,'ABFIL1',a)
+    SignalExc('SignalFILFrom'+a,'ABFIL1',a,OutDir)
+    SignalExc('SignalFILTo'+a,'ABFIL1',a,OutDir)
 
+# unisco i file corrispondenti
+for m in lista_macc:
+    MergeFiles(OutDir,m)
 
+# MergeFiles(OutDir,'BHE')
 sys.exit(0)
 
 
