@@ -101,28 +101,9 @@ def SignalExc(NomeSegnale,AccessName):
 ## MAIN ##
 ##########
 
-# leggo il file originale .ENG
-config = configparser.ConfigParser()
-dc = 'IOMessages_PL01447.ENG'
-
-config.read_file(open(dc,encoding='utf-16')) # anche se è utf-16-le, il cfg parser funziona con utf-16
-
-lista_sezioni = config.sections()               # lista con le sezioni
-lista_item = config.items(lista_sezioni[0])     # lista della prima sezione
-lista_itemDICT = dict(lista_item)               # converto in dizionario
-#print (lista_itemDICT)
-
-
-lista_macc = []
-
-# leggo la lista delle macchine di cui leggere i segnali di scambio
-for k in range(1,len(lista_itemDICT.keys())):
-    if (lista_itemDICT.get(str(k)) is not None):
-        lista_macc.append(utils.left(lista_itemDICT.get(str(k)),3))
-
-#print(lista_macc)
-
-########
+#################################
+##### PREPARAZIONE STRUTTURE ####
+#################################
 
 # carico il file L5X in memoria
 prj = l5x.Project(file)
@@ -137,6 +118,51 @@ programs = prj.programs
 
 # lista nomi programmi
 programs_names = programs.names
+
+#################################
+
+################################
+# leggo il file originale .ENG #
+# per ricavare le macchine che #
+# mi interessano ###############
+################################
+config = configparser.ConfigParser(strict= False)
+dc = 'IOMessages_PL01447.ENG'
+
+config.read_file(open(dc,encoding='utf-16')) # anche se è utf-16-le, il cfg parser funziona con utf-16
+
+lista_sezioni = config.sections()               # lista con le sezioni
+lista_item = config.items(lista_sezioni[0])     # lista della prima sezione
+lista_itemDICT = dict(lista_item)               # converto in dizionario
+#print (lista_itemDICT)
+
+lista_macc = []
+
+# leggo la lista delle macchine di cui leggere i segnali di scambio
+for k in range(1,len(lista_itemDICT.keys())):
+    if (lista_itemDICT.get(str(k)) is not None):
+        lista_macc.append(utils.left(lista_itemDICT.get(str(k)),3))
+
+print(lista_macc)
+
+sys.exit(0)
+
+
+# TO DO: trovare il modo di leggere ACCESSNAME
+#      : passare la lista delle macchine direttamente dal file ENG originale
+
+# creo il file IOMESSAGE
+SignalExc('SignalFILToBSI','ABFIL1')
+
+
+
+
+
+
+#######################################
+######## PREPARAZIONE PER ALTRO  ######
+#######################################
+
 
 # definisco un dizionario vuoto in cui mettere le variabili che mi interessano
 struttura = {}
@@ -158,10 +184,5 @@ with open(fileControllerTags,'w',encoding=IntouchEncoding) as f:
         f.write(tag + '\n')
 
 
-# TO DO: trovare il modo di leggere ACCESSNAME
-#      : passare la lista delle macchine direttamente dal file ENG originale
-
-# creo il fiel IOMESSAGE
-SignalExc('SignalFILToBSI','ABFIL1')
 
 
