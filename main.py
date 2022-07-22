@@ -37,7 +37,10 @@ def SignalExc(NomeSegnale,AccessName,Mac):
     Args:
         NomeSegnale (str): nome della struttura del segnale di scambio (ES: SignalFILFromBSI)
         AccessName (str): access name del plc da cui proviene la struttura
+        Mac (str): Nome Macchina (es: BSI)
     """
+    startPos = 2 #posizione iniziale dell'incrementale per SXxx e DXxx
+
     # cancello il file di output se esiste
     # if os.path.exists(fileIOMESSAGE):
     #         os.remove(fileIOMESSAGE)
@@ -58,29 +61,30 @@ def SignalExc(NomeSegnale,AccessName,Mac):
 
     scambio = {}
     PRE = ''
+
     # scambio è un dizionario le cui chiavi rappresentano i nomi dei segnali di scambio
     try: 
         scambio = ctl_tags[NomeSegnale].value
     except KeyError:   # interecetto l'assenza del sengnale nel PLCs
         print(NomeSegnale + ' NOT PRESENT')
 
+  
     #le chiavi rappresentano i campi dei segnali di scambio
     # for s in scambio.keys():
     #     print(s)
     comment = [] # bisogna ricavarlo dalle chiavi
     lev2str = [] # coverto poi l'oggetto in stringa (lista di char)
-    n = 1        # incrementale della prima colonna S01, SX02, ecc
+    n = startPos        # incrementale della prima colonna S01, SX02, ecc
 
     # scorro la struttura per ricavare tutti i dati dei segnali di scambio
     for s in scambio.keys():
         lev2 = ctl_tags[NomeSegnale][s] # oggetto EnumDict che contiene l'informazione sul tipo di dato
         lev2str = str(lev2) 
-        type = lev2str[9:13] # recupero il tipo di dato con un mid dell'oggetto
-        #print (lev2str[9:13], ':',s) 
+        type = lev2str[9:13]            # recupero il TIPO di dato con un mid dell'oggetto
+       # print (lev2str[9:13], ':',s) 
 
         comment = s #per ora commento = variabile l'idea sarebbe di guardare dove ci sono i caratteri maiuscoli e poi inserire uno spazio
         
-
         # dal tipo ricavo la lettera (D : digital, A: analog)
         match type:
             case 'BOOL':
@@ -94,15 +98,29 @@ def SignalExc(NomeSegnale,AccessName,Mac):
         
         #separo in blocchi da 28
         if int(n) > 28:
-            n = 1
+            n = startPos
 
         # aggiungo lo zero all'incrementale se sono entro la decina 
         if n in range(1,10):
             n = '0' + str(n)
 
+        # gestione nome sezione
+        Header = ''
+        if FirstCol == 'SX' and int(n) == startPos:
+            Header = '\n' + '['+ Mac + ']' + '\n'
+        else:
+            Header = ''
+
+        # gestione prima riga di SX o DX
+        if FirstCol == 'DX' and int(n) == startPos:
+            Nome01 = FirstCol +'01 = B..FILLER\n'
+        else:
+            Nome01 = FirstCol +'01 = B..\n'
+
         #compongo l'uscita
-        if int(n) == 1:
-            Out = '\n' + '['+ Mac + ']' + '\n' + FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
+        if int(n) == startPos:
+            #Out = Header + FirstCol +'01 = B..\n'+ FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
+            Out = Header + Nome01 + FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
         else:
             Out =  FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
         
@@ -133,20 +151,20 @@ programs_names = programs.names
 
 #################################
 
-################################
-# leggo il file originale .ENG #
-# per ricavare le macchine che #
-# mi interessano ###############
-################################
-config = configparser.ConfigParser(strict= False)
-dc = 'IOMessages_PL01447.ENG'
 
-config.read_file(open(dc,encoding='utf-16')) # anche se è utf-16-le, il cfg parser funziona con utf-16
+###########################################
+#  ricavo la lista della macchine esterne #
+###########################################
+
+config = configparser.ConfigParser(strict= False)
+fileCFG_PAGE = 'CFG_PAGE.INI'
+
+config.read_file(open(fileCFG_PAGE,encoding='utf-8')) 
 
 lista_sezioni = config.sections()               # lista con le sezioni
-lista_item = config.items(lista_sezioni[0])     # lista della prima sezione [LIST]
+lista_item = config.items(lista_sezioni[4])     # lista della prima sezione [LIST]
 lista_itemDICT = dict(lista_item)               # converto in dizionario
-#print (lista_itemDICT)
+
 
 lista_macc = []     # lista delle macchine gia assegnate nel file ENG originale
 lista_macc_en = []  # lista delle sole macchine abilitate
@@ -154,16 +172,8 @@ lista_macc_en = []  # lista delle sole macchine abilitate
 # leggo la lista delle macchine di cui leggere i segnali di scambio
 for k in range(1,len(lista_itemDICT.keys())):
     if (lista_itemDICT.get(str(k)) is not None): # salto eventuali buchi
-        lista_macc.append(utils.left(lista_itemDICT.get(str(k)),3)) #prendo le prime tre lettere che indicano la macchina 
+        lista_macc.append(lista_itemDICT.get(str(k))) #prendo le prime tre lettere che indicano la macchina 
 #print(lista_macc)
-
-# ricavo una lista delle sole macchine abilitate
-for x in lista_macc:
-    if utils.left(x,1) != "_":
-        lista_macc_en.append(x) 
-
-#print(lista_macc_en)
-
 
 
 
@@ -171,12 +181,12 @@ for x in lista_macc:
 #      : 
 
 # creo il file IOMESSAGE
-for a in lista_macc_en:
+for a in lista_macc:
     SignalExc('SignalFILFrom'+a,'ABFIL1',a)
     SignalExc('SignalFILTo'+a,'ABFIL1',a)
 
-sys.exit(0)
 
+sys.exit(0)
 
 
 
@@ -205,6 +215,20 @@ with open(fileControllerTags,'w',encoding=IntouchEncoding) as f:
     for tag in tag_names:
         f.write(tag + '\n')
 
+
+
+  #### PROVE ####
+    
+    #va in ordine alfabetico
+    # for i in range(0, len(ctl_tags.names)):
+    #     if ctl_tags.names[i] == 'SignalFILFromBSI':
+    #         print(ctl_tags.names[i])
+    #         print(ctl_tags[ctl_tags.names[i]].names)
+    #         print(ctl_tags[ctl_tags.names[i]].value)
+    #         print(ctl_tags[ctl_tags.names[i]].description)
+
+    # sys.exit(0)
+    ######
 
 
 
