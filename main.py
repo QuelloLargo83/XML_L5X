@@ -11,7 +11,7 @@ import utils
 file = 'P16164_PLC_20220609_00C.L5X'                # file L5X sorgente dal PLC
 fileCicliProd = 'NomiCicliProd.txt'
 fileControllerTags = 'ControllerTags.txt'
-fileIOMESSAGE = 'IOMESSAGES_PLXXXX.ENG'
+fileIOMESSAGE_Pre = 'IOMESSAGES_PLXXXX.ENG'
 PLCProdCycleVAR = 'D40_00'
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 IntouchEncoding = 'utf-16-le'
@@ -28,10 +28,10 @@ def OutFileUTF16(fileOut,Input):
         fileOut (str): Nome File OutPut
         Input (str): stringa da stampare
     """
-    with open(fileOut,'a',encoding='utf-16-le') as f:
+    with open(fileOut,'a',encoding=IntouchEncoding) as f:
         f.write(Input + '\n')
 
-def SignalExc(NomeSegnale,AccessName):
+def SignalExc(NomeSegnale,AccessName,Mac):
     """Stampa su File un gruppo di di segnali di scambio
 
     Args:
@@ -39,20 +39,30 @@ def SignalExc(NomeSegnale,AccessName):
         AccessName (str): access name del plc da cui proviene la struttura
     """
     # cancello il file di output se esiste
-    if os.path.exists(fileIOMESSAGE):
-            os.remove(fileIOMESSAGE)
-
+    # if os.path.exists(fileIOMESSAGE):
+    #         os.remove(fileIOMESSAGE)
+    
     # ricavo la prima parte (SX o DX in base al nome del segnale FROM or TO)
     FromTo = NomeSegnale[9:11] # puo essere Fr o To
     match FromTo.lower():
         case 'fr':
             FirstCol = 'SX'
+            FromTo = 'From' #poi viene usato nel nome File
         case 'to':
             FirstCol = 'DX'
+            FromTo = 'To'   #poi viene usato nel nome File
 
+    # cancello il file di output se esiste
+    if os.path.exists(fileIOMESSAGE_Pre + '_' + FromTo + Mac):
+        os.remove(fileIOMESSAGE_Pre + '_' + FromTo + Mac)
 
+    scambio = {}
+    PRE = ''
     # scambio è un dizionario le cui chiavi rappresentano i nomi dei segnali di scambio
-    scambio = ctl_tags[NomeSegnale].value
+    try: 
+        scambio = ctl_tags[NomeSegnale].value
+    except KeyError:   # interecetto l'assenza del sengnale nel PLCs
+        print(NomeSegnale + ' NOT PRESENT')
 
     #le chiavi rappresentano i campi dei segnali di scambio
     # for s in scambio.keys():
@@ -61,9 +71,10 @@ def SignalExc(NomeSegnale,AccessName):
     lev2str = [] # coverto poi l'oggetto in stringa (lista di char)
     n = 1        # incrementale della prima colonna S01, SX02, ecc
 
+    # scorro la struttura per ricavare tutti i dati dei segnali di scambio
     for s in scambio.keys():
         lev2 = ctl_tags[NomeSegnale][s] # oggetto EnumDict che contiene l'informazione sul tipo di dato
-        lev2str = str(lev2) #converto l'oggetto in stringa
+        lev2str = str(lev2) 
         type = lev2str[9:13] # recupero il tipo di dato con un mid dell'oggetto
         #print (lev2str[9:13], ':',s) 
 
@@ -91,10 +102,11 @@ def SignalExc(NomeSegnale,AccessName):
 
         #compongo l'uscita
         if int(n) == 1:
-            Out = '\n' + FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
+            Out = '\n' + '['+ Mac + ']' + '\n' + FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
         else:
             Out =  FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
-        OutFileUTF16(fileIOMESSAGE,Out)
+        
+        OutFileUTF16(fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
         n = int(n) + 1 
 
 ##########
@@ -132,28 +144,38 @@ dc = 'IOMessages_PL01447.ENG'
 config.read_file(open(dc,encoding='utf-16')) # anche se è utf-16-le, il cfg parser funziona con utf-16
 
 lista_sezioni = config.sections()               # lista con le sezioni
-lista_item = config.items(lista_sezioni[0])     # lista della prima sezione
+lista_item = config.items(lista_sezioni[0])     # lista della prima sezione [LIST]
 lista_itemDICT = dict(lista_item)               # converto in dizionario
 #print (lista_itemDICT)
 
-lista_macc = []
+lista_macc = []     # lista delle macchine gia assegnate nel file ENG originale
+lista_macc_en = []  # lista delle sole macchine abilitate
 
 # leggo la lista delle macchine di cui leggere i segnali di scambio
 for k in range(1,len(lista_itemDICT.keys())):
-    if (lista_itemDICT.get(str(k)) is not None):
-        lista_macc.append(utils.left(lista_itemDICT.get(str(k)),3))
+    if (lista_itemDICT.get(str(k)) is not None): # salto eventuali buchi
+        lista_macc.append(utils.left(lista_itemDICT.get(str(k)),3)) #prendo le prime tre lettere che indicano la macchina 
+#print(lista_macc)
 
-print(lista_macc)
+# ricavo una lista delle sole macchine abilitate
+for x in lista_macc:
+    if utils.left(x,1) != "_":
+        lista_macc_en.append(x) 
 
-sys.exit(0)
+#print(lista_macc_en)
+
+
 
 
 # TO DO: trovare il modo di leggere ACCESSNAME
-#      : passare la lista delle macchine direttamente dal file ENG originale
+#      : 
 
 # creo il file IOMESSAGE
-SignalExc('SignalFILToBSI','ABFIL1')
+for a in lista_macc_en:
+    SignalExc('SignalFILFrom'+a,'ABFIL1',a)
+    SignalExc('SignalFILTo'+a,'ABFIL1',a)
 
+sys.exit(0)
 
 
 
