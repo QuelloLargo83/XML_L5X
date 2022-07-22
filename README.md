@@ -7,7 +7,7 @@ Automazione creazione files .ENG per HMI partendo la .L5X del progetto PLC RSLog
 ## PREREQUISITI
 
 ```console
-C:\ pip install l5x
+pip install l5x
 ```
 
 La lettura del file .L5X è basata sul pacchetto [l5x](https://github.com/jvalenzuela/l5x)
