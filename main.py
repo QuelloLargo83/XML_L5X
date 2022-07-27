@@ -10,10 +10,11 @@ from os.path import isfile, join
 ## DATI ###
 ###########
 
-file = 'P16164_PLC_20220609_00C.L5X'                # file L5X sorgente dal PLC
-fileCicliProd = 'NomiCicliProd.txt'
+file = 'P16164_PLC_20220609_00C.L5X'                # IN: file L5X sorgente dal PLC
+fileCicliProd = 'NomiCicliProd.txt'            
 fileControllerTags = 'ControllerTags.txt'
-fileIOMESSAGE_Pre = 'IOMESSAGES_PLXXXX.ENG'
+fileIOMESSAGE_Pre = 'IOMESSAGES_PLXXXX.ENG'         # OUT:
+fileIOMESSAGE = 'IOMESSAGES_PLXXXX'                 # OUT
 PLCProdCycleVAR = 'D40_00'
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini 
@@ -44,15 +45,17 @@ def MergeFiles(dir,mac):
     # ricavo la lista dei file nella cartella
     files = [f for f in listdir(dir) if isfile(join(dir, f))]
     
-    coppie = filter(lambda f: mac in f,files) # in list(coppie) ho la coppia FromTo
+    # in list(coppie) ho la coppia FromTo
+    coppie = filter(lambda f: mac in f,files) 
         
     #print (list(coppie))
 
     # scrivo un file solo per ogni categoria
-    with open('OUIT_'+ mac +'.ENG','w', encoding=IntouchEncoding) as outfile:
+    with open(fileIOMESSAGE + '_'+ mac +'.ENG','w', encoding=IntouchEncoding) as outfile:
         for c in list(coppie):
-            # Open each file in read mode
-                with open(os.getcwd() +'\\'+ NomeCartellaOUT +'\\' + c,encoding=IntouchEncoding) as infile:
+            # Apro ogni coppia di file
+                with open(dir + c,encoding=IntouchEncoding) as infile:
+                    # leggo i file e li combino in un file per ogni macchina
                     outfile.write(infile.read())
 
 def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile):
