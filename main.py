@@ -17,6 +17,7 @@ fileIOMESSAGE_Pre = 'IOMESSAGES_PLXXXX.ENG'
 PLCProdCycleVAR = 'D40_00'
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini 
+NomeCartellaOUT = 'OUT'
 
 ###########################################################
 
@@ -47,15 +48,16 @@ def MergeFiles(dir,mac):
         
     #print (list(coppie))
 
-    # scrivo un file solo
+    # scrivo un file solo per ogni categoria
     with open('OUIT_'+ mac +'.ENG','w', encoding=IntouchEncoding) as outfile:
         for c in list(coppie):
             # Open each file in read mode
-                with open(os.getcwd() +'\OUT\\' + c,encoding=IntouchEncoding) as infile:
+                with open(os.getcwd() +'\\'+ NomeCartellaOUT +'\\' + c,encoding=IntouchEncoding) as infile:
                     outfile.write(infile.read())
 
 def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile):
     """Stampa su File un gruppo di segnali di scambio
+       per ogni gruppo (es: BSI) stampa due files From e To
 
     Args:
         NomeSegnale (str): nome della struttura del segnale di scambio (ES: SignalFILFromBSI)
@@ -146,7 +148,7 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile):
         else:
             Out =  FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
         
-        OutFileUTF16(os.getcwd() +'\OUT\\' +fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
+        OutFileUTF16(os.getcwd() +'\\'+ NomeCartellaOUT +'\\'  +fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
         n = int(n) + 1
 
    
@@ -206,7 +208,7 @@ OutDir = os.getcwd() +'\OUT\\'
 if not os.path.exists (OutDir):
     os.makedirs(OutDir)
 
-# creo i file IOMESSAGE singoli
+# creo i file IOMESSAGE
 for a in lista_macc:
     SignalExc('SignalFILFrom'+a,'ABFIL1',a,OutDir)
     SignalExc('SignalFILTo'+a,'ABFIL1',a,OutDir)
