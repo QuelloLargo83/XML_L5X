@@ -35,6 +35,9 @@ def OutFileUTF16(fileOut,Input):
     with open(fileOut,'a',encoding=IntouchEncoding) as f:
         f.write(Input + '\n')
 
+
+
+
 def MergeFiles(dir,mac):
     """Unisce i file dei segnali
 
@@ -57,6 +60,10 @@ def MergeFiles(dir,mac):
                 with open(dir + c,encoding=IntouchEncoding) as infile:
                     # leggo i file e li combino in un file per ogni macchina
                     outfile.write(infile.read())
+
+
+
+
 
 def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile):
     """Stampa su File un gruppo di segnali di scambio
