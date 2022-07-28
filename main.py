@@ -12,11 +12,13 @@ from os.path import isfile, join
 
 file = 'P16164_PLC_20220609_00C.L5X'                # IN: file L5X sorgente dal PLC
 fileCFG_PAGE = 'CFG_PAGE.INI'                       # IN: file contenente lista macchine esterne
-fileCicliProd = 'NomiCicliProd.txt'            
+fileCicliProd = 'NomiCicliProd.txt' 
+fileCicliSan = 'NomiCicliSan.txt'           
 fileControllerTags = 'ControllerTags.txt'
 fileIOMESSAGE_Pre = 'IOMESSAGES_PLXXXX.ENG'         # OUT:
 fileIOMESSAGE = 'IOMESSAGES_PLXXXX'                 # OUT:
 PLCProdCycleVAR = 'D40_00'
+PLCSanCycleVar = 'D60_00'
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini 
 NomeCartellaOUT = 'OUT'                             # cartella appoggio per coppie di file IOMESSAGE in cwd
@@ -160,6 +162,26 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile):
         OutFileUTF16(os.getcwd() +'\\'+ NomeCartellaOUT +'\\'  +fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
         n = int(n) + 1
 
+
+
+def ListaCicli (StructCicli,FileOutput):
+    """Crea un file con i nomi dei cicli presi dal plc
+
+    Args:
+        StructCicli (str): nome struttura cicli (es: D40_00)
+        FileOutput (str): Nome file uscita
+    """
+    # definisco un dizionario vuoto in cui mettere le variabili che mi interessano
+    struttura = {}
+    struttura = programs['FILLER'].tags[StructCicli].value
+
+    # le chiavi sono i nomi del livello figlio della struttura
+    nomi_cicli = struttura.keys()
+
+    #### FILE CON I NOMI DEI CICLI
+    with open(FileOutput,'w',encoding=IntouchEncoding) as f:
+        for n in nomi_cicli:
+            f.write(n + '\n')
    
 ##########
 ## MAIN ##
@@ -186,10 +208,11 @@ programs_names = programs.names
 #################################
 
 
-###########################################
-#  ricavo la lista della macchine esterne #
-###########################################
+###############
+# IO MESSAGES #
+###############
 
+#  ricavo la lista della macchine esterne #
 config = configparser.ConfigParser(strict= False)
 # fileCFG_PAGE = 'CFG_PAGE.INI'
 
@@ -232,6 +255,15 @@ for m in lista_macc:
 
 # MergeFiles(OutDir,'BHE')
 
+
+####################
+# LISTA NOMI CICLI #
+####################
+
+ListaCicli(PLCProdCycleVAR,fileCicliProd) # Cicli Prod
+ListaCicli(PLCSanCycleVar,fileCicliSan)   # Cicli San
+
+
 sys.exit(0)
 
 
@@ -240,20 +272,6 @@ sys.exit(0)
 ######## PREPARAZIONE PER ALTRO  ######
 #######################################
 
-
-# definisco un dizionario vuoto in cui mettere le variabili che mi interessano
-struttura = {}
-struttura = programs['FILLER'].tags[PLCProdCycleVAR].value
-
-# le chiavi sono i nomi del livello figlio della struttura
-nomi_cicli = struttura.keys()
-
-
-
-#### FILE CON I NOMI DEI CICLI
-with open(fileCicliProd,'w',encoding=IntouchEncoding) as f:
-    for n in nomi_cicli:
-        f.write(n + '\n')
 
 #### FILE CON LE TAGS LIVELLO CONTROLLORE
 #stampa lista tag a livello controllore
