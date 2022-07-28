@@ -19,6 +19,7 @@ PLCProdCycleVAR = 'D40_00'
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini 
 NomeCartellaOUT = 'OUT'
+NomeCartellaFINALE = 'OUTFINALE'
 
 ###########################################################
 
@@ -54,14 +55,12 @@ def MergeFiles(dir,mac):
     #print (list(coppie))
 
     # scrivo un file solo per ogni categoria
-    with open(fileIOMESSAGE + '_'+ mac +'.ENG','w', encoding=IntouchEncoding) as outfile:
+    with open(fileIOMESSAGE + '_'+ mac +'.ENG','w', encoding=IntouchEncoding) as outfile: # apro il file di uscita
         for c in list(coppie):
             # Apro ogni coppia di file
                 with open(dir + c,encoding=IntouchEncoding) as infile:
                     # leggo i file e li combino in un file per ogni macchina
                     outfile.write(infile.read())
-
-
 
 
 
@@ -214,7 +213,8 @@ for k in range(1,len(lista_itemDICT.keys())):
 #      : 
 
 # creo la cartella temporanea di uscita se non esiste
-OutDir = os.getcwd() +'\OUT\\'
+#OutDir = os.getcwd() +'\OUT\\'
+OutDir = os.getcwd() +'\\'+ NomeCartellaOUT +'\\'
 if not os.path.exists (OutDir):
     os.makedirs(OutDir)
 
