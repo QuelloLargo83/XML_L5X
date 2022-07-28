@@ -23,3 +23,7 @@ testato sulla [Release_v1.5](Release_v1.5)
 
 Prende la lista delle macchine esterne dal file `CFG_INI.ini` (da recuperare in superivisione)
 e il file .L5X esportato dal plc e crea un file IOMESSAGE.ENG per ogni macchina
+
+2- NOMI CICLI
+
+Crea file con i nomi dei cicli (un file per i cicli di produzione e uno per i cicli Sterilizzazione/Sanificazione)
