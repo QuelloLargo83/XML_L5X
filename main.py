@@ -186,6 +186,7 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc):
             if isinstance(cicli[n],dict):  # solo le strutture sono cicli!!
                 f.write(n + '\n')
    
+
 ##########
 ## MAIN ##
 ##########
@@ -222,18 +223,19 @@ programs_names = programs.names
 #         print(ctl_tags[ctl_tags.names[i]].value)
 #         print(ctl_tags[ctl_tags.names[i]].description)
 
-# cicli = programs['FILLER'].tags['D60_00'].value
+PhaseDesc = programs['FILLER'].tags['D60_00']['Drainage']['Phase'].description
+print(PhaseDesc)
 
-# # print(type(cicli))
+for i in range(0,9):
+    CycleMsgDesc = programs['FILLER'].tags['D60_00']['Drainage']['CycleMsgInput'][0][i].description
+    print(CycleMsgDesc)
 
 # for k in cicli.keys():
 #      if isinstance(cicli[k],dict):  # solo le strutture sono cicli!!
 #         print (cicli[k])
 
 
-
-
-# sys.exit(0)
+sys.exit(0)
     ######
 
 
