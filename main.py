@@ -223,16 +223,28 @@ programs_names = programs.names
 #         print(ctl_tags[ctl_tags.names[i]].value)
 #         print(ctl_tags[ctl_tags.names[i]].description)
 
+
+## DRAINAGE PHASE DESCRIPTION
 PhaseDesc = programs['FILLER'].tags['D60_00']['Drainage']['Phase'].description
 print(PhaseDesc)
 
+print('\n')
+
+# DRAINAGE CYCLEMSG DESCRIPTION
 for i in range(0,9):
     CycleMsgDesc = programs['FILLER'].tags['D60_00']['Drainage']['CycleMsgInput'][0][i].description
     print(CycleMsgDesc)
 
-# for k in cicli.keys():
-#      if isinstance(cicli[k],dict):  # solo le strutture sono cicli!!
-#         print (cicli[k])
+print('\n')
+
+# DRAINAGE PHASEMSG DESCRIPTION
+for i in range(0,9):                       #occhio!!
+    PhaseMsgDesc = programs['FILLER'].tags['D60_01']['PhaseMessageInput'][0][i].description
+    print(PhaseMsgDesc)
+
+print('\n')
+
+
 
 
 sys.exit(0)
