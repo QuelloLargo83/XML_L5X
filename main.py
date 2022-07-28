@@ -1,3 +1,4 @@
+from ast import Str
 import os
 import sys
 import l5x
@@ -172,20 +173,23 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc):
         FileOutput (str): Nome file uscita
     """
     # definisco un dizionario vuoto in cui mettere le variabili che mi interessano
-    struttura = {}
-    struttura = programs[NomePOSPlc].tags[StructCicli].value
-
+    cicli = {}
+    cicli = programs[NomePOSPlc].tags[StructCicli].value
+   
     # le chiavi sono i nomi del livello figlio della struttura
-    nomi_cicli = struttura.keys()
+    nomi_cicli = cicli.keys()
 
+    
     #### FILE CON I NOMI DEI CICLI
     with open(FileOutput,'w',encoding=IntouchEncoding) as f:
         for n in nomi_cicli:
-            f.write(n + '\n')
+            if isinstance(cicli[n],dict):  # solo le strutture sono cicli!!
+                f.write(n + '\n')
    
 ##########
 ## MAIN ##
 ##########
+
 
 #################################
 ##### PREPARAZIONE STRUTTURE ####
@@ -206,6 +210,33 @@ programs = prj.programs
 programs_names = programs.names
 
 #################################
+
+
+  #### PROVE ####
+    
+    #va in ordine alfabetico
+# for i in range(0, len(ctl_tags.names)):
+#     if ctl_tags.names[i] == 'D60_00':
+#         print(ctl_tags.names[i])
+#         print(ctl_tags[ctl_tags.names[i]].names)
+#         print(ctl_tags[ctl_tags.names[i]].value)
+#         print(ctl_tags[ctl_tags.names[i]].description)
+
+# cicli = programs['FILLER'].tags['D60_00'].value
+
+# # print(type(cicli))
+
+# for k in cicli.keys():
+#      if isinstance(cicli[k],dict):  # solo le strutture sono cicli!!
+#         print (cicli[k])
+
+
+
+
+# sys.exit(0)
+    ######
+
+
 
 
 ###############
@@ -264,16 +295,14 @@ ListaCicli(PLCProdCycleVAR,fileCicliProd,'FILLER') # Cicli Prod
 ListaCicli(PLCSanCycleVar,fileCicliSan,'FILLER')   # Cicli San
 
 
-sys.exit(0)
+# sys.exit(0)
 
 
 
-#######################################
-######## PREPARAZIONE PER ALTRO  ######
-#######################################
+####################
+# TAG CONTROLLORE  #
+####################
 
-
-#### FILE CON LE TAGS LIVELLO CONTROLLORE
 #stampa lista tag a livello controllore
 with open(fileControllerTags,'w',encoding=IntouchEncoding) as f:
     for tag in tag_names:
@@ -281,18 +310,7 @@ with open(fileControllerTags,'w',encoding=IntouchEncoding) as f:
 
 
 
-  #### PROVE ####
-    
-    #va in ordine alfabetico
-    # for i in range(0, len(ctl_tags.names)):
-    #     if ctl_tags.names[i] == 'SignalFILFromBSI':
-    #         print(ctl_tags.names[i])
-    #         print(ctl_tags[ctl_tags.names[i]].names)
-    #         print(ctl_tags[ctl_tags.names[i]].value)
-    #         print(ctl_tags[ctl_tags.names[i]].description)
 
-    # sys.exit(0)
-    ######
 
 
 
