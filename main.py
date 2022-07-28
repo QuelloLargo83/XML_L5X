@@ -164,7 +164,7 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile):
 
 
 
-def ListaCicli (StructCicli,FileOutput):
+def ListaCicli (StructCicli,FileOutput,NomePOSPlc):
     """Crea un file con i nomi dei cicli presi dal plc
 
     Args:
@@ -173,7 +173,7 @@ def ListaCicli (StructCicli,FileOutput):
     """
     # definisco un dizionario vuoto in cui mettere le variabili che mi interessano
     struttura = {}
-    struttura = programs['FILLER'].tags[StructCicli].value
+    struttura = programs[NomePOSPlc].tags[StructCicli].value
 
     # le chiavi sono i nomi del livello figlio della struttura
     nomi_cicli = struttura.keys()
@@ -260,8 +260,8 @@ for m in lista_macc:
 # LISTA NOMI CICLI #
 ####################
 
-ListaCicli(PLCProdCycleVAR,fileCicliProd) # Cicli Prod
-ListaCicli(PLCSanCycleVar,fileCicliSan)   # Cicli San
+ListaCicli(PLCProdCycleVAR,fileCicliProd,'FILLER') # Cicli Prod
+ListaCicli(PLCSanCycleVar,fileCicliSan,'FILLER')   # Cicli San
 
 
 sys.exit(0)
