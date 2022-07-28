@@ -11,15 +11,16 @@ from os.path import isfile, join
 ###########
 
 file = 'P16164_PLC_20220609_00C.L5X'                # IN: file L5X sorgente dal PLC
+fileCFG_PAGE = 'CFG_PAGE.INI'                       # IN: file contenente lista macchine esterne
 fileCicliProd = 'NomiCicliProd.txt'            
 fileControllerTags = 'ControllerTags.txt'
 fileIOMESSAGE_Pre = 'IOMESSAGES_PLXXXX.ENG'         # OUT:
-fileIOMESSAGE = 'IOMESSAGES_PLXXXX'                 # OUT
+fileIOMESSAGE = 'IOMESSAGES_PLXXXX'                 # OUT:
 PLCProdCycleVAR = 'D40_00'
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini 
-NomeCartellaOUT = 'OUT'
-NomeCartellaFINALE = 'OUTFINALE'
+NomeCartellaOUT = 'OUT'                             # cartella appoggio per coppie di file IOMESSAGE in cwd
+NomeCartellaFINALE = 'OUTFINALE'                    # cartella con risultato finale cwd
 
 ###########################################################
 
@@ -39,23 +40,22 @@ def OutFileUTF16(fileOut,Input):
 
 
 
-def MergeFiles(dir,mac):
+def MergeFiles(dir,mac,outdir):
     """Unisce i file dei segnali
 
     Args:
         dir (str): Directory da cui leggere i file singoli
         mac (str): Codice Macchina (ES: BSI)
+        outdir (str): destinazione file uniti
     """
     # ricavo la lista dei file nella cartella
     files = [f for f in listdir(dir) if isfile(join(dir, f))]
     
     # in list(coppie) ho la coppia FromTo
     coppie = filter(lambda f: mac in f,files) 
-        
-    #print (list(coppie))
 
     # scrivo un file solo per ogni categoria
-    with open(fileIOMESSAGE + '_'+ mac +'.ENG','w', encoding=IntouchEncoding) as outfile: # apro il file di uscita
+    with open(outdir + fileIOMESSAGE + '_'+ mac +'.ENG','w', encoding=IntouchEncoding) as outfile: # apro il file di uscita
         for c in list(coppie):
             # Apro ogni coppia di file
                 with open(dir + c,encoding=IntouchEncoding) as infile:
@@ -191,7 +191,7 @@ programs_names = programs.names
 ###########################################
 
 config = configparser.ConfigParser(strict= False)
-fileCFG_PAGE = 'CFG_PAGE.INI'
+# fileCFG_PAGE = 'CFG_PAGE.INI'
 
 config.read_file(open(fileCFG_PAGE,encoding='utf-8')) 
 
@@ -213,10 +213,13 @@ for k in range(1,len(lista_itemDICT.keys())):
 #      : 
 
 # creo la cartella temporanea di uscita se non esiste
-#OutDir = os.getcwd() +'\OUT\\'
 OutDir = os.getcwd() +'\\'+ NomeCartellaOUT +'\\'
 if not os.path.exists (OutDir):
     os.makedirs(OutDir)
+
+OutDirFIN = os.getcwd() +'\\'+ NomeCartellaFINALE +'\\'
+if not os.path.exists (OutDirFIN):
+    os.makedirs(OutDirFIN)
 
 # creo i file IOMESSAGE
 for a in lista_macc:
@@ -225,11 +228,11 @@ for a in lista_macc:
 
 # unisco i file corrispondenti
 for m in lista_macc:
-    MergeFiles(OutDir,m)
+    MergeFiles(OutDir,m,OutDirFIN)
 
 # MergeFiles(OutDir,'BHE')
-sys.exit(0)
 
+sys.exit(0)
 
 
 
@@ -244,6 +247,7 @@ struttura = programs['FILLER'].tags[PLCProdCycleVAR].value
 
 # le chiavi sono i nomi del livello figlio della struttura
 nomi_cicli = struttura.keys()
+
 
 
 #### FILE CON I NOMI DEI CICLI
