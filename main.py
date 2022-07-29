@@ -241,28 +241,30 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile):
     ############
     # PHASEMSG #
     ############
-    PhaseMsgDesc = ''
-    for a in range(0,2): 
-        for i in range(0,31):                    
-            if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description is not None:
-                nMSG = i+1
-                PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description + '\n'
-                try:
-                    # nel caso nei commenti le frasi siano separate da newline
-                    PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
-                    msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
-                except:
-                    print('EXCEPT PhaseMsg per ' + NomeCiclo)
+    if NomeStructPhMsg is not None: # NON TUTTI I CICLI HANNO PHASE MESSAGE
+        for a in range(0,2): 
+            for i in range(0,31):                    
+                if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description is not None:
+                    nMSG = i+1
+                    PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description + '\n'
                     try:
-                        # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
-                        id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
-                        msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
+                        # nel caso nei commenti le frasi siano separate da newline
+                        PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
+                        msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
                     except:
-                        print('EXCEPT ANNIDATO PhaseMSG per ' + NomeCiclo)
-                        msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
+                        print('EXCEPT PhaseMsg per ' + NomeCiclo)
+                        try:
+                            # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
+                            id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
+                            msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
+                        except:
+                            print('EXCEPT ANNIDATO PhaseMSG per ' + NomeCiclo)
+                            msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
 
-                PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
-           
+                    PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
+    else:
+        PhaseMsgDesc =''
+            
     # pubblico su file
     with open(OutFile,'w',encoding=IntouchEncoding) as f:
         f.write('[CYCL_'+ MacCyc +'_'+ NomeCiclo +'_Phase]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.Phase\n') # Header
@@ -351,6 +353,8 @@ CycleDesc('FILLER','D60_00','SteamFilter','D60_05','FIL',os.getcwd() + '\Phase_S
 CycleDesc('FILLER','D60_00','SipFiller','D60_06_'+Fx_Cx,'FIL',os.getcwd() + '\Phase_SipFiller_TEST.ENG')
 CycleDesc('FILLER','D60_00','SteamBarrier','D60_09','FIL',os.getcwd() + '\Phase_SteamBarrier_TEST.ENG')
 CycleDesc('FILLER','D60_00','PAAExternal','D60_07','FIL',os.getcwd() + '\Phase_PAAExternal_TEST.ENG')
+CycleDesc('FILLER','D60_00','HEPA1','D60_08_SV1','FIL',os.getcwd() + '\Phase_HEPA1_TEST.ENG')       #occhio!!
+CycleDesc('FILLER','D60_00','DBUnLoad',None,'FIL',os.getcwd() + '\Phase_DBUnLoad_TEST.ENG')
 
 # PRODUZIONE #
 CycleDesc('FILLER','D40_00','TankStartUp','D40_02','FIL',os.getcwd() + '\Phase_TankStartup_TEST.ENG')
