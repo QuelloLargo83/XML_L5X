@@ -201,22 +201,27 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,OutFile):
     PhaseDesc = programs[NomePrg].tags[NomeStruct][NomeCiclo]['Phase'].description
 
     # CYCLEMSG
+    CycleMsgDesc = ''
     for i in range(0,DimMsg):
-        CycleMsgDesc = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description
+        CycleMsgDesc = CycleMsgDesc + programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description
 
 
     # PHASEMSG
+    PhaseMsgDesc = ''
     for i in range(0,DimMsg):                       #occhio!!
-        PhaseMsgDesc = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description
+        PhaseMsgDesc = PhaseMsgDesc + programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description
  
 
-    with open(OutFile,'a',encoding=IntouchEncoding) as f:
+    with open(OutFile,'w',encoding=IntouchEncoding) as f:
         f.write('[CYCL_FIL_'+ NomeCiclo +'_Phase]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.Phase\n') # Header
         f.write(PhaseDesc)
         f.write('\n')
+        f.write('\n')
         f.write(CycleMsgDesc)
         f.write('\n')
+        f.write('\n')
         f.write(PhaseMsgDesc)
+        f.write('\n')
         f.write('\n')
 
 
