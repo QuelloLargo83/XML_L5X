@@ -23,7 +23,7 @@ PLCSanCycleVar = 'D60_00'
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini 
 NomeCartellaOUT = 'OUT'                             # cartella appoggio per coppie di file IOMESSAGE in cwd
-NomeCartellaFINALE = 'OUTFINALE'                    # cartella con risultato finale cwd
+NomeCartellaFINALE = 'OUTFINALE'                    # cartella con risultato finale in cwd per IOMESSAGE
 
 ###########################################################
 
@@ -186,6 +186,39 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc):
             if isinstance(cicli[n],dict):  # solo le strutture sono cicli!!
                 f.write(n + '\n')
    
+def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,OutFile):
+    """Stampa su file i tre blocco di commenti per un ciclo
+
+    Args:
+        NomePrg (_type_): Nome del programma PLC in cui riesiede il ciclo (ES: FILLER)
+        NomeStruct (_type_): Nome della struttura PLC del ciclo (ES: D40_00)
+        NomeCiclo (_type_): ES: Drainage
+        DimMsg (_type_): Dimensione Array di PhaseMsgInput
+        NomeStructPhMsg (_type_): Nome struttura PhaseMsgInput (ed: D40_01)
+        OutFile (_type_): File di uscita
+    """
+    ## PHASE
+    PhaseDesc = programs[NomePrg].tags[NomeStruct][NomeCiclo]['Phase'].description
+
+    # CYCLEMSG
+    for i in range(0,DimMsg):
+        CycleMsgDesc = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description
+
+
+    # PHASEMSG
+    for i in range(0,DimMsg):                       #occhio!!
+        PhaseMsgDesc = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description
+ 
+
+    with open(OutFile,'a',encoding=IntouchEncoding) as f:
+        f.write('[CYCL_FIL_'+ NomeCiclo +'_Phase]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.Phase\n') # Header
+        f.write(PhaseDesc)
+        f.write('\n')
+        f.write(CycleMsgDesc)
+        f.write('\n')
+        f.write(PhaseMsgDesc)
+        f.write('\n')
+
 
 ##########
 ## MAIN ##
@@ -212,6 +245,10 @@ programs_names = programs.names
 
 #################################
 
+CycleDesc('FILLER','D60_00','Drainage',9,'D60_01',os.getcwd() + '\Phase_TEST.ENG')
+sys.exit(0)
+
+
 
   #### PROVE ####
     
@@ -223,6 +260,9 @@ programs_names = programs.names
 #         print(ctl_tags[ctl_tags.names[i]].value)
 #         print(ctl_tags[ctl_tags.names[i]].description)
 
+############################################
+## ESEMPIO DI COMMENTI CICLI SANIFICAZIONE ####
+############################################
 
 ## DRAINAGE PHASE DESCRIPTION
 PhaseDesc = programs['FILLER'].tags['D60_00']['Drainage']['Phase'].description
@@ -244,8 +284,28 @@ for i in range(0,9):                       #occhio!!
 
 print('\n')
 
+############################################
+## ESEMPIO DI COMMENTI CICLI PRODUZIONE #
+############################################
 
+print('.Phase\n')
+PhaseDesc = programs['FILLER'].tags['D40_00']['TankStartUp']['Phase'].description
+print(PhaseDesc)
 
+print('\n')
+print('.CycleMsg\n')
+
+for i in range(0,9):
+    CycleMsgDesc = programs['FILLER'].tags['D40_00']['TankStartUp']['CycleMsgInput'][0][i].description
+    print(CycleMsgDesc)
+
+print('\n')
+print('.PhaseMsg\n')
+for i in range(0,9):                       #occhio!!
+    PhaseMsgDesc = programs['FILLER'].tags['D40_02']['PhaseMessageInput'][0][i].description
+    print(PhaseMsgDesc)
+
+print('\n')
 
 sys.exit(0)
     ######
