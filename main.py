@@ -199,12 +199,13 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,OutFile):
     """
     ## PHASE
     PhaseDesc = programs[NomePrg].tags[NomeStruct][NomeCiclo]['Phase'].description
+    PhaseDesc = PhaseDesc.replace('## PHASE ##','')
+    PhaseDesc = PhaseDesc.replace('=','= V;')
 
     # CYCLEMSG
     CycleMsgDesc = ''
     for i in range(0,DimMsg):
         CycleMsgDesc = CycleMsgDesc + programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description
-
 
     # PHASEMSG
     PhaseMsgDesc = ''
