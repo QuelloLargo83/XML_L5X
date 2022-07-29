@@ -1,4 +1,4 @@
-from ast import Str
+#from ast import Str
 import os
 import sys
 import l5x
@@ -354,8 +354,17 @@ CycleDesc('FILLER','D60_00','SteamFilter','D60_05','FIL',os.getcwd() + '\Phase_S
 CycleDesc('FILLER','D60_00','SipFiller','D60_06_'+Fx_Cx,'FIL',os.getcwd() + '\Phase_SipFiller_TEST.ENG')
 CycleDesc('FILLER','D60_00','SteamBarrier','D60_09','FIL',os.getcwd() + '\Phase_SteamBarrier_TEST.ENG')
 CycleDesc('FILLER','D60_00','PAAExternal','D60_07','FIL',os.getcwd() + '\Phase_PAAExternal_TEST.ENG')
-CycleDesc('FILLER','D60_00','HEPA1','D60_08_SV1','FIL',os.getcwd() + '\Phase_HEPA1_TEST.ENG')       #occhio!!
+CycleDesc('FILLER','D60_00','HEPA1','D60_08_SV1','FIL',os.getcwd() + '\Phase_HEPA1_TEST.ENG')       #occhio che qui c'è SV1!!
 CycleDesc('FILLER','D60_00','DBUnLoad',None,'FIL',os.getcwd() + '\Phase_DBUnLoad_TEST.ENG')
+CycleDesc('FILLER','D60_00','DBLoad_PSD',None,'FIL',os.getcwd() + '\Phase_DBLoad_PSD_TEST.ENG')
+CycleDesc('FILLER','D60_00','Rinse_PSD',None,'FIL',os.getcwd() + '\Phase_Rinse_PSD_TEST.ENG')
+CycleDesc('FILLER','D60_00','CIP_PSD',None,'FIL',os.getcwd() + '\Phase_CIP_PSD_TEST.ENG')
+CycleDesc('FILLER','D60_00','SIP_PSD',None,'FIL',os.getcwd() + '\Phase_SIP_PSD_TEST.ENG')
+CycleDesc('FILLER','D60_00','DBUnLoad_PSD',None,'FIL',os.getcwd() + '\Phase_DBUnLoad_PSD_TEST.ENG')
+CycleDesc('FILLER','D60_00','BellowsIntegrity_PSD',None,'FIL',os.getcwd() + '\Phase_BellowsIntegrity_PSD_TEST.ENG')
+CycleDesc('FILLER','D60_00','SteamBarrier_PSD',None,'FIL',os.getcwd() + '\Phase_BellowsIntegrity_SteamBarrier_PSD.ENG')
+CycleDesc('FILLER','D60_00','CXJackTest',None,'FIL',os.getcwd() + '\Phase_CXJackTest.ENG')
+
 
 # PRODUZIONE #
 CycleDesc('FILLER','D40_00','TankStartUp','D40_02','FIL',os.getcwd() + '\Phase_TankStartup_TEST.ENG')

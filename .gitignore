@@ -71,3 +71,11 @@ Phase_SteamBarrier_TEST.ENG
 Phase_SteamFilter_TEST.ENG
 Phase_DBUnLoad_TEST.ENG
 Phase_HEPA1_TEST.ENG
+Phase_BellowsIntegrity_PSD_TEST.ENG
+Phase_BellowsIntegrity_SteamBarrier_PSD.ENG
+Phase_CIP_PSD_TEST.ENG
+Phase_CXJackTest.ENG
+Phase_DBLoad_PSD_TEST.ENG
+Phase_DBUnLoad_PSD_TEST.ENG
+Phase_Rinse_PSD_TEST.ENG
+Phase_SIP_PSD_TEST.ENG
