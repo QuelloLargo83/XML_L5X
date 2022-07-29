@@ -241,6 +241,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile):
     ############
     # PHASEMSG #
     ############
+    PhaseMsgDesc = ''
     if NomeStructPhMsg is not None: # NON TUTTI I CICLI HANNO PHASE MESSAGE
         for a in range(0,2): 
             for i in range(0,31):                    
@@ -263,7 +264,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile):
 
                     PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
     else:
-        PhaseMsgDesc =''
+        PhaseMsgDesc = ''
             
     # pubblico su file
     with open(OutFile,'w',encoding=IntouchEncoding) as f:
