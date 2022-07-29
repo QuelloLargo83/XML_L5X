@@ -13,7 +13,8 @@ from os.path import isfile, join
 
 file = 'P16164_PLC_20220609_00C.L5X'                # IN: file L5X sorgente dal PLC
 fileCFG_PAGE = 'CFG_PAGE.INI'                       # IN: file contenente lista macchine esterne
-fileCicliProd = 'NomiCicliProd.txt' 
+Fx_Cx = 'FX'                                        # IN: tipo di macchina
+fileCicliProd = 'NomiCicliProd.txt'                 # OUT
 fileCicliSan = 'NomiCicliSan.txt'           
 fileControllerTags = 'ControllerTags.txt'
 fileIOMESSAGE_Pre = 'IOMESSAGES_PLXXXX.ENG'         # OUT:
@@ -186,18 +187,19 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc):
             if isinstance(cicli[n],dict):  # solo le strutture sono cicli!!
                 f.write(n + '\n')
    
-def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,MacCyc,OutFile):
+def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile):
     """Stampa su file i tre blocco di commenti per un ciclo
 
     Args:
         NomePrg (str): Nome del programma PLC in cui riesiede il ciclo (ES: FILLER)
         NomeStruct (str): Nome della struttura PLC del ciclo (ES: D40_00)
         NomeCiclo (str): ES: Drainage
-        DimMsg (int): Massimo numero di PhaseMsgInput da prendere (array)
         NomeStructPhMsg (str): Nome struttura PhaseMsgInput (ed: D40_01)
         OutFile (str): File di uscita
     """
-    ## PHASE
+    ###########
+    ## PHASE ##
+    ###########
     PhaseDesc = programs[NomePrg].tags[NomeStruct][NomeCiclo]['Phase'].description
     # rimuovo header dal commento
     PhaseDesc = PhaseDesc.replace('## PHASE ##','') # tolgo ## PHASE ##
@@ -205,37 +207,43 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,MacCyc,OutFile
     # aggiungo =V;
     PhaseDesc = PhaseDesc.replace('=','= V;')
 
-    # CYCLEMSG
+    ############
+    # CYCLEMSG #
+    ############
     CycleMsgDesc = ''
-    for i in range(0,DimMsg):
+    #for i in range(0,DimMsg):
+    for i in range(0,31):
         if programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description is not None:
             nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
             CycleMsgDescA = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description + '\n'
             try:
                 # nel caso nei commenti le frasi siano separate da newline
                 CycleMsgDescSplit = CycleMsgDescA.split('\n')
-                #CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + CycleMsgDescSplit[2].strip('\n') + '\n'
                 msg = CycleMsgDescSplit[2].strip('\n') + '\n'
             except:
-                print('EXCEPT per ' + NomeCiclo)
-                msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
-            #     # nel caso nei commenti le frasi abbiamo almeno message
-            #     try:
-            #         # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
-            #         id = CycleMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
-            #     except:
+                print('EXCEPT CycleMSG per ' + NomeCiclo)
+                    # nel caso nei commenti le frasi abbiamo almeno message
+                try:
+                    # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
+                    id = CycleMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
+                    msg = utils.mid(CycleMsgDescA,id,len(CycleMsgDescA))
+                except:
+                     print('EXCEPT ANNIDATO CycleMSG per ' + NomeCiclo)
+                     msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
             #         print('INFO-> CYCLEMSG di '+ NomeCiclo +' Manca Message nei commenti PLC')
             #         id = 0
-            #     msg = utils.mid(CycleMsgDescA,id,len(CycleMsgDescA))
-            else:
-                print('INFO-> Else attivo per ' + NomeCiclo)
+                     
+            # else:
+            #     print('INFO-> Else attivo per ' + NomeCiclo)
                 #msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
             CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + msg.strip('\n') + ('\n')
              
-
-    # PHASEMSG
+    ############
+    # PHASEMSG #
+    ############
     PhaseMsgDesc = ''
-    for i in range(0,DimMsg):                       
+    #for i in range(0,DimMsg):   
+    for i in range(0,31):                    
         if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description is not None:
             nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
             PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description + '\n'
@@ -245,15 +253,17 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,MacCyc,OutFile
                 msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
             except:
                 print('EXCEPT PhaseMsg per ' + NomeCiclo)
-
-                # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
-                id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
-                msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
+                try:
+                    # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
+                    id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
+                    msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
+                except:
+                    print('EXCEPT ANNIDATO PhaseMSG per ' + NomeCiclo)
+                    msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
 
             PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
            
- 
-
+    # pubblico su file
     with open(OutFile,'w',encoding=IntouchEncoding) as f:
         f.write('[CYCL_'+ MacCyc +'_'+ NomeCiclo +'_Phase]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.Phase\n') # Header
         f.write(PhaseDesc)
@@ -332,13 +342,18 @@ ListaCicli(PLCSanCycleVar,fileCicliSan,'FILLER')   # Cicli San
 #         CycleDesc('FILLER','D60_00',sanc.strip('\n'),20,'D60_01','FIL',os.getcwd() + '\Phase_'+ sanc.strip('\n') +'_TEST.ENG')
 
 # SANIFICAZIONE #
-CycleDesc('FILLER','D60_00','Drainage',20,'D60_01','FIL',os.getcwd() + '\Phase_Drainage_TEST.ENG')
-CycleDesc('FILLER','D60_00','COP',32,'D60_02','FIL',os.getcwd() + '\Phase_COP_TEST.ENG')
-CycleDesc('FILLER','D60_00','DBLoad',32,'D60_02','FIL',os.getcwd() + '\Phase_DBLoad_TEST.ENG')
-CycleDesc('FILLER','D60_00','CIP',10,'D60_04','FIL',os.getcwd() + '\Phase_CIP_TEST.ENG')
+# TODO: trovare il modo di ricavare le dimensioni degli array
+CycleDesc('FILLER','D60_00','Drainage','D60_01','FIL',os.getcwd() + '\Phase_Drainage_TEST.ENG')
+CycleDesc('FILLER','D60_00','COP','D60_02','FIL',os.getcwd() + '\Phase_COP_TEST.ENG')
+CycleDesc('FILLER','D60_00','DBLoad','D60_02','FIL',os.getcwd() + '\Phase_DBLoad_TEST.ENG')
+CycleDesc('FILLER','D60_00','CIP','D60_04','FIL',os.getcwd() + '\Phase_CIP_TEST.ENG')
+CycleDesc('FILLER','D60_00','SteamFilter','D60_05','FIL',os.getcwd() + '\Phase_SteamFilter_TEST.ENG')
+CycleDesc('FILLER','D60_00','SipFiller','D60_06_'+Fx_Cx,'FIL',os.getcwd() + '\Phase_SipFiller_TEST.ENG')
+CycleDesc('FILLER','D60_00','SteamBarrier','D60_09','FIL',os.getcwd() + '\Phase_SteamBarrier_TEST.ENG')
+CycleDesc('FILLER','D60_00','PAAExternal','D60_07','FIL',os.getcwd() + '\Phase_PAAExternal_TEST.ENG')
 
 # PRODUZIONE #
-CycleDesc('FILLER','D40_00','TankStartUp',20,'D40_02','FIL',os.getcwd() + '\Phase_TankStartup_TEST.ENG')
+CycleDesc('FILLER','D40_00','TankStartUp','D40_02','FIL',os.getcwd() + '\Phase_TankStartup_TEST.ENG')
 
 sys.exit(0)
 

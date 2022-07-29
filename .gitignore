@@ -65,3 +65,7 @@ Phase_TankStartup_TEST.ENG
 Phase_CIP_TEST.ENG
 Phase_COP_TEST.ENG
 Phase_DBLoad_TEST.ENG
+Phase_PAAExternal_TEST.ENG
+Phase_SipFiller_TEST.ENG
+Phase_SteamBarrier_TEST.ENG
+Phase_SteamFilter_TEST.ENG
