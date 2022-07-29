@@ -221,12 +221,13 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,MacCyc,OutFile
     for i in range(0,DimMsg):                       
         if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description is not None:
             nMSG = i+1
-            PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description +'\n'
+            PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description + '\n'
             #PhaseMsgDescSplit = PhaseMsgDescA.split('\n')
             #PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + PhaseMsgDescSplit[2] + '\n'
             #print(PhaseMsgDescA.casefold())
+            
             # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
-            id = PhaseMsgDescA.casefold().index('message') + len('message') + 2
+            id = PhaseMsgDescA.casefold().index('message') + len('message') + 3
             msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
 
             PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg
