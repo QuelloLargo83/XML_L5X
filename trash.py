@@ -28,3 +28,56 @@
 #         lista_macc_en.append(x) 
 
 #print(lista_macc_en)
+
+
+
+
+############################################
+## ESEMPIO DI COMMENTI CICLI SANIFICAZIONE ####
+############################################
+
+## DRAINAGE PHASE DESCRIPTION
+PhaseDesc = programs['FILLER'].tags['D60_00']['Drainage']['Phase'].description
+print(PhaseDesc)
+
+print('\n')
+
+# DRAINAGE CYCLEMSG DESCRIPTION
+for i in range(0,9):
+    CycleMsgDesc = programs['FILLER'].tags['D60_00']['Drainage']['CycleMsgInput'][0][i].description
+    print(CycleMsgDesc)
+
+print('\n')
+
+# DRAINAGE PHASEMSG DESCRIPTION
+for i in range(0,9):                       #occhio!!
+    PhaseMsgDesc = programs['FILLER'].tags['D60_01']['PhaseMessageInput'][0][i].description
+    print(PhaseMsgDesc)
+
+print('\n')
+
+############################################
+## ESEMPIO DI COMMENTI CICLI PRODUZIONE #
+############################################
+
+print('.Phase\n')
+PhaseDesc = programs['FILLER'].tags['D40_00']['TankStartUp']['Phase'].description
+print(PhaseDesc)
+
+print('\n')
+print('.CycleMsg\n')
+
+for i in range(0,9):
+    CycleMsgDesc = programs['FILLER'].tags['D40_00']['TankStartUp']['CycleMsgInput'][0][i].description
+    print(CycleMsgDesc)
+
+print('\n')
+print('.PhaseMsg\n')
+for i in range(0,9):                       #occhio!!
+    PhaseMsgDesc = programs['FILLER'].tags['D40_02']['PhaseMessageInput'][0][i].description
+    print(PhaseMsgDesc)
+
+print('\n')
+
+sys.exit(0)
+    ######

@@ -200,7 +200,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,MacCyc,OutFile
     ## PHASE
     PhaseDesc = programs[NomePrg].tags[NomeStruct][NomeCiclo]['Phase'].description
     # rimuovo header dal commento
-    PhaseDesc = PhaseDesc.replace('## PHASE ##','')
+    PhaseDesc = PhaseDesc.replace('## PHASE ##','') # tolgo ## PHASE ##
     PhaseDesc = PhaseDesc.strip('\n')
     # aggiungo =V;
     PhaseDesc = PhaseDesc.replace('=','= V;')
@@ -211,9 +211,26 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,MacCyc,OutFile
         if programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description is not None:
             nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
             CycleMsgDescA = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description + '\n'
-            CycleMsgDescSplit = CycleMsgDescA.split('\n')
-            CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + CycleMsgDescSplit[2] + '\n'
-            
+            try:
+                # nel caso nei commenti le frasi siano separate da newline
+                CycleMsgDescSplit = CycleMsgDescA.split('\n')
+                #CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + CycleMsgDescSplit[2].strip('\n') + '\n'
+                msg = CycleMsgDescSplit[2].strip('\n') + '\n'
+            except:
+                print('EXCEPT per ' + NomeCiclo)
+                msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
+            #     # nel caso nei commenti le frasi abbiamo almeno message
+            #     try:
+            #         # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
+            #         id = CycleMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
+            #     except:
+            #         print('INFO-> CYCLEMSG di '+ NomeCiclo +' Manca Message nei commenti PLC')
+            #         id = 0
+            #     msg = utils.mid(CycleMsgDescA,id,len(CycleMsgDescA))
+            else:
+                print('INFO-> Else attivo per ' + NomeCiclo)
+                #msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
+            CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + msg.strip('\n') + ('\n')
              
 
     # PHASEMSG
@@ -222,10 +239,16 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,MacCyc,OutFile
         if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description is not None:
             nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
             PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description + '\n'
-           
-            # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
-            id = PhaseMsgDescA.casefold().index('message') + len('message') + 3
-            msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
+            try:
+                # nel caso nei commenti le frasi siano separate da newline
+                PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
+                msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
+            except:
+                print('EXCEPT PhaseMsg per ' + NomeCiclo)
+
+                # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
+                id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
+                msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
 
             PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
            
@@ -240,7 +263,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,MacCyc,OutFile
         f.write(CycleMsgDesc)
         f.write('\n')
         f.write('\n')
-        f.write('[CYCL_'+ MacCyc +'_'+ NomeCiclo +'_MSG]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.CycleMsg\n') # Header
+        f.write('[CYCL_'+ MacCyc +'_'+ NomeCiclo +'_PhaseMSG]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.PhaseMessage\n') # Header
         f.write(PhaseMsgDesc)
         f.write('\n')
         f.write('\n')
@@ -269,12 +292,55 @@ programs = prj.programs
 # lista nomi programmi
 programs_names = programs.names
 
-#################################
 
+####################
+# LISTA NOMI CICLI #
+####################
+
+ListaCicli(PLCProdCycleVAR,fileCicliProd,'FILLER') # Cicli Prod
+ListaCicli(PLCSanCycleVar,fileCicliSan,'FILLER')   # Cicli San
+
+#########
+# PROVE #
+#########
+# for i in range(0,9):
+#     try:
+#         print(programs['FILLER'].tags['D60_0' + str(i)].data_type)
+#     except:
+#         print('INFO-> D60_0' + str(i) +' NOT PRESENT')
+
+    # print(programs['FILLER'].tags['D60_01'].data_type)
+    # print(programs['FILLER'].tags['D60_02'].data_type)
+    # #print(programs['FILLER'].tags['D60_03'].data_type)
+    # print(programs['FILLER'].tags['D60_04'].data_type)
+    # print(programs['FILLER'].tags['D60_05'].data_type)
+    # print(programs['FILLER'].tags['D60_06_CX'].data_type)
+    # print(programs['FILLER'].tags['D60_06_FX'].data_type)
+    # print(programs['FILLER'].tags['D60_07'].data_type)
+    # print(programs['FILLER'].tags['D60_08_SV1'].data_type)
+    # print(programs['FILLER'].tags['D60_09'].data_type)
+#sys.exit(0)
+
+##########
+# PHASES #
+##########
+
+# SANIFICAZIONE #
+# with open (os.getcwd() + '\\' + fileCicliSan,'r',encoding=IntouchEncoding) as fcs:
+#     SanCycles = fcs.readlines()
+#     for sanc in SanCycles:
+#         CycleDesc('FILLER','D60_00',sanc.strip('\n'),20,'D60_01','FIL',os.getcwd() + '\Phase_'+ sanc.strip('\n') +'_TEST.ENG')
+
+# SANIFICAZIONE #
 CycleDesc('FILLER','D60_00','Drainage',20,'D60_01','FIL',os.getcwd() + '\Phase_Drainage_TEST.ENG')
-CycleDesc('FILLER','D40_00','TankStartUp',20,'D40_02','FIL',os.getcwd() + '\Phase_TankStartup_TEST.ENG')
-sys.exit(0)
+CycleDesc('FILLER','D60_00','COP',32,'D60_02','FIL',os.getcwd() + '\Phase_COP_TEST.ENG')
+CycleDesc('FILLER','D60_00','DBLoad',32,'D60_02','FIL',os.getcwd() + '\Phase_DBLoad_TEST.ENG')
+CycleDesc('FILLER','D60_00','CIP',10,'D60_04','FIL',os.getcwd() + '\Phase_CIP_TEST.ENG')
 
+# PRODUZIONE #
+CycleDesc('FILLER','D40_00','TankStartUp',20,'D40_02','FIL',os.getcwd() + '\Phase_TankStartup_TEST.ENG')
+
+sys.exit(0)
 
 
   #### PROVE ####
@@ -286,56 +352,6 @@ sys.exit(0)
 #         print(ctl_tags[ctl_tags.names[i]].names)
 #         print(ctl_tags[ctl_tags.names[i]].value)
 #         print(ctl_tags[ctl_tags.names[i]].description)
-
-############################################
-## ESEMPIO DI COMMENTI CICLI SANIFICAZIONE ####
-############################################
-
-## DRAINAGE PHASE DESCRIPTION
-PhaseDesc = programs['FILLER'].tags['D60_00']['Drainage']['Phase'].description
-print(PhaseDesc)
-
-print('\n')
-
-# DRAINAGE CYCLEMSG DESCRIPTION
-for i in range(0,9):
-    CycleMsgDesc = programs['FILLER'].tags['D60_00']['Drainage']['CycleMsgInput'][0][i].description
-    print(CycleMsgDesc)
-
-print('\n')
-
-# DRAINAGE PHASEMSG DESCRIPTION
-for i in range(0,9):                       #occhio!!
-    PhaseMsgDesc = programs['FILLER'].tags['D60_01']['PhaseMessageInput'][0][i].description
-    print(PhaseMsgDesc)
-
-print('\n')
-
-############################################
-## ESEMPIO DI COMMENTI CICLI PRODUZIONE #
-############################################
-
-print('.Phase\n')
-PhaseDesc = programs['FILLER'].tags['D40_00']['TankStartUp']['Phase'].description
-print(PhaseDesc)
-
-print('\n')
-print('.CycleMsg\n')
-
-for i in range(0,9):
-    CycleMsgDesc = programs['FILLER'].tags['D40_00']['TankStartUp']['CycleMsgInput'][0][i].description
-    print(CycleMsgDesc)
-
-print('\n')
-print('.PhaseMsg\n')
-for i in range(0,9):                       #occhio!!
-    PhaseMsgDesc = programs['FILLER'].tags['D40_02']['PhaseMessageInput'][0][i].description
-    print(PhaseMsgDesc)
-
-print('\n')
-
-sys.exit(0)
-    ######
 
 
 
@@ -386,14 +402,6 @@ for m in lista_macc:
     MergeFiles(OutDir,m,OutDirFIN)
 
 # MergeFiles(OutDir,'BHE')
-
-
-####################
-# LISTA NOMI CICLI #
-####################
-
-ListaCicli(PLCProdCycleVAR,fileCicliProd,'FILLER') # Cicli Prod
-ListaCicli(PLCSanCycleVar,fileCicliSan,'FILLER')   # Cicli San
 
 
 # sys.exit(0)

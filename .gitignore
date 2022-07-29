@@ -62,3 +62,6 @@ IOMESSAGES_PLXXXX_WRS.ENG
 Phase_TEST.ENG
 Phase_Drainage_TEST.ENG
 Phase_TankStartup_TEST.ENG
+Phase_CIP_TEST.ENG
+Phase_COP_TEST.ENG
+Phase_DBLoad_TEST.ENG
