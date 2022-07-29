@@ -211,57 +211,57 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile):
     # CYCLEMSG #
     ############
     CycleMsgDesc = ''
-    #for i in range(0,DimMsg):
-    for i in range(0,31):
-        if programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description is not None:
-            nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
-            CycleMsgDescA = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description + '\n'
-            try:
-                # nel caso nei commenti le frasi siano separate da newline
-                CycleMsgDescSplit = CycleMsgDescA.split('\n')
-                msg = CycleMsgDescSplit[2].strip('\n') + '\n'
-            except:
-                print('EXCEPT CycleMSG per ' + NomeCiclo)
-                    # nel caso nei commenti le frasi abbiamo almeno message
+    for a in range(0,3):
+        for i in range(0,31):
+            if programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][a][i].description is not None:
+                nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
+                CycleMsgDescA = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][a][i].description + '\n'
                 try:
-                    # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
-                    id = CycleMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
-                    msg = utils.mid(CycleMsgDescA,id,len(CycleMsgDescA))
+                    # nel caso nei commenti le frasi siano separate da newline
+                    CycleMsgDescSplit = CycleMsgDescA.split('\n')
+                    msg = CycleMsgDescSplit[2].strip('\n') + '\n'
                 except:
-                     print('EXCEPT ANNIDATO CycleMSG per ' + NomeCiclo)
-                     msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
-            #         print('INFO-> CYCLEMSG di '+ NomeCiclo +' Manca Message nei commenti PLC')
-            #         id = 0
-                     
-            # else:
-            #     print('INFO-> Else attivo per ' + NomeCiclo)
-                #msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
-            CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + msg.strip('\n') + ('\n')
+                    print('EXCEPT CycleMSG per ' + NomeCiclo)
+                        # nel caso nei commenti le frasi abbiamo almeno message
+                    try:
+                        # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
+                        id = CycleMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
+                        msg = utils.mid(CycleMsgDescA,id,len(CycleMsgDescA))
+                    except:
+                        print('EXCEPT ANNIDATO CycleMSG per ' + NomeCiclo)
+                        msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
+                #         print('INFO-> CYCLEMSG di '+ NomeCiclo +' Manca Message nei commenti PLC')
+                #         id = 0
+                        
+                # else:
+                #     print('INFO-> Else attivo per ' + NomeCiclo)
+                    #msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
+                CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + msg.strip('\n') + ('\n')
              
     ############
     # PHASEMSG #
     ############
     PhaseMsgDesc = ''
-    #for i in range(0,DimMsg):   
-    for i in range(0,31):                    
-        if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description is not None:
-            nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
-            PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description + '\n'
-            try:
-                # nel caso nei commenti le frasi siano separate da newline
-                PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
-                msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
-            except:
-                print('EXCEPT PhaseMsg per ' + NomeCiclo)
+    for a in range(0,2): 
+        for i in range(0,31):                    
+            if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description is not None:
+                nMSG = i+1
+                PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description + '\n'
                 try:
-                    # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
-                    id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
-                    msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
+                    # nel caso nei commenti le frasi siano separate da newline
+                    PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
+                    msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
                 except:
-                    print('EXCEPT ANNIDATO PhaseMSG per ' + NomeCiclo)
-                    msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
+                    print('EXCEPT PhaseMsg per ' + NomeCiclo)
+                    try:
+                        # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
+                        id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
+                        msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
+                    except:
+                        print('EXCEPT ANNIDATO PhaseMSG per ' + NomeCiclo)
+                        msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
 
-            PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
+                PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
            
     # pubblico su file
     with open(OutFile,'w',encoding=IntouchEncoding) as f:
