@@ -186,7 +186,7 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc):
             if isinstance(cicli[n],dict):  # solo le strutture sono cicli!!
                 f.write(n + '\n')
    
-def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,OutFile):
+def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,MacCyc,OutFile):
     """Stampa su file i tre blocco di commenti per un ciclo
 
     Args:
@@ -215,29 +215,36 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,OutFile):
             CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + CycleMsgDescSplit[2] + '\n'
             #CycleMsgDesc = CycleMsgDesc + programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description + '\n'
              
-           
-
-           
-    # t= programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][8].description + '\n'
-    # of = t.index('MESSAGE') + len('MESSAGE')
-    # print(utils.mid(t,of,3))
 
     # PHASEMSG
     PhaseMsgDesc = ''
     for i in range(0,DimMsg):                       
         if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description is not None:
-            PhaseMsgDesc = PhaseMsgDesc + programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description + '\n'
+            nMSG = i+1
+            PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description +'\n'
+            #PhaseMsgDescSplit = PhaseMsgDescA.split('\n')
+            #PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + PhaseMsgDescSplit[2] + '\n'
+            #print(PhaseMsgDescA.casefold())
+            # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
+            id = PhaseMsgDescA.casefold().index('message') + len('message') + 2
+            msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
+
+            PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg
+           
+
+            #PhaseMsgDesc = PhaseMsgDesc + programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description + '\n'
  
 
     with open(OutFile,'w',encoding=IntouchEncoding) as f:
-        f.write('[CYCL_FIL_'+ NomeCiclo +'_Phase]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.Phase\n') # Header
+        f.write('[CYCL_'+ MacCyc +'_'+ NomeCiclo +'_Phase]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.Phase\n') # Header
         f.write(PhaseDesc)
         f.write('\n')
         f.write('\n')
-        f.write('[CYCL_FIL_'+ NomeCiclo +'_MSG]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.CycleMsg\n') # Header
+        f.write('[CYCL_'+ MacCyc +'_'+ NomeCiclo +'_MSG]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.CycleMsg\n') # Header
         f.write(CycleMsgDesc)
         f.write('\n')
         f.write('\n')
+        f.write('[CYCL_'+ MacCyc +'_'+ NomeCiclo +'_MSG]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.CycleMsg\n') # Header
         f.write(PhaseMsgDesc)
         f.write('\n')
         f.write('\n')
@@ -268,8 +275,8 @@ programs_names = programs.names
 
 #################################
 
-CycleDesc('FILLER','D60_00','Drainage',20,'D60_01',os.getcwd() + '\Phase_Drainage_TEST.ENG')
-CycleDesc('FILLER','D40_00','TankStartUp',20,'D40_02',os.getcwd() + '\Phase_TankStartup_TEST.ENG')
+CycleDesc('FILLER','D60_00','Drainage',20,'D60_01','FIL',os.getcwd() + '\Phase_Drainage_TEST.ENG')
+CycleDesc('FILLER','D40_00','TankStartUp',20,'D40_02','FIL',os.getcwd() + '\Phase_TankStartup_TEST.ENG')
 sys.exit(0)
 
 
