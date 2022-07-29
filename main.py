@@ -190,27 +190,43 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,OutFile):
     """Stampa su file i tre blocco di commenti per un ciclo
 
     Args:
-        NomePrg (_type_): Nome del programma PLC in cui riesiede il ciclo (ES: FILLER)
-        NomeStruct (_type_): Nome della struttura PLC del ciclo (ES: D40_00)
-        NomeCiclo (_type_): ES: Drainage
-        DimMsg (_type_): Dimensione Array di PhaseMsgInput
-        NomeStructPhMsg (_type_): Nome struttura PhaseMsgInput (ed: D40_01)
-        OutFile (_type_): File di uscita
+        NomePrg (str): Nome del programma PLC in cui riesiede il ciclo (ES: FILLER)
+        NomeStruct (str): Nome della struttura PLC del ciclo (ES: D40_00)
+        NomeCiclo (str): ES: Drainage
+        DimMsg (int): Massimo numero di PhaseMsgInput da prendere (array)
+        NomeStructPhMsg (str): Nome struttura PhaseMsgInput (ed: D40_01)
+        OutFile (str): File di uscita
     """
     ## PHASE
     PhaseDesc = programs[NomePrg].tags[NomeStruct][NomeCiclo]['Phase'].description
+    # rimuovo header dal commento
     PhaseDesc = PhaseDesc.replace('## PHASE ##','')
+    PhaseDesc = PhaseDesc.strip('\n')
+    # aggiungo =V;
     PhaseDesc = PhaseDesc.replace('=','= V;')
 
     # CYCLEMSG
     CycleMsgDesc = ''
     for i in range(0,DimMsg):
-        CycleMsgDesc = CycleMsgDesc + programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description
+        if programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description is not None:
+            nMSG = i+1
+            CycleMsgDescA = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description + '\n'
+            CycleMsgDescSplit = CycleMsgDescA.split('\n')
+            CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + CycleMsgDescSplit[2] + '\n'
+            #CycleMsgDesc = CycleMsgDesc + programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description + '\n'
+             
+           
+
+           
+    # t= programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][8].description + '\n'
+    # of = t.index('MESSAGE') + len('MESSAGE')
+    # print(utils.mid(t,of,3))
 
     # PHASEMSG
     PhaseMsgDesc = ''
-    for i in range(0,DimMsg):                       #occhio!!
-        PhaseMsgDesc = PhaseMsgDesc + programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description
+    for i in range(0,DimMsg):                       
+        if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description is not None:
+            PhaseMsgDesc = PhaseMsgDesc + programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description + '\n'
  
 
     with open(OutFile,'w',encoding=IntouchEncoding) as f:
@@ -218,6 +234,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,OutFile):
         f.write(PhaseDesc)
         f.write('\n')
         f.write('\n')
+        f.write('[CYCL_FIL_'+ NomeCiclo +'_MSG]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.CycleMsg\n') # Header
         f.write(CycleMsgDesc)
         f.write('\n')
         f.write('\n')
@@ -251,7 +268,8 @@ programs_names = programs.names
 
 #################################
 
-CycleDesc('FILLER','D60_00','Drainage',9,'D60_01',os.getcwd() + '\Phase_TEST.ENG')
+CycleDesc('FILLER','D60_00','Drainage',20,'D60_01',os.getcwd() + '\Phase_Drainage_TEST.ENG')
+CycleDesc('FILLER','D40_00','TankStartUp',20,'D40_02',os.getcwd() + '\Phase_TankStartup_TEST.ENG')
 sys.exit(0)
 
 
