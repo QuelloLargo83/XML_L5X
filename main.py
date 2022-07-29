@@ -209,31 +209,26 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,DimMsg,NomeStructPhMsg,MacCyc,OutFile
     CycleMsgDesc = ''
     for i in range(0,DimMsg):
         if programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description is not None:
-            nMSG = i+1
+            nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
             CycleMsgDescA = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description + '\n'
             CycleMsgDescSplit = CycleMsgDescA.split('\n')
             CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + CycleMsgDescSplit[2] + '\n'
-            #CycleMsgDesc = CycleMsgDesc + programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][0][i].description + '\n'
+            
              
 
     # PHASEMSG
     PhaseMsgDesc = ''
     for i in range(0,DimMsg):                       
         if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description is not None:
-            nMSG = i+1
+            nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
             PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description + '\n'
-            #PhaseMsgDescSplit = PhaseMsgDescA.split('\n')
-            #PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + PhaseMsgDescSplit[2] + '\n'
-            #print(PhaseMsgDescA.casefold())
-            
+           
             # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
             id = PhaseMsgDescA.casefold().index('message') + len('message') + 3
             msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
 
-            PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg
+            PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
            
-
-            #PhaseMsgDesc = PhaseMsgDesc + programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][0][i].description + '\n'
  
 
     with open(OutFile,'w',encoding=IntouchEncoding) as f:
