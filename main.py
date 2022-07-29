@@ -345,7 +345,7 @@ ListaCicli(PLCSanCycleVar,fileCicliSan,'FILLER')   # Cicli San
 #         CycleDesc('FILLER','D60_00',sanc.strip('\n'),20,'D60_01','FIL',os.getcwd() + '\Phase_'+ sanc.strip('\n') +'_TEST.ENG')
 
 # SANIFICAZIONE #
-# TODO: trovare il modo di ricavare le dimensioni degli array
+
 CycleDesc('FILLER','D60_00','Drainage','D60_01','FIL',os.getcwd() + '\Phase_Drainage_TEST.ENG')
 CycleDesc('FILLER','D60_00','COP','D60_02','FIL',os.getcwd() + '\Phase_COP_TEST.ENG')
 CycleDesc('FILLER','D60_00','DBLoad','D60_02','FIL',os.getcwd() + '\Phase_DBLoad_TEST.ENG')
