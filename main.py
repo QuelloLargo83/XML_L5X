@@ -1,4 +1,6 @@
 #from ast import Str
+from argparse import HelpFormatter
+import cmd
 import os
 import sys
 import l5x
@@ -14,6 +16,8 @@ from os.path import isfile, join
 file = 'P16164_PLC_20220609_00C.L5X'                # IN: file L5X sorgente dal PLC
 fileCFG_PAGE = 'CFG_PAGE.INI'                       # IN: file contenente lista macchine esterne
 Fx_Cx = 'FX'                                        # IN: tipo di macchina
+fileHELP = 'help.ini'
+ResourceFolder = os.getcwd() + '\\RES\\'
 fileCicliProd = 'NomiCicliProd.txt'                 # OUT
 fileCicliSan = 'NomiCicliSan.txt'           
 fileControllerTags = 'ControllerTags.txt'
@@ -281,170 +285,187 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile):
         f.write('\n')
         f.write('\n')
 
+def GetHelp(HelpFile,cmdswitch):
+    """Gestione Help
+
+    Args:
+        HelpFile (_type_): Percorso completo del file ini di Help
+        cmdswitch (_type_): nome dello swith di cui si vuole conoscere la funzione
+    """
+    helpParser = configparser.ConfigParser(strict= False)
+    helpParser.read_file(open(HelpFile,encoding='utf-8')) 
+
+    HELPlista_sezioni = helpParser.sections()               # lista con le sezioni
+    HELPlista_cmd = helpParser.items(HELPlista_sezioni[0])    
+    HELPlista_cmdDICT = dict(HELPlista_cmd)    
+    
+    # Se non specifico alcun command switch restituisco tutto il file di help
+    if cmdswitch is None:
+        print ('** SWITCH HELP **')
+        for k,v in HELPlista_cmdDICT.items():
+            print ('--' + k + ' : ' + v)
+    # altrimenti recupero la descrizione dello switch
+    else:
+        for k,v in HELPlista_cmdDICT.items():
+            if k == cmdswitch:
+                print ('HELP for switch: --' + cmdswitch + '\n')
+                print ('--'+cmdswitch + ' : ' + v)
+            # else:
+            #     print ('Help not FOUND for --'+ cmdswitch)
+
+
+
 
 ##########
 ## MAIN ##
 ##########
 
 
-#################################
-##### PREPARAZIONE STRUTTURE ####
-#################################
-
-# carico il file L5X in memoria
-prj = l5x.Project(file)
-
-# ctl_tags è un ElementDict contenente le tag a livello controllore
-ctl_tags = prj.controller.tags
-# lista tag name livello controllore
-tag_names = ctl_tags.names
-
-# ELEMENTDICT con i programmi
-programs = prj.programs
-
-# lista nomi programmi
-programs_names = programs.names
-
-
-####################
-# LISTA NOMI CICLI #
-####################
-
-ListaCicli(PLCProdCycleVAR,fileCicliProd,'FILLER') # Cicli Prod
-ListaCicli(PLCSanCycleVar,fileCicliSan,'FILLER')   # Cicli San
-
-#########
-# PROVE #
-#########
-# for i in range(0,9):
-#     try:
-#         print(programs['FILLER'].tags['D60_0' + str(i)].data_type)
-#     except:
-#         print('INFO-> D60_0' + str(i) +' NOT PRESENT')
-
-    # print(programs['FILLER'].tags['D60_01'].data_type)
-    # print(programs['FILLER'].tags['D60_02'].data_type)
-    # #print(programs['FILLER'].tags['D60_03'].data_type)
-    # print(programs['FILLER'].tags['D60_04'].data_type)
-    # print(programs['FILLER'].tags['D60_05'].data_type)
-    # print(programs['FILLER'].tags['D60_06_CX'].data_type)
-    # print(programs['FILLER'].tags['D60_06_FX'].data_type)
-    # print(programs['FILLER'].tags['D60_07'].data_type)
-    # print(programs['FILLER'].tags['D60_08_SV1'].data_type)
-    # print(programs['FILLER'].tags['D60_09'].data_type)
-#sys.exit(0)
-
-##########
-# PHASES #
-##########
-
-# SANIFICAZIONE #
-# with open (os.getcwd() + '\\' + fileCicliSan,'r',encoding=IntouchEncoding) as fcs:
-#     SanCycles = fcs.readlines()
-#     for sanc in SanCycles:
-#         CycleDesc('FILLER','D60_00',sanc.strip('\n'),20,'D60_01','FIL',os.getcwd() + '\Phase_'+ sanc.strip('\n') +'_TEST.ENG')
-
-# SANIFICAZIONE #
-
-CycleDesc('FILLER','D60_00','Drainage','D60_01','FIL',os.getcwd() + '\Phase_Drainage_TEST.ENG')
-CycleDesc('FILLER','D60_00','COP','D60_02','FIL',os.getcwd() + '\Phase_COP_TEST.ENG')
-CycleDesc('FILLER','D60_00','DBLoad','D60_02','FIL',os.getcwd() + '\Phase_DBLoad_TEST.ENG')
-CycleDesc('FILLER','D60_00','CIP','D60_04','FIL',os.getcwd() + '\Phase_CIP_TEST.ENG')
-CycleDesc('FILLER','D60_00','SteamFilter','D60_05','FIL',os.getcwd() + '\Phase_SteamFilter_TEST.ENG')
-CycleDesc('FILLER','D60_00','SipFiller','D60_06_'+Fx_Cx,'FIL',os.getcwd() + '\Phase_SipFiller_TEST.ENG')
-CycleDesc('FILLER','D60_00','SteamBarrier','D60_09','FIL',os.getcwd() + '\Phase_SteamBarrier_TEST.ENG')
-CycleDesc('FILLER','D60_00','PAAExternal','D60_07','FIL',os.getcwd() + '\Phase_PAAExternal_TEST.ENG')
-CycleDesc('FILLER','D60_00','HEPA1','D60_08_SV1','FIL',os.getcwd() + '\Phase_HEPA1_TEST.ENG')       #occhio che qui c'è SV1!!
-CycleDesc('FILLER','D60_00','DBUnLoad',None,'FIL',os.getcwd() + '\Phase_DBUnLoad_TEST.ENG')
-CycleDesc('FILLER','D60_00','DBLoad_PSD',None,'FIL',os.getcwd() + '\Phase_DBLoad_PSD_TEST.ENG')
-CycleDesc('FILLER','D60_00','Rinse_PSD',None,'FIL',os.getcwd() + '\Phase_Rinse_PSD_TEST.ENG')
-CycleDesc('FILLER','D60_00','CIP_PSD',None,'FIL',os.getcwd() + '\Phase_CIP_PSD_TEST.ENG')
-CycleDesc('FILLER','D60_00','SIP_PSD',None,'FIL',os.getcwd() + '\Phase_SIP_PSD_TEST.ENG')
-CycleDesc('FILLER','D60_00','DBUnLoad_PSD',None,'FIL',os.getcwd() + '\Phase_DBUnLoad_PSD_TEST.ENG')
-CycleDesc('FILLER','D60_00','BellowsIntegrity_PSD',None,'FIL',os.getcwd() + '\Phase_BellowsIntegrity_PSD_TEST.ENG')
-CycleDesc('FILLER','D60_00','SteamBarrier_PSD',None,'FIL',os.getcwd() + '\Phase_BellowsIntegrity_SteamBarrier_PSD.ENG')
-CycleDesc('FILLER','D60_00','CXJackTest',None,'FIL',os.getcwd() + '\Phase_CXJackTest.ENG')
-
-
-# PRODUZIONE #
-CycleDesc('FILLER','D40_00','TankStartUp','D40_02','FIL',os.getcwd() + '\Phase_TankStartup_TEST.ENG')
-
-sys.exit(0)
-
-
-  #### PROVE ####
-    
-    #va in ordine alfabetico
-# for i in range(0, len(ctl_tags.names)):
-#     if ctl_tags.names[i] == 'D60_00':
-#         print(ctl_tags.names[i])
-#         print(ctl_tags[ctl_tags.names[i]].names)
-#         print(ctl_tags[ctl_tags.names[i]].value)
-#         print(ctl_tags[ctl_tags.names[i]].description)
-
-
-
-
-###############
-# IO MESSAGES #
-###############
-
-#  ricavo la lista della macchine esterne #
-config = configparser.ConfigParser(strict= False)
-# fileCFG_PAGE = 'CFG_PAGE.INI'
-
-config.read_file(open(fileCFG_PAGE,encoding='utf-8')) 
-
-lista_sezioni = config.sections()               # lista con le sezioni
-lista_item = config.items(lista_sezioni[4])     # lista della prima sezione CFG_IOMAC
-lista_itemDICT = dict(lista_item)               
-
-lista_macc = []     # lista delle macchine 
-
-# leggo la lista delle macchine di cui leggere i segnali di scambio
-for k in range(1,len(lista_itemDICT.keys())):
-    if (lista_itemDICT.get(str(k)) is not None):      # salto eventuali buchi
-        lista_macc.append(lista_itemDICT.get(str(k))) # prendo le prime tre lettere che indicano la macchina 
-#print(lista_macc)
-
-
-# TO DO: trovare il modo di leggere ACCESSNAME
-#      : Unire a modo le coppie di files
-#      : 
-
-# creo la cartella temporanea di uscita se non esiste
-OutDir = os.getcwd() +'\\'+ NomeCartellaOUT +'\\'
-if not os.path.exists (OutDir):
-    os.makedirs(OutDir)
-
-OutDirFIN = os.getcwd() +'\\'+ NomeCartellaFINALE +'\\'
-if not os.path.exists (OutDirFIN):
-    os.makedirs(OutDirFIN)
-
-# creo i file IOMESSAGE
-for a in lista_macc:
-    SignalExc('SignalFILFrom'+a,'ABFIL1',a,OutDir)
-    SignalExc('SignalFILTo'+a,'ABFIL1',a,OutDir)
-
-# unisco i file corrispondenti
-for m in lista_macc:
-    MergeFiles(OutDir,m,OutDirFIN)
-
-# MergeFiles(OutDir,'BHE')
-
+#  GESTIONE HELP #
+HelpFile = ResourceFolder + fileHELP
+#se non viene passato alcun argomento, la lista ha un solo elemento che è il percorso completo del sorgente
+#print(sys.argv[1])
+if len(sys.argv) == 1:
+    GetHelp(HelpFile,None)
+elif utils.left(sys.argv[1],4).lower() == 'help':
+    try:
+        GetHelp(HelpFile, sys.argv[2])
+    except:
+        print('Switch not supplied')
+else:
 
 # sys.exit(0)
+    
+    #################################
+    ##### PREPARAZIONE STRUTTURE ####
+    #################################
+    # carico il file L5X in memoria
+    prj = l5x.Project(file)
+    # ctl_tags è un ElementDict contenente le tag a livello controllore
+    ctl_tags = prj.controller.tags
+    # lista tag name livello controllore
+    tag_names = ctl_tags.names
+    # ELEMENTDICT con i programmi
+    programs = prj.programs
+    # lista nomi programmi
+    programs_names = programs.names
+
+    ####################
+    # LISTA NOMI CICLI #
+    ####################
+   
+    if sys.argv[1].strip() == '--cylesList':
+        ListaCicli(PLCProdCycleVAR,fileCicliProd,'FILLER') # Cicli Prod
+        ListaCicli(PLCSanCycleVar,fileCicliSan,'FILLER')   # Cicli San
+    #########
+    # PROVE #
+    #########
+    # for i in range(0,9):
+    #     try:
+    #         print(programs['FILLER'].tags['D60_0' + str(i)].data_type)
+    #     except:
+    #         print('INFO-> D60_0' + str(i) +' NOT PRESENT')
+        # print(programs['FILLER'].tags['D60_01'].data_type)
+        # print(programs['FILLER'].tags['D60_02'].data_type)
+        # #print(programs['FILLER'].tags['D60_03'].data_type)
+        # print(programs['FILLER'].tags['D60_04'].data_type)
+        # print(programs['FILLER'].tags['D60_05'].data_type)
+        # print(programs['FILLER'].tags['D60_06_CX'].data_type)
+        # print(programs['FILLER'].tags['D60_06_FX'].data_type)
+        # print(programs['FILLER'].tags['D60_07'].data_type)
+        # print(programs['FILLER'].tags['D60_08_SV1'].data_type)
+        # print(programs['FILLER'].tags['D60_09'].data_type)
+    #sys.exit(0)
+    ##########
+    # PHASES #
+    ##########
+    # SANIFICAZIONE #
+    # with open (os.getcwd() + '\\' + fileCicliSan,'r',encoding=IntouchEncoding) as fcs:
+    #     SanCycles = fcs.readlines()
+    #     for sanc in SanCycles:
+    #         CycleDesc('FILLER','D60_00',sanc.strip('\n'),20,'D60_01','FIL',os.getcwd() + '\Phase_'+ sanc.strip('\n') +'_TEST.ENG')
+    if sys.argv[1].strip() == '--cycles':
+        # SANIFICAZIONE #
+        CycleDesc('FILLER','D60_00','Drainage','D60_01','FIL',os.getcwd() + '\Phase_Drainage_TEST.ENG')
+        CycleDesc('FILLER','D60_00','COP','D60_02','FIL',os.getcwd() + '\Phase_COP_TEST.ENG')
+        CycleDesc('FILLER','D60_00','DBLoad','D60_02','FIL',os.getcwd() + '\Phase_DBLoad_TEST.ENG')
+        CycleDesc('FILLER','D60_00','CIP','D60_04','FIL',os.getcwd() + '\Phase_CIP_TEST.ENG')
+        CycleDesc('FILLER','D60_00','SteamFilter','D60_05','FIL',os.getcwd() + '\Phase_SteamFilter_TEST.ENG')
+        CycleDesc('FILLER','D60_00','SipFiller','D60_06_'+Fx_Cx,'FIL',os.getcwd() + '\Phase_SipFiller_TEST.ENG')
+        CycleDesc('FILLER','D60_00','SteamBarrier','D60_09','FIL',os.getcwd() + '\Phase_SteamBarrier_TEST.ENG')
+        CycleDesc('FILLER','D60_00','PAAExternal','D60_07','FIL',os.getcwd() + '\Phase_PAAExternal_TEST.ENG')
+        CycleDesc('FILLER','D60_00','HEPA1','D60_08_SV1','FIL',os.getcwd() + '\Phase_HEPA1_TEST.ENG')       #occhio che qui c'è SV1!!
+        CycleDesc('FILLER','D60_00','DBUnLoad',None,'FIL',os.getcwd() + '\Phase_DBUnLoad_TEST.ENG')
+        CycleDesc('FILLER','D60_00','DBLoad_PSD',None,'FIL',os.getcwd() + '\Phase_DBLoad_PSD_TEST.ENG')
+        CycleDesc('FILLER','D60_00','Rinse_PSD',None,'FIL',os.getcwd() + '\Phase_Rinse_PSD_TEST.ENG')
+        CycleDesc('FILLER','D60_00','CIP_PSD',None,'FIL',os.getcwd() + '\Phase_CIP_PSD_TEST.ENG')
+        CycleDesc('FILLER','D60_00','SIP_PSD',None,'FIL',os.getcwd() + '\Phase_SIP_PSD_TEST.ENG')
+        CycleDesc('FILLER','D60_00','DBUnLoad_PSD',None,'FIL',os.getcwd() + '\Phase_DBUnLoad_PSD_TEST.ENG')
+        CycleDesc('FILLER','D60_00','BellowsIntegrity_PSD',None,'FIL',os.getcwd() + '\Phase_BellowsIntegrity_PSD_TEST.ENG')
+        CycleDesc('FILLER','D60_00','SteamBarrier_PSD',None,'FIL',os.getcwd() + '\Phase_BellowsIntegrity_SteamBarrier_PSD.ENG')
+        CycleDesc('FILLER','D60_00','CXJackTest',None,'FIL',os.getcwd() + '\Phase_CXJackTest.ENG')
+        # PRODUZIONE #
+        CycleDesc('FILLER','D40_00','TankStartUp','D40_02','FIL',os.getcwd() + '\Phase_TankStartup_TEST.ENG')
+    #sys.exit(0)
+
+    #### PROVE ####
+        
+        #va in ordine alfabetico
+    # for i in range(0, len(ctl_tags.names)):
+    #     if ctl_tags.names[i] == 'D60_00':
+    #         print(ctl_tags.names[i])
+    #         print(ctl_tags[ctl_tags.names[i]].names)
+    #         print(ctl_tags[ctl_tags.names[i]].value)
+    #         print(ctl_tags[ctl_tags.names[i]].description)
+
+    ###############
+    # IO MESSAGES #
+    ###############
+    if sys.argv[1].strip() == '--iomsg':
+        print('info: IOMESSAGES')
+        #  ricavo la lista della macchine esterne #
+        config = configparser.ConfigParser(strict= False)
+        # fileCFG_PAGE = 'CFG_PAGE.INI'
+        config.read_file(open(fileCFG_PAGE,encoding='utf-8')) 
+        lista_sezioni = config.sections()               # lista con le sezioni
+        lista_item = config.items(lista_sezioni[4])     # lista della prima sezione CFG_IOMAC
+        lista_itemDICT = dict(lista_item)               
+        lista_macc = []     # lista delle macchine 
+        # leggo la lista delle macchine di cui leggere i segnali di scambio
+        for k in range(1,len(lista_itemDICT.keys())):
+            if (lista_itemDICT.get(str(k)) is not None):      # salto eventuali buchi
+                lista_macc.append(lista_itemDICT.get(str(k))) # prendo le prime tre lettere che indicano la macchina 
+        #print(lista_macc)
+        # TO DO: trovare il modo di leggere ACCESSNAME
+        #      : Unire a modo le coppie di files
+        #      : 
+        # creo la cartella temporanea di uscita se non esiste
+        OutDir = os.getcwd() +'\\'+ NomeCartellaOUT +'\\'
+        if not os.path.exists (OutDir):
+            os.makedirs(OutDir)
+        OutDirFIN = os.getcwd() +'\\'+ NomeCartellaFINALE +'\\'
+        if not os.path.exists (OutDirFIN):
+            os.makedirs(OutDirFIN)
+        # creo i file IOMESSAGE
+        for a in lista_macc:
+            SignalExc('SignalFILFrom'+a,'ABFIL1',a,OutDir)
+            SignalExc('SignalFILTo'+a,'ABFIL1',a,OutDir)
+        # unisco i file corrispondenti
+        for m in lista_macc:
+            MergeFiles(OutDir,m,OutDirFIN)
+        # MergeFiles(OutDir,'BHE')
 
 
 
-####################
-# TAG CONTROLLORE  #
-####################
 
-#stampa lista tag a livello controllore
-with open(fileControllerTags,'w',encoding=IntouchEncoding) as f:
-    for tag in tag_names:
-        f.write(tag + '\n')
+    ####################
+    # TAG CONTROLLORE  #
+    ####################
+
+    #stampa lista tag a livello controllore
+# with open(fileControllerTags,'w',encoding=IntouchEncoding) as f:
+#     for tag in tag_names:
+#         f.write(tag + '\n')
 
 
 
