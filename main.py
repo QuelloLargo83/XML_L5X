@@ -33,21 +33,6 @@ NomeCartellaFINALE = 'OUTFINALE'                    # cartella con risultato fin
 ###########################################################
 
 
-def OutFileUTF16(fileOut,Input):
-    """Crea un file di output in utf-16-le e scrive la stringa passata
-       Se il file non esiste lo crea
-       le stringhe vengono aggiunte al file
-
-    Args:
-        fileOut (str): Nome File OutPut
-        Input (str): stringa da stampare
-    """
-    with open(fileOut,'a',encoding=IntouchEncoding) as f:
-        f.write(Input + '\n')
-
-
-
-
 def MergeFiles(dir,mac,outdir):
     """Unisce i file dei segnali
 
@@ -165,7 +150,7 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile):
         else:
             Out =  FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
         
-        OutFileUTF16(os.getcwd() +'\\'+ NomeCartellaOUT +'\\'  +fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
+        utils.OutFileUTF16(os.getcwd() +'\\'+ NomeCartellaOUT +'\\'  +fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
         n = int(n) + 1
 
 
