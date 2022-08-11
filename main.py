@@ -37,7 +37,6 @@ PLCSanCycleVar = 'D60_00'
 CFG_IOMAC = int(CFGlistaDICT['cfg_iomac'])               # Numero sezione CFG_IOMAC 
 
 
-
 fileCicliProd = 'NomiCicliProd.txt'                 # OUT
 fileCicliSan = 'NomiCicliSan.txt'           
 fileControllerTags = 'ControllerTags.txt'
