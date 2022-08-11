@@ -6,25 +6,40 @@ import sys
 import l5x
 import configparser
 import utils
+import HelpMNG
 from os import listdir
 from os.path import isfile, join
+
+CFGFile = os.getcwd() + '\Configuration.ini'
+fileHELP = 'help.ini'
+ResourceFolder = os.getcwd() + '\\RES\\'
 
 ###########
 ## DATI ###
 ###########
+# LETTURA FILE CONFIGURAZIONE 
+CFGParser = configparser.ConfigParser(strict= False)
+CFGParser.read_file(open(CFGFile,encoding='utf-8')) 
+CFGlista_sezioni = CFGParser.sections()
+CFGlista = CFGParser.items(CFGlista_sezioni[0])    
+CFGlistaDICT = dict(CFGlista)    # metto tutto dentro un dizionario per comodita di accesso
 
-file = 'P16164_PLC_20220609_00C.L5X'                # IN: file L5X sorgente dal PLC
-fileCFG_PAGE = 'CFG_PAGE.INI'                       # IN: file contenente lista macchine esterne
-Fx_Cx = 'FX'                                        # IN: tipo di macchina
-fileHELP = 'help.ini'
-ResourceFolder = os.getcwd() + '\\RES\\'
+file = CFGlistaDICT['file']                              # IN: file L5X sorgente dal PLC
+fileCFG_PAGE = CFGlistaDICT['filecfgpage']               # IN: file contenente lista macchine esterne
+Fx_Cx = CFGlistaDICT['fx_cx']                            # IN: tipo di macchina
+PLCProdCycleVAR = eval(CFGlistaDICT['plcprodcyclevar'])  # Area Memoria PLC per cicli Produzione
+PLCSanCycleVar = eval(CFGlistaDICT['plcsancyclevar'])    # Area Memoria PLC per cicli Sanificazione
+
+CFG_IOMAC = CFGlistaDICT['cfg_iomac']               # Numero sezione CFG_IOMAC 
+
+
+
 fileCicliProd = 'NomiCicliProd.txt'                 # OUT
 fileCicliSan = 'NomiCicliSan.txt'           
 fileControllerTags = 'ControllerTags.txt'
 fileIOMESSAGE_Pre = 'IOMESSAGES_PLXXXX.ENG'         # OUT:
 fileIOMESSAGE = 'IOMESSAGES_PLXXXX'                 # OUT:
-PLCProdCycleVAR = 'D40_00'
-PLCSanCycleVar = 'D60_00'
+
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini 
 NomeCartellaOUT = 'OUT'                             # cartella appoggio per coppie di file IOMESSAGE in cwd
@@ -54,7 +69,6 @@ def MergeFiles(dir,mac,outdir):
                 with open(dir + c,encoding=IntouchEncoding) as infile:
                     # leggo i file e li combino in un file per ogni macchina
                     outfile.write(infile.read())
-
 
 
 def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile):
@@ -271,34 +285,6 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile):
         f.write('\n')
         f.write('\n')
 
-def GetHelp(HelpFile,cmdswitch):
-    """Gestione Help
-
-    Args:
-        HelpFile (_type_): Percorso completo del file ini di Help
-        cmdswitch (_type_): nome dello swith di cui si vuole conoscere la funzione
-    """
-    helpParser = configparser.ConfigParser(strict= False)
-    helpParser.read_file(open(HelpFile,encoding='utf-8')) 
-
-    HELPlista_sezioni = helpParser.sections()               # lista con le sezioni
-    HELPlista_cmd = helpParser.items(HELPlista_sezioni[0])    
-    HELPlista_cmdDICT = dict(HELPlista_cmd)    
-    
-    # Se non specifico alcun command switch restituisco tutto il file di help
-    if cmdswitch is None:
-        print ('** SWITCH HELP **')
-        for k,v in HELPlista_cmdDICT.items():
-            print ('--' + k + ' : ' + v)
-    # altrimenti recupero la descrizione dello switch
-    else:
-        for k,v in HELPlista_cmdDICT.items():
-            if k == cmdswitch:
-                print ('HELP for switch: --' + cmdswitch + '\n')
-                print ('--'+cmdswitch + ' : ' + v)
-            # else:
-            #     print ('Help not FOUND for --'+ cmdswitch)
-
 
 
 
@@ -306,21 +292,17 @@ def GetHelp(HelpFile,cmdswitch):
 ## MAIN ##
 ##########
 
-
 #  GESTIONE HELP #
 HelpFile = ResourceFolder + fileHELP
 #se non viene passato alcun argomento, la lista ha un solo elemento che è il percorso completo del sorgente
-#print(sys.argv[1])
 if len(sys.argv) == 1:
-    GetHelp(HelpFile,None)
+    HelpMNG.GetHelp(HelpFile,None)
 elif utils.left(sys.argv[1],4).lower() == 'help':
     try:
-        GetHelp(HelpFile, sys.argv[2])
+        HelpMNG.GetHelp(HelpFile, sys.argv[2])  # si prevede di chiamare con help [nomeswitch]
     except:
         print('Switch not supplied')
 else:
-
-# sys.exit(0)
     
     #################################
     ##### PREPARAZIONE STRUTTURE ####
@@ -343,25 +325,7 @@ else:
     if sys.argv[1].strip() == '--cyclesList':
         ListaCicli(PLCProdCycleVAR,fileCicliProd,'FILLER') # Cicli Prod
         ListaCicli(PLCSanCycleVar,fileCicliSan,'FILLER')   # Cicli San
-    #########
-    # PROVE #
-    #########
-    # for i in range(0,9):
-    #     try:
-    #         print(programs['FILLER'].tags['D60_0' + str(i)].data_type)
-    #     except:
-    #         print('INFO-> D60_0' + str(i) +' NOT PRESENT')
-        # print(programs['FILLER'].tags['D60_01'].data_type)
-        # print(programs['FILLER'].tags['D60_02'].data_type)
-        # #print(programs['FILLER'].tags['D60_03'].data_type)
-        # print(programs['FILLER'].tags['D60_04'].data_type)
-        # print(programs['FILLER'].tags['D60_05'].data_type)
-        # print(programs['FILLER'].tags['D60_06_CX'].data_type)
-        # print(programs['FILLER'].tags['D60_06_FX'].data_type)
-        # print(programs['FILLER'].tags['D60_07'].data_type)
-        # print(programs['FILLER'].tags['D60_08_SV1'].data_type)
-        # print(programs['FILLER'].tags['D60_09'].data_type)
-    #sys.exit(0)
+   
     ##########
     # PHASES #
     ##########
@@ -408,23 +372,23 @@ else:
     # IO MESSAGES #
     ###############
     if sys.argv[1].strip() == '--iomsg':
-        print('info: IOMESSAGES')
+        # TO DO: trovare il modo di leggere ACCESSNAME
+        #      : Unire a modo le coppie di files
+        #      : 
+
         #  ricavo la lista della macchine esterne #
-        config = configparser.ConfigParser(strict= False)
-        # fileCFG_PAGE = 'CFG_PAGE.INI'
-        config.read_file(open(fileCFG_PAGE,encoding='utf-8')) 
-        lista_sezioni = config.sections()               # lista con le sezioni
-        lista_item = config.items(lista_sezioni[4])     # lista della prima sezione CFG_IOMAC
+        CFGPAGE = configparser.ConfigParser(strict= False)
+        CFGPAGE.read_file(open(fileCFG_PAGE,encoding='utf-8')) 
+        lista_sezioni = CFGPAGE.sections()               # lista con le sezioni
+        lista_item = CFGPAGE.items(lista_sezioni[CFG_IOMAC])     # lista della prima sezione CFG_IOMAC
         lista_itemDICT = dict(lista_item)               
         lista_macc = []     # lista delle macchine 
         # leggo la lista delle macchine di cui leggere i segnali di scambio
         for k in range(1,len(lista_itemDICT.keys())):
             if (lista_itemDICT.get(str(k)) is not None):      # salto eventuali buchi
                 lista_macc.append(lista_itemDICT.get(str(k))) # prendo le prime tre lettere che indicano la macchina 
-        #print(lista_macc)
-        # TO DO: trovare il modo di leggere ACCESSNAME
-        #      : Unire a modo le coppie di files
-        #      : 
+
+        
         # creo la cartella temporanea di uscita se non esiste
         OutDir = os.getcwd() +'\\'+ NomeCartellaOUT +'\\'
         if not os.path.exists (OutDir):
@@ -432,15 +396,18 @@ else:
         OutDirFIN = os.getcwd() +'\\'+ NomeCartellaFINALE +'\\'
         if not os.path.exists (OutDirFIN):
             os.makedirs(OutDirFIN)
+        
         # creo i file IOMESSAGE
         for a in lista_macc:
             SignalExc('SignalFILFrom'+a,'ABFIL1',a,OutDir)
             SignalExc('SignalFILTo'+a,'ABFIL1',a,OutDir)
+        
         # unisco i file corrispondenti
         for m in lista_macc:
             MergeFiles(OutDir,m,OutDirFIN)
-        # MergeFiles(OutDir,'BHE')
+        
 
+        print('Files generated in : ' + OutDirFIN ) # avviso in quale cartella ho generato i file uniti
 
 
 

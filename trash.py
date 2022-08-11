@@ -81,3 +81,23 @@ print('\n')
 
 sys.exit(0)
     ######
+
+ #########
+    # PROVE #
+    #########
+    # for i in range(0,9):
+    #     try:
+    #         print(programs['FILLER'].tags['D60_0' + str(i)].data_type)
+    #     except:
+    #         print('INFO-> D60_0' + str(i) +' NOT PRESENT')
+        # print(programs['FILLER'].tags['D60_01'].data_type)
+        # print(programs['FILLER'].tags['D60_02'].data_type)
+        # #print(programs['FILLER'].tags['D60_03'].data_type)
+        # print(programs['FILLER'].tags['D60_04'].data_type)
+        # print(programs['FILLER'].tags['D60_05'].data_type)
+        # print(programs['FILLER'].tags['D60_06_CX'].data_type)
+        # print(programs['FILLER'].tags['D60_06_FX'].data_type)
+        # print(programs['FILLER'].tags['D60_07'].data_type)
+        # print(programs['FILLER'].tags['D60_08_SV1'].data_type)
+        # print(programs['FILLER'].tags['D60_09'].data_type)
+    #sys.exit(0)
