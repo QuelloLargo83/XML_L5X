@@ -23,14 +23,18 @@ CFGParser.read_file(open(CFGFile,encoding='utf-8'))
 CFGlista_sezioni = CFGParser.sections()
 CFGlista = CFGParser.items(CFGlista_sezioni[0])    
 CFGlistaDICT = dict(CFGlista)    # metto tutto dentro un dizionario per comodita di accesso
+#print(CFGlista)
 
-file = CFGlistaDICT['file']                              # IN: file L5X sorgente dal PLC
-fileCFG_PAGE = CFGlistaDICT['filecfgpage']               # IN: file contenente lista macchine esterne
-Fx_Cx = CFGlistaDICT['fx_cx']                            # IN: tipo di macchina
-PLCProdCycleVAR = eval(CFGlistaDICT['plcprodcyclevar'])  # Area Memoria PLC per cicli Produzione
-PLCSanCycleVar = eval(CFGlistaDICT['plcsancyclevar'])    # Area Memoria PLC per cicli Sanificazione
+# DATI ESTRATTI DAL FILE DI CONFIGURAZIONE
+file = CFGlistaDICT['file']                               # IN: file L5X sorgente dal PLC
+fileCFG_PAGE = CFGlistaDICT['filecfgpage']                # IN: file contenente lista macchine esterne
+Fx_Cx = CFGlistaDICT['fx_cx']                             # IN: tipo di macchina
+#PLCProdCycleVAR = eval(CFGlistaDICT['plcprodcyclevar'])  # Area Memoria PLC per cicli Produzione
+#PLCSanCycleVar = eval(CFGlistaDICT['plcsancyclevar'])    # Area Memoria PLC per cicli Sanificazione
+PLCProdCycleVAR = 'D40_00'
+PLCSanCycleVar = 'D60_00'
 
-CFG_IOMAC = CFGlistaDICT['cfg_iomac']               # Numero sezione CFG_IOMAC 
+CFG_IOMAC = int(CFGlistaDICT['cfg_iomac'])               # Numero sezione CFG_IOMAC 
 
 
 
@@ -42,8 +46,8 @@ fileIOMESSAGE = 'IOMESSAGES_PLXXXX'                 # OUT:
 
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini 
-NomeCartellaOUT = 'OUT'                             # cartella appoggio per coppie di file IOMESSAGE in cwd
-NomeCartellaFINALE = 'OUTFINALE'                    # cartella con risultato finale in cwd per IOMESSAGE
+NomeCartellaOUT = 'IO_OUT'                             # cartella appoggio per coppie di file IOMESSAGE in cwd
+NomeCartellaFINALE = 'IO_OUTFINALE'                    # cartella con risultato finale in cwd per IOMESSAGE
 
 ###########################################################
 
@@ -383,6 +387,7 @@ else:
         lista_item = CFGPAGE.items(lista_sezioni[CFG_IOMAC])     # lista della prima sezione CFG_IOMAC
         lista_itemDICT = dict(lista_item)               
         lista_macc = []     # lista delle macchine 
+        
         # leggo la lista delle macchine di cui leggere i segnali di scambio
         for k in range(1,len(lista_itemDICT.keys())):
             if (lista_itemDICT.get(str(k)) is not None):      # salto eventuali buchi
