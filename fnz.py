@@ -163,7 +163,7 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc,programs):
 
 
 def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,programs):
-    """Stampa su file i tre blocco di commenti per un ciclo
+    """Stampa su file i tre blocco di commenti per un ciclo (PHASES.eng)
 
     Args:
         NomePrg (str): Nome del programma PLC in cui riesiede il ciclo (ES: FILLER)
@@ -171,6 +171,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         NomeCiclo (str): ES: Drainage
         NomeStructPhMsg (str): Nome struttura PhaseMsgInput (ed: D40_01)
         OutFile (str): File di uscita
+        programs (ElementDict): dizionari con l'elenco dei programmi del POS
     """
     ###########
     ## PHASE ##
