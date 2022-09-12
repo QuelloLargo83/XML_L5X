@@ -194,6 +194,10 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc):
                 f.write(n + '\n')
     print ('INFO -> Cycle List generation to file ' + FileOutput + '\n')
    
+
+
+
+
 def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile):
     """Stampa su file i tre blocco di commenti per un ciclo
 
@@ -325,7 +329,7 @@ else:
     # LISTA NOMI CICLI #
     ####################
    
-    if sys.argv[1].strip() == '--cyclesList':
+    if sys.argv[1].strip() == '--cycleslist':
         ListaCicli(PLCProdCycleVAR,fileCicliProd,'FILLER') # Cicli Prod
         ListaCicli(PLCSanCycleVar,fileCicliSan,'FILLER')   # Cicli San
    
