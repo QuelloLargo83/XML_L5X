@@ -170,9 +170,16 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         NomeStruct (str): Nome della struttura PLC del ciclo (ES: D40_00)
         NomeCiclo (str): ES: Drainage
         NomeStructPhMsg (str): Nome struttura PhaseMsgInput (ed: D40_01)
+        MacCyc (str): nome macchina per header sezione (Es: FIL )
         OutFile (str): File di uscita
         programs (ElementDict): dizionari con l'elenco dei programmi del POS
     """
+    # folder di uscita viene creato se non esiste
+    OutDir = os.getcwd() +'\\'+ cfg.NomeCartPhasesOUT +'\\'
+    if not os.path.exists (OutDir):
+        os.makedirs(OutDir)
+
+
     ###########
     ## PHASE ##
     ###########
@@ -243,7 +250,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         PhaseMsgDesc = ''
             
     # pubblico su file
-    with open(OutFile,'w',encoding=cfg.IntouchEncoding) as f:
+    with open(OutDir + OutFile,'w',encoding=cfg.IntouchEncoding) as f:
         f.write('[CYCL_'+ MacCyc +'_'+ NomeCiclo +'_Phase]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.Phase\n') # Header
         f.write(PhaseDesc)
         f.write('\n')

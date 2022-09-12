@@ -34,6 +34,8 @@ NomeCartellaOUT = 'IO_OUT'                             # cartella appoggio per c
 NomeCartellaFINALE = 'IO_OUTFINALE'                    # cartella con risultato finale in cwd per IOMESSAGE
 
 
+NomeCartPhasesOUT = 'PHASES_out'
+
 ######################
 ## DATI da cfg.ini ###
 ######################
