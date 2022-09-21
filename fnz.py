@@ -192,14 +192,14 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         # aggiungo =V;
         PhaseDesc = PhaseDesc.replace('=','= V;')
     else:
-        PhaseDesc = '!! NO_COMMENT_PLC !!' # se mancano i commenti nella tag a plc lo segnalo nel file
+        PhaseDesc = '!! NO_COMMENTS_IN_PLC TAGS !!' # se mancano i commenti nella tag a plc lo segnalo nel file
 
     ############
     # CYCLEMSG #
     ############
     CycleMsgDesc = ''
-    for a in range(0,3):
-        for i in range(0,31):
+    for a in range(0,3): # .CycleMsgInput è un array DINT[3]
+        for i in range(0,31): # scorro ogni DINT ci .CycleMsgInput
             if programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][a][i].description is not None:
                 nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
                 CycleMsgDescA = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][a][i].description + '\n'
@@ -209,13 +209,14 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                     msg = CycleMsgDescSplit[2].strip('\n') + '\n'
                 except:
                     print('EXCEPT CycleMSG per ' + NomeCiclo)
-                        # nel caso nei commenti le frasi abbiamo almeno message
+                        # nel caso nei commenti le frasi abbiamo almeno un message
                     try:
                         # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
                         id = CycleMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
                         msg = utils.mid(CycleMsgDescA,id,len(CycleMsgDescA))
                     except:
-                        print('EXCEPT ANNIDATO CycleMSG per ' + NomeCiclo)
+                        #print('EXCEPT ANNIDATO CycleMSG per ' + NomeCiclo)
+                        print('INFO-> CycleMSG anomolia commento PLC per ' + NomeCiclo)
                         msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
                 #         print('INFO-> CYCLEMSG di '+ NomeCiclo +' Manca Message nei commenti PLC')
                 #         id = 0
@@ -224,10 +225,11 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                 #     print('INFO-> Else attivo per ' + NomeCiclo)
                     #msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
                 CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + msg.strip('\n') + ('\n')
-            else:
-                CycleMsgDesc = 'NO COMMENT PLC'  # se non è neanche settato il commento a plc lo segnalo nel file finale
 
-             
+    # se non ho trovato neanche un commento nelle variabili lo segnalo nel file
+    if CycleMsgDesc == '':
+        CycleMsgDesc = '! NO COMMENTS IN PLC TAGS !'
+
     ############
     # PHASEMSG #
     ############

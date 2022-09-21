@@ -84,11 +84,11 @@ else:
         
         # PRODUZIONE #
         # fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'TankStartUp','D40_02','FIL','Phase_TankStartup_TEST.ENG',programs)
-        # fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'TapsFlowing','D40_03','FIL','Phase_TapsFlowing_TEST.ENG',programs)
-        # fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'BaseRinsing','D40_09','FIL','Phase_BaseRinsing_TEST.ENG',programs)
+        fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'TapsFlowing','D40_03','FIL','Phase_TapsFlowing_TEST.ENG',programs)
+        fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'BaseRinsing','D40_09','FIL','Phase_BaseRinsing_TEST.ENG',programs)
         # fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'ProductionDrainage','D40_10','FIL','Phase_ProductionDrainage_TEST.ENG',programs)
         # fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'EndProduction','D40_11','FIL','Phase_EndProduction_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'TankRinsing','D40_11','FIL','Phase_TankRinsing_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'TankRinsing','D40_11','FIL','Phase_TankRinsing_TEST.ENG',programs)
         fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'TankCooling', 'D40_13','FIL','Phase_TankCooling_TEST.ENG',programs)
 
     #sys.exit(0)
