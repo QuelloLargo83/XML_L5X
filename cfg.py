@@ -14,10 +14,11 @@ from os.path import isfile, join
 #################
 ## DATI FISSI ###
 #################
-
-CFGFile = os.getcwd() + '\Configuration.ini'
-fileHELP = 'help.ini'
+INIFolder = os.getcwd() + '\\INI\\'
 ResourceFolder = os.getcwd() + '\\RES\\'
+CFGFile = INIFolder + 'Configuration.ini'
+fileHELP = INIFolder + 'help.ini'
+
 
 
 fileCicliProd = 'NomiCicliProd.txt'                 # OUT

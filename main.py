@@ -19,14 +19,14 @@ import cfg
 ##########
 
 #  GESTIONE HELP #
-HelpFile = cfg.ResourceFolder + cfg.fileHELP
+# HelpFile = cfg.ResourceFolder + cfg.fileHELP
 #se non viene passato alcun argomento, la lista ha un solo elemento che è il percorso completo del sorgente
 # in questo caso mostro gli switch disponibili
 if len(sys.argv) == 1:
-    HelpMNG.GetHelp(HelpFile,None)
+    HelpMNG.GetHelp(cfg.fileHELP,None)
 elif utils.left(sys.argv[1],4).lower() == 'help':
     try:
-        HelpMNG.GetHelp(HelpFile, sys.argv[2])  # si prevede di chiamare con help [nomeswitch]
+        HelpMNG.GetHelp(cfg.fileHELP, sys.argv[2])  # si prevede di chiamare con help [nomeswitch]
     except:
         print('Switch not supplied')
 else:
