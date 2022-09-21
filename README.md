@@ -26,16 +26,51 @@ testato sulla [Release_v1.5](Release_v1.5)
 
 ### FUNZIONI
 ----------------------
+Fare riferimento al file di [HELP](RES/help.ini) o lanciare il comando senza switch
 
-1- IOMESSAGE
+1 - IOMESSAGE
 
 Prende la lista delle macchine esterne dal file `CFG_INI.ini` (da recuperare in superivisione)
 e il file .L5X esportato dal plc e crea un file IOMESSAGE.ENG per ogni macchina
 
-2- NOMI CICLI
+2 - NOMI CICLI
 
 Crea file con i nomi dei cicli (un file per i cicli di produzione e uno per i cicli Sterilizzazione/Sanificazione)
 
+3 - PHASES
+
+Crea un file .ENG per ogni ciclo da esportare.
+Il file viene generato con la seguente formattazione:
+
+```INI
+[CYCL_FIL_BaseRinsing_Phase]=Program:FILLER.D40_00.BaseRinsing.Phase
+10= V; Machine Emptying
+20= V; Cleaning
+30= V; End Cycle
+
+[CYCL_FIL_BaseRinsing_MSG]=Program:FILLER.D40_00.BaseRinsing.CycleMsg
+1= V; - Waiting conditions ready to start cycle
+2= V; - Cycle started
+3= V; - Cycle running
+4= V; - Cycle held
+5= V; - Cycle failed
+6= V; - Cycle done
+7= V; - Waiting "Blow molder empty" signal active from ABF
+8= V; - Waiting "Blow molder empty" signal active from SIPA
+9= V; - Waiting "Blow molder empty" signal active from KHS
+10= V; - Waiting "Sterile water ready" signal from Unitherm
+
+
+[CYCL_FIL_BaseRinsing_PhaseMSG]=Program:FILLER.D40_00.BaseRinsing.PhaseMessage
+1= V;Alarm condition active
+2= V;Push machine start
+3= V;Waiting Filler in rotation
+4= V;Waiting for all active production cycles to end
+5= V;Waiting Filler internal bottle counter at zero (Filler empty)
+6= V;Valve 261VPW59 open
+7= V;Valve CA1VPW06 open
+8= V;Valve CA1VPB01 open
+```
 
 ### DEBUG
 -------
