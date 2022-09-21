@@ -3,9 +3,12 @@
 
 ## SCOPO
 
-Automazione creazione files .ENG per HMI partendo la .L5X del progetto PLC RSLogix5000
+Automazione creazione files .ENG per HMI partendo da `.L5X` del progetto PLC RSLogix5000
 
 ## PREREQUISITI
+
+- `CFG_INI.ini` da supervisione
+- `****.L5X`        da PLC
 
 La lettura del file .L5X è basata sul pacchetto [l5x](https://github.com/jvalenzuela/l5x)
 testato sulla [Release_v1.5](Release_v1.5)
@@ -30,7 +33,7 @@ Fare riferimento al file di [HELP](RES/help.ini) o lanciare il comando senza swi
 
 1 - IOMESSAGE
 
-Prende la lista delle macchine esterne dal file `CFG_INI.ini` (da recuperare in superivisione)
+Prende la lista delle macchine esterne dal file `CFG_INI.ini` (da recuperare in supervisione)
 e il file .L5X esportato dal plc e crea un file IOMESSAGE.ENG per ogni macchina
 
 2 - NOMI CICLI
