@@ -183,12 +183,16 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     ###########
     ## PHASE ##
     ###########
-    PhaseDesc = programs[NomePrg].tags[NomeStruct][NomeCiclo]['Phase'].description
-    # rimuovo header dal commento
-    PhaseDesc = PhaseDesc.replace('## PHASE ##','') # tolgo ## PHASE ##
-    PhaseDesc = PhaseDesc.strip('\n')
-    # aggiungo =V;
-    PhaseDesc = PhaseDesc.replace('=','= V;')
+    PhaseDesc = programs[NomePrg].tags[NomeStruct][NomeCiclo]['Phase'].description # description indica il commento della tag
+    
+    if PhaseDesc is not None: # potrebbe mancare il commento nella tag a PLC
+        # rimuovo header dal commento
+        PhaseDesc = PhaseDesc.replace('## PHASE ##','') # tolgo ## PHASE ##
+        PhaseDesc = PhaseDesc.strip('\n')
+        # aggiungo =V;
+        PhaseDesc = PhaseDesc.replace('=','= V;')
+    else:
+        PhaseDesc = '!! NO_COMMENT_PLC !!' # se mancano i commenti nella tag a plc lo segnalo nel file
 
     ############
     # CYCLEMSG #
@@ -220,6 +224,9 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                 #     print('INFO-> Else attivo per ' + NomeCiclo)
                     #msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
                 CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + msg.strip('\n') + ('\n')
+            else:
+                CycleMsgDesc = 'NO COMMENT PLC'  # se non è neanche settato il commento a plc lo segnalo nel file finale
+
              
     ############
     # PHASEMSG #

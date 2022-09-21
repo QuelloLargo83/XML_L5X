@@ -27,3 +27,16 @@ e il file .L5X esportato dal plc e crea un file IOMESSAGE.ENG per ogni macchina
 2- NOMI CICLI
 
 Crea file con i nomi dei cicli (un file per i cicli di produzione e uno per i cicli Sterilizzazione/Sanificazione)
+
+
+### DEBUG
+-------
+
+Per lanciare eventalmente il debug editare il file [launch.json](.vscode/launch.json) andando, per esempio, a modificare l'argomento con lo switch che interessa debuggare
+
+### NOTE
+-----
+
+La funzione `CycleDesc` ha un parametro che indica il nome della struttura PhaseMsgInput e lo si trova nel plc guardando qui:
+
+![phase](IMG/Phase.png)

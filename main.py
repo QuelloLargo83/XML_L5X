@@ -63,32 +63,33 @@ else:
     #         CycleDesc('FILLER','D60_00',sanc.strip('\n'),20,'D60_01','FIL',os.getcwd() + '\Phase_'+ sanc.strip('\n') +'_TEST.ENG')
     if sys.argv[1].strip() == '--cycles':
         # SANIFICAZIONE #
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'Drainage','D60_01','FIL','Phase_Drainage_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'COP','D60_02','FIL','Phase_COP_TEST.ENG',programs)
-        #fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'DBLoad','D28_60_CX','FIL',os.getcwd() + '\Phase_DBLoad_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'CIP','D60_04','FIL','Phase_CIP_TEST.ENG',programs) # occhio che questo ne ha due possibili di PhaseMessageInput
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'SteamFilter','D60_05','FIL','Phase_SteamFilter_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'SipFiller','D60_06_'+ cfg.Fx_Cx,'FIL','Phase_SipFiller_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'SteamBarrier','D60_09','FIL','Phase_SteamBarrier_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'PAAExternal','D60_07','FIL','Phase_PAAExternal_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'HEPA1','D60_08_SV1','FIL','Phase_HEPA1_TEST.ENG',programs)       #occhio che qui c'è SV1!!
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'DBUnLoad',None,'FIL','Phase_DBUnLoad_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'DBLoad_PSD',None,'PSD','Phase_DBLoad_PSD_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'Rinse_PSD',None,'PSD','Phase_Rinse_PSD_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'CIP_PSD',None,'PSD','Phase_CIP_PSD_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'SIP_PSD',None,'PSD','Phase_SIP_PSD_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'DBUnLoad_PSD',None,'PSD','Phase_DBUnLoad_PSD_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'BellowsIntegrity_PSD',None,'PSD','Phase_BellowsIntegrity_PSD_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'SteamBarrier_PSD',None,'PSD','Phase_BellowsIntegrity_SteamBarrier_PSD.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'CXJackTest',None,'FIL','Phase_CXJackTest.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'Drainage','D60_01','FIL','Phase_Drainage_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'COP','D60_02','FIL','Phase_COP_TEST.ENG',programs)
+        # ##fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'DBLoad','D28_60_CX','FIL',os.getcwd() + '\Phase_DBLoad_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'CIP','D60_04','FIL','Phase_CIP_TEST.ENG',programs) # occhio che questo ne ha due possibili di PhaseMessageInput
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'SteamFilter','D60_05','FIL','Phase_SteamFilter_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'SipFiller','D60_06_'+ cfg.Fx_Cx,'FIL','Phase_SipFiller_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'SteamBarrier','D60_09','FIL','Phase_SteamBarrier_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'PAAExternal','D60_07','FIL','Phase_PAAExternal_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'HEPA1','D60_08_SV1','FIL','Phase_HEPA1_TEST.ENG',programs)       #occhio che qui c'è SV1!!
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'DBUnLoad',None,'FIL','Phase_DBUnLoad_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'DBLoad_PSD',None,'PSD','Phase_DBLoad_PSD_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'Rinse_PSD',None,'PSD','Phase_Rinse_PSD_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'CIP_PSD',None,'PSD','Phase_CIP_PSD_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'SIP_PSD',None,'PSD','Phase_SIP_PSD_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'DBUnLoad_PSD',None,'PSD','Phase_DBUnLoad_PSD_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'BellowsIntegrity_PSD',None,'PSD','Phase_BellowsIntegrity_PSD_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'SteamBarrier_PSD',None,'PSD','Phase_BellowsIntegrity_SteamBarrier_PSD.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCSanCycleVar,'CXJackTest',None,'FIL','Phase_CXJackTest.ENG',programs)
         
         # PRODUZIONE #
-        fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'TankStartUp','D40_02','FIL','Phase_TankStartup_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'TapsFlowing','D40_03','FIL','Phase_TapsFlowing_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'BaseRinsing','D40_09','FIL','Phase_BaseRinsing_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'ProductionDrainage','D40_10','FIL','Phase_ProductionDrainage_TEST.ENG',programs)
-        fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'EndProduction','D40_11','FIL','Phase_EndProduction_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'TankStartUp','D40_02','FIL','Phase_TankStartup_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'TapsFlowing','D40_03','FIL','Phase_TapsFlowing_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'BaseRinsing','D40_09','FIL','Phase_BaseRinsing_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'ProductionDrainage','D40_10','FIL','Phase_ProductionDrainage_TEST.ENG',programs)
+        # fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'EndProduction','D40_11','FIL','Phase_EndProduction_TEST.ENG',programs)
         fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'TankRinsing','D40_11','FIL','Phase_TankRinsing_TEST.ENG',programs)
+        fnz.CycleDesc('FILLER',cfg.PLCProdCycleVAR,'TankCooling', 'D40_13','FIL','Phase_TankCooling_TEST.ENG',programs)
 
     #sys.exit(0)
 
