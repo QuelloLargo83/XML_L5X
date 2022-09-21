@@ -208,15 +208,14 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                     CycleMsgDescSplit = CycleMsgDescA.split('\n')
                     msg = CycleMsgDescSplit[2].strip('\n') + '\n'
                 except:
-                    print('EXCEPT CycleMSG per ' + NomeCiclo)
+                    # print('EXCEPT CycleMSG per ' + NomeCiclo)
                         # nel caso nei commenti le frasi abbiamo almeno un message
                     try:
                         # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
                         id = CycleMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
                         msg = utils.mid(CycleMsgDescA,id,len(CycleMsgDescA))
                     except:
-                        #print('EXCEPT ANNIDATO CycleMSG per ' + NomeCiclo)
-                        print('INFO-> CycleMSG anomolia commento PLC per ' + NomeCiclo)
+                        # print('INFO-> EXCEPT ANNIDATO CycleMSG per ' + NomeCiclo)
                         msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
                 #         print('INFO-> CYCLEMSG di '+ NomeCiclo +' Manca Message nei commenti PLC')
                 #         id = 0
@@ -245,13 +244,13 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                         PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
                         msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
                     except:
-                        print('EXCEPT PhaseMsg per ' + NomeCiclo)
+                        #print('EXCEPT PhaseMsg per ' + NomeCiclo)
                         try:
                             # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
                             id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
                             msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
                         except:
-                            print('EXCEPT ANNIDATO PhaseMSG per ' + NomeCiclo)
+                            #print('EXCEPT ANNIDATO PhaseMSG per ' + NomeCiclo)
                             msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
 
                     PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
