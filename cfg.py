@@ -19,8 +19,6 @@ CFGFile = os.getcwd() + '\Configuration.ini'
 fileHELP = 'help.ini'
 ResourceFolder = os.getcwd() + '\\RES\\'
 
-PLCProdCycleVAR = 'D40_00'
-PLCSanCycleVar = 'D60_00'
 
 fileCicliProd = 'NomiCicliProd.txt'                 # OUT
 fileCicliSan = 'NomiCicliSan.txt'           
@@ -30,11 +28,9 @@ fileIOMESSAGE = 'IOMESSAGES_PLXXXX'                 # OUT:
 
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini 
-NomeCartellaOUT = 'IO_OUT'                             # cartella appoggio per coppie di file IOMESSAGE in cwd
-NomeCartellaFINALE = 'IO_OUTFINALE'                    # cartella con risultato finale in cwd per IOMESSAGE
-
-
-NomeCartPhasesOUT = 'PHASES_out'
+NomeCartellaOUT = 'IO_OUT'                          # cartella appoggio per coppie di file IOMESSAGE in cwd
+NomeCartellaFINALE = 'IO_OUTFINALE'                 # cartella con risultato finale in cwd per IOMESSAGE
+NomeCartPhasesOUT = 'PHASES_out'                    # cartella in cui mettere i file PHASES
 
 ######################
 ## DATI da cfg.ini ###
@@ -49,11 +45,11 @@ CFGlistaDICT = dict(CFGlista)    # metto tutto dentro un dizionario per comodita
 #print(CFGlista)
 
 # DATI ESTRATTI DAL FILE DI CONFIGURAZIONE
-filePLC = CFGlistaDICT['fileplc']                               # IN: file L5X sorgente dal PLC
+filePLC = CFGlistaDICT['fileplc']                         # IN: file L5X sorgente dal PLC
 fileCFG_PAGE = CFGlistaDICT['filecfgpage']                # IN: file contenente lista macchine esterne
 Fx_Cx = CFGlistaDICT['fx_cx']                             # IN: tipo di macchina
-#PLCProdCycleVAR = eval(CFGlistaDICT['plcprodcyclevar'])  # Area Memoria PLC per cicli Produzione
-#PLCSanCycleVar = eval(CFGlistaDICT['plcsancyclevar'])    # Area Memoria PLC per cicli Sanificazione
-CFG_IOMAC = int(CFGlistaDICT['cfg_iomac'])               # Numero sezione CFG_IOMAC 
+PLCProdCycleVAR = CFGlistaDICT['plcprodcyclevar']         # Area Memoria PLC per cicli Produzione
+PLCSanCycleVar = CFGlistaDICT['plcsancyclevar']           # Area Memoria PLC per cicli Sanificazione
+CFG_IOMAC = int(CFGlistaDICT['cfg_iomac'])                # Numero sezione CFG_IOMAC 
 
 ###########################################################
