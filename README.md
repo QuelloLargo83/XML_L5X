@@ -1,3 +1,4 @@
+![pyversion](https://img.shields.io/badge/Python%20-3.10.3-green)
 ![LastCommit](https://img.shields.io/github/last-commit/QuelloLargo83/XML_L5X)
 
 ## SCOPO
@@ -6,15 +7,22 @@ Automazione creazione files .ENG per HMI partendo la .L5X del progetto PLC RSLog
 
 ## PREREQUISITI
 
-```console
-pip install l5x
-```
-
 La lettura del file .L5X è basata sul pacchetto [l5x](https://github.com/jvalenzuela/l5x)
 testato sulla [Release_v1.5](Release_v1.5)
 
 [README_l5x](https://github.com/jvalenzuela/l5x#readme)
-
+### Creare il virtual enviroment
+```ps
+	python -m venv venv
+```
+### Attivare il virtual enviroment
+```ps
+	.\venv\Scripts\Activate.ps1
+```
+### Installare le librerie necessarie
+```ps
+	pip install -r requirements.txt
+```
 
 ### FUNZIONI
 ----------------------
