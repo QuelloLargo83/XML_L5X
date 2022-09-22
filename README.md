@@ -88,4 +88,8 @@ Per lanciare eventalmente il debug editare il file [launch.json](.vscode/launch.
 
 La funzione `CycleDesc` ha un parametro che indica il nome della struttura PhaseMsgInput e lo si trova nel plc guardando qui:
 
-![phase](IMG/Phase.png)
+<!-- ![phase](IMG/Phase.png) -->
+
+<p align="center">
+<img src="IMG/Phase.png"  width=50% height=50%>
+</p>
