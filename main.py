@@ -11,6 +11,7 @@ from os import listdir
 from os.path import isfile, join
 import fnz
 import cfg
+from version import __version__
 
 
 
@@ -140,10 +141,13 @@ else:
         for m in lista_macc:
             fnz.MergeFiles(OutDir,m,OutDirFIN)
         
-
         print('Files generated in : ' + OutDirFIN ) # avviso in quale cartella ho generato i file uniti
 
-
+    ###############################
+    ## STAMPO VERSIONE PROGRAMMA ##
+    ###############################
+    if sys.argv[1].strip() == '--version':
+        print ('v ' + __version__ )
 
     ####################
     # TAG CONTROLLORE  #

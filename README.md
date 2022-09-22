@@ -1,5 +1,4 @@
 ![pyversion](https://img.shields.io/badge/Python%20-3.10.3-green)
-![LastCommit](https://img.shields.io/github/last-commit/QuelloLargo83/XML_L5X)
 
 ## SCOPO
 
