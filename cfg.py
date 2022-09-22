@@ -5,11 +5,10 @@ import configparser
 from os import listdir
 from os.path import isfile, join
 
-
-INIFolder = os.getcwd() + '\\INI\\'
-ResourceFolder = os.getcwd() + '\\RES\\'
-CFGFile = INIFolder + 'Configuration.ini'    
-fileHELP = INIFolder + 'help.ini'
+INIFolder = os.getcwd() + '\\INI\\'          # Cartella dei file INI
+ResourceFolder = os.getcwd() + '\\RES\\'     # Cartella con le risorse
+CFGFile = INIFolder + 'Configuration.ini'    # File di configurazione
+fileHELP = INIFolder + 'help.ini'            # File di Help
 
 #################
 ## DATI FISSI ###
@@ -26,7 +25,7 @@ NomeCartPhasesOUT = 'PHASES_out'                    # cartella in cui mettere i 
 
 
 def INIREAD(param):
-    """_summary_
+    """Legge il valore di un parametro dal file Configuration.ini
 
     Args:
         param (any): parameter in INIFILE
@@ -37,8 +36,12 @@ def INIREAD(param):
     parser = configparser.ConfigParser(strict=False)
     parser.read_file(open(CFGFile,encoding='utf-8'))  # leggo il file di configurazione
 
-    for section_name in parser.sections():
-        parserDict = dict(parser.items(section_name)) # trasformo in dizionario
+    # # QUESTO LEGGE TUTTE LE SEZIONI
+    # for section_name in parser.sections():
+    #     parserDict = dict(parser.items(section_name)) # trasformo in dizionario
+
+    # LEGGO SOLO LA SEZIONE SETUP
+    parserDict = dict(parser.items('SETUP')) # trasformo in dizionario
 
     return parserDict[param]
 
