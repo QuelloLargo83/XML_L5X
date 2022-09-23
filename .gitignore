@@ -1,6 +1,8 @@
 /__pycache__/**
 /PHASES_out/**
 /Venv/**
+/build/**
+/dist/**
 IOMESSAGES_PLXXXX.ENG_FromCAP
 IOMESSAGES_PLXXXX.ENG_FromCIN
 IOMESSAGES_PLXXXX.ENG_FromCOU
@@ -84,3 +86,4 @@ Phase_Rinse_PSD_TEST.ENG
 Phase_SIP_PSD_TEST.ENG
 NomiCicliProd.txt
 NomiCicliSan.txt
+pyXML_L5X.spec
