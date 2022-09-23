@@ -12,6 +12,7 @@ from os.path import isfile, join
 import fnz
 import cfg
 from version import __version__
+from termcolor import colored
 
 
 
@@ -147,7 +148,8 @@ else:
     ## STAMPO VERSIONE PROGRAMMA ##
     ###############################
     if sys.argv[1].strip() == '--version':
-        print ('v ' + __version__ )
+        MainProgram = os.path.splitext(os.path.basename(__file__))[0]
+        print (MainProgram + colored(' v:','green') + colored(__version__,'yellow' ))
 
     ####################
     # TAG CONTROLLORE  #
