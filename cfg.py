@@ -1,12 +1,28 @@
 #from ast import Str
 from argparse import HelpFormatter
-import os
+import os,sys
 import configparser
 from os import listdir
 from os.path import isfile, join
 
-INIFolder = os.getcwd() + '\\INI\\'          # Cartella dei file INI
-ResourceFolder = os.getcwd() + '\\RES\\'     # Cartella con le risorse
+#########################################
+## check del sistema su cui sta girando #
+#########################################
+SYSTEM: str
+if "linux" in sys.platform: SYSTEM = "Linux"
+elif "windows" in sys.platform: SYSTEM = "Windows"
+else: SYSTEM = "Other"
+
+match SYSTEM:    
+    case "Linux":
+        bars = '/'
+    case "Windows":
+        bars = '\\'
+
+# INIFolder = os.getcwd() + '\\INI\\'          # Cartella dei file INI
+# ResourceFolder = os.getcwd() + '\\RES\\'     # Cartella con le risorse
+INIFolder = os.getcwd() + bars + 'INI' + bars          # Cartella dei file INI
+ResourceFolder = os.getcwd() + bars + 'RES'+ bars      # Cartella con le risorse
 CFGFile = INIFolder + 'Configuration.ini'    # File di configurazione
 fileHELP = INIFolder + 'help.ini'            # File di Help
 

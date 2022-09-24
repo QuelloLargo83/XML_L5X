@@ -1,6 +1,7 @@
 /__pycache__/**
 /PHASES_out/**
 /Venv/**
+/venv/**
 /build/**
 /dist/**
 IOMESSAGES_PLXXXX.ENG_FromCAP

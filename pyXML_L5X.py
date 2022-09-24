@@ -1,5 +1,6 @@
 #from ast import Str
-from argparse import HelpFormatter
+#from argparse import HelpFormatter
+import argparse
 import cmd
 import os
 import sys
@@ -11,7 +12,7 @@ from os import listdir
 from os.path import isfile, join
 import fnz
 import cfg
-from version import __version__
+from version import __version__, __author__
 from termcolor import colored
 
 
@@ -20,17 +21,35 @@ from termcolor import colored
 ## MAIN ##
 ##########
 
+#####################
+## HELP e ARGPARSE ##
+#####################
+args = argparse.ArgumentParser()
+args.add_argument("-v", "--version",action="store_true", help = "show program version")
+args.add_argument("--cycleslist",	action="store_true", help = "extract cycle list")
+args.add_argument("--cycles",	    action="store_true", help = "extract PHASES")
+args.add_argument("--iomsg",	    action="store_true", help = "extract IOMESSAGES")
+stdargs = args.parse_args()
+
+
+if stdargs.version:
+    MainProgram = os.path.splitext(os.path.basename(__file__))[0]
+    print (colored(MainProgram,'yellow') + colored(' v:','green') + colored(__version__,'yellow' ))
+    raise SystemExit(0) # esci immediatamente dal programma
+
+    
 #  GESTIONE HELP #
 # HelpFile = cfg.ResourceFolder + cfg.fileHELP
 #se non viene passato alcun argomento, la lista ha un solo elemento che è il percorso completo del sorgente
 # in questo caso mostro gli switch disponibili
 if len(sys.argv) == 1:
-    HelpMNG.GetHelp(cfg.fileHELP,None)
-elif utils.left(sys.argv[1],4).lower() == 'help':
-    try:
-        HelpMNG.GetHelp(cfg.fileHELP, sys.argv[2])  # si prevede di chiamare con help [nomeswitch]
-    except:
-        print('Switch not supplied')
+    args.print_help() #stampa con argparse, l'help
+#     HelpMNG.GetHelp(cfg.fileHELP,None)
+# elif utils.left(sys.argv[1],4).lower() == 'help':
+#     try:
+#         HelpMNG.GetHelp(cfg.fileHELP, sys.argv[2])  # si prevede di chiamare con help [nomeswitch]
+#     except:
+#         print('Switch not supplied')
 else:
     
     #################################
@@ -51,7 +70,8 @@ else:
     # LISTA NOMI CICLI #
     ####################
    
-    if sys.argv[1].strip() == '--cycleslist':
+    # if sys.argv[1].strip() == '--cycleslist':
+    if stdargs.cycleslist:
         fnz.ListaCicli(cfg.INIREAD('plcprodcyclevar'),cfg.INIREAD('filecicliprod'),'FILLER',programs) # Cicli Prod
         fnz.ListaCicli(cfg.INIREAD('plcsancyclevar'),cfg.INIREAD('fileciclisan'),'FILLER',programs)   # Cicli San
    
@@ -64,7 +84,8 @@ else:
     #     SanCycles = fcs.readlines()
     #     for sanc in SanCycles:
     #         CycleDesc('FILLER','D60_00',sanc.strip('\n'),20,'D60_01','FIL',os.getcwd() + '\Phase_'+ sanc.strip('\n') +'_TEST.ENG')
-    if sys.argv[1].strip() == '--cycles':
+    # if sys.argv[1].strip() == '--cycles':
+    if stdargs.cycles:
         PLCProdCycleVar = cfg.INIREAD('plcprodcyclevar')
         PLCSanCycleVar = cfg.INIREAD('plcsancyclevar')
 
@@ -104,7 +125,8 @@ else:
     ###############
     # IO MESSAGES #
     ###############
-    if sys.argv[1].strip() == '--iomsg':
+    #if sys.argv[1].strip() == '--iomsg':
+    if stdargs.iomsg:
         # TO DO: trovare il modo di leggere ACCESSNAME
         #      : Unire a modo le coppie di files
         #      : 
@@ -144,12 +166,14 @@ else:
         
         print('Files generated in : ' + OutDirFIN ) # avviso in quale cartella ho generato i file uniti
 
-    ###############################
-    ## STAMPO VERSIONE PROGRAMMA ##
-    ###############################
-    if sys.argv[1].strip() == '--version':
-        MainProgram = os.path.splitext(os.path.basename(__file__))[0]
-        print (MainProgram + colored(' v:','green') + colored(__version__,'yellow' ))
+    # ###############################
+    # ## STAMPO VERSIONE PROGRAMMA ##
+    # ###############################
+    
+
+    # if sys.argv[1].strip() == '--version':
+    #     MainProgram = os.path.splitext(os.path.basename(__file__))[0]
+    #     print (MainProgram + colored(' v:','green') + colored(__version__,'yellow' ))
 
     ####################
     # TAG CONTROLLORE  #
