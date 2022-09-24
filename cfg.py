@@ -10,7 +10,7 @@ from os.path import isfile, join
 #########################################
 SYSTEM: str
 if "linux" in sys.platform: SYSTEM = "Linux"
-elif "windows" in sys.platform: SYSTEM = "Windows"
+elif "win32" in sys.platform: SYSTEM = "Windows"
 else: SYSTEM = "Other"
 
 match SYSTEM:    
@@ -18,6 +18,7 @@ match SYSTEM:
         bars = '/'
     case "Windows":
         bars = '\\'
+
 
 # INIFolder = os.getcwd() + '\\INI\\'          # Cartella dei file INI
 # ResourceFolder = os.getcwd() + '\\RES\\'     # Cartella con le risorse

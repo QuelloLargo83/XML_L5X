@@ -34,7 +34,9 @@ stdargs = args.parse_args()
 
 if stdargs.version:
     MainProgram = os.path.splitext(os.path.basename(__file__))[0]
-    print (colored(MainProgram,'yellow') + colored(' v:','green') + colored(__version__,'yellow' ))
+    print()
+    print (colored(MainProgram,'yellow') + colored('  version: ','green') + colored(__version__,'yellow' ))
+    print()
     raise SystemExit(0) # esci immediatamente dal programma
 
     
