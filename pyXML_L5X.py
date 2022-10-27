@@ -32,6 +32,9 @@ args.add_argument("--iomsg",	    action="store_true", help = "extract IOMESSAGES
 stdargs = args.parse_args()
 
 
+    # ###############################
+    # ## STAMPO VERSIONE PROGRAMMA ##
+    # ###############################
 if stdargs.version:
     MainProgram = os.path.splitext(os.path.basename(__file__))[0]
     print()
@@ -41,17 +44,11 @@ if stdargs.version:
 
     
 #  GESTIONE HELP #
-# HelpFile = cfg.ResourceFolder + cfg.fileHELP
+
 #se non viene passato alcun argomento, la lista ha un solo elemento che è il percorso completo del sorgente
 # in questo caso mostro gli switch disponibili
 if len(sys.argv) == 1:
     args.print_help() #stampa con argparse, l'help
-#     HelpMNG.GetHelp(cfg.fileHELP,None)
-# elif utils.left(sys.argv[1],4).lower() == 'help':
-#     try:
-#         HelpMNG.GetHelp(cfg.fileHELP, sys.argv[2])  # si prevede di chiamare con help [nomeswitch]
-#     except:
-#         print('Switch not supplied')
 else:
     
     #################################
@@ -168,14 +165,6 @@ else:
         
         print('Files generated in : ' + OutDirFIN ) # avviso in quale cartella ho generato i file uniti
 
-    # ###############################
-    # ## STAMPO VERSIONE PROGRAMMA ##
-    # ###############################
-    
-
-    # if sys.argv[1].strip() == '--version':
-    #     MainProgram = os.path.splitext(os.path.basename(__file__))[0]
-    #     print (MainProgram + colored(' v:','green') + colored(__version__,'yellow' ))
 
     ####################
     # TAG CONTROLLORE  #
