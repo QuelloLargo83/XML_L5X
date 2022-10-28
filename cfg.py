@@ -19,9 +19,6 @@ match SYSTEM:
     case "Windows":
         bars = '\\'
 
-
-# INIFolder = os.getcwd() + '\\INI\\'          # Cartella dei file INI
-# ResourceFolder = os.getcwd() + '\\RES\\'     # Cartella con le risorse
 INIFolder = os.getcwd() + bars + 'INI' + bars          # Cartella dei file INI
 ResourceFolder = os.getcwd() + bars + 'RES'+ bars      # Cartella con le risorse
 CFGFile = INIFolder + 'Configuration.ini'    # File di configurazione
@@ -62,27 +59,7 @@ def INIREAD(param):
 
     return parserDict[param]
 
-######################
-## DATI da cfg.ini ###
-######################
 
-# LETTURA FILE CONFIGURAZIONE 
-# CFGParser = configparser.ConfigParser(strict= False)
-# CFGParser.read_file(open(CFGFile,encoding='utf-8')) 
-# CFGlista_sezioni = CFGParser.sections()
-# CFGlista = CFGParser.items(CFGlista_sezioni[0])    
-# CFGlistaDICT = dict(CFGlista)    # metto tutto dentro un dizionario per comodita di accesso
-
-# DATI ESTRATTI DAL FILE DI CONFIGURAZIONE
-#filePLC = CFGlistaDICT['fileplc']                         # IN: file L5X sorgente dal PLC
-#fileCFG_PAGE = CFGlistaDICT['filecfgpage']                # IN: file contenente lista macchine esterne
-#Fx_Cx = CFGlistaDICT['fx_cx']                             # IN: tipo di macchina
-# PLCProdCycleVAR = CFGlistaDICT['plcprodcyclevar']         # Area Memoria PLC per cicli Produzione
-# PLCSanCycleVar = CFGlistaDICT['plcsancyclevar']           # Area Memoria PLC per cicli Sanificazione
-# CFG_IOMAC = int(CFGlistaDICT['cfg_iomac'])                # Numero sezione CFG_IOMAC 
-# fileCicliProd =  CFGlistaDICT['filecicliprod']            
-# fileCicliSan = CFGlistaDICT['fileciclisan']           
-###########################################################
 
 
 
