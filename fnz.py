@@ -5,7 +5,6 @@ import sys
 import l5x
 import configparser
 import utils
-import HelpMNG
 from os import listdir
 from os.path import isfile, join
 import cfg
@@ -256,7 +255,13 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                     PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
     else:
         PhaseMsgDesc = ''
-            
+
+    # se il file esiste lo cancello        
+    try:
+        os.remove(OutDir + OutFile)
+    except OSError:
+        pass
+
     # pubblico su file
     with open(OutDir + OutFile,'w',encoding=cfg.IntouchEncoding) as f:
         f.write('[CYCL_'+ MacCyc +'_'+ NomeCiclo +'_Phase]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.Phase\n') # Header
