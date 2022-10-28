@@ -128,7 +128,7 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags):
         else:
             Out =  FirstCol + str(n) + " = " + PRE + cfg.Sep + AccessName +'.' + NomeSegnale + '.' + s + cfg.Sep + comment
         
-        utils.OutFileUTF16(os.getcwd() +'\\'+ cfg.NomeCartellaOUT +'\\'  + cfg.fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
+        utils.OutFileUTF16(os.getcwd() + cfg.bars + cfg.NomeCartellaOUT + cfg.bars  + cfg.fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
         n = int(n) + 1
 
 
@@ -174,7 +174,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         programs (ElementDict): dizionari con l'elenco dei programmi del POS
     """
     # folder di uscita viene creato se non esiste
-    OutDir = os.getcwd() +'\\'+ cfg.NomeCartPhasesOUT +'\\'
+    OutDir = os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT + cfg.bars
     if not os.path.exists (OutDir):
         os.makedirs(OutDir)
 

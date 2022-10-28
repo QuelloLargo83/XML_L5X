@@ -126,7 +126,7 @@ else:
         fnz.CycleDesc('FILLER',PLCProdCycleVar,'PSDTankStartUp', 'D40_07','FIL','Phase_PSDTankStartUp.ENG',programs)
         fnz.CycleDesc('FILLER',PLCProdCycleVar,'BaseSterilization', 'D40_05','FIL','Phase_BaseSterilization.ENG',programs)
 
-        print ('INFO -> FILES GENERATED IN FOLDER ' +  os.getcwd() + '\\' + cfg.NomeCartPhasesOUT+ '\\')
+        print ('INFO -> FILES GENERATED IN FOLDER ' +  os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT+ cfg.bars)
     #sys.exit(0)
 
 
@@ -156,10 +156,10 @@ else:
 
         
         # creo la cartella temporanea di uscita se non esiste
-        OutDir = os.getcwd() +'\\'+ cfg.NomeCartellaOUT +'\\'
+        OutDir = os.getcwd() + cfg.bars + cfg.NomeCartellaOUT + cfg.bars
         if not os.path.exists (OutDir):
             os.makedirs(OutDir)
-        OutDirFIN = os.getcwd() +'\\'+ cfg.NomeCartellaFINALE +'\\'
+        OutDirFIN = os.getcwd() + cfg.bars + cfg.NomeCartellaFINALE + cfg.bars
         if not os.path.exists (OutDirFIN):
             os.makedirs(OutDirFIN)
         
