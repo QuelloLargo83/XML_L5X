@@ -234,25 +234,30 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     PhaseMsgDesc = ''
     if NomeStructPhMsg is not None: # NON TUTTI I CICLI HANNO PHASE MESSAGE
         for a in range(0,2): 
-            for i in range(0,31):                    
-                if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description is not None:
-                    nMSG = i+1
-                    PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description + '\n'
-                    try:
-                        # nel caso nei commenti le frasi siano separate da newline
-                        PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
-                        msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
-                    except:
-                        #print('EXCEPT PhaseMsg per ' + NomeCiclo)
+            for i in range(0,31):   
+                try: # nel caso non ci sia la variabile di struttura Phase Msg
+                    description = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description               
+                    #if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description is not None:
+                    if description is not None:
+                        nMSG = i+1
+                        PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description + '\n'
                         try:
-                            # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
-                            id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
-                            msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
+                            # nel caso nei commenti le frasi siano separate da newline
+                            PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
+                            msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
                         except:
-                            #print('EXCEPT ANNIDATO PhaseMSG per ' + NomeCiclo)
-                            msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
+                            #print('EXCEPT PhaseMsg per ' + NomeCiclo)
+                            try:
+                                # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
+                                id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
+                                msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
+                            except:
+                                #print('EXCEPT ANNIDATO PhaseMSG per ' + NomeCiclo)
+                                msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
 
-                    PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
+                        PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
+                except(KeyError):
+                    pass
     else:
         PhaseMsgDesc = ''
 
