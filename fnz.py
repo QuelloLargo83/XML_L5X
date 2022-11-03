@@ -8,6 +8,7 @@ import utils
 from os import listdir
 from os.path import isfile, join
 import cfg
+from termcolor import colored
 
 
 def MergeFiles(dir,mac,outdir):
@@ -67,7 +68,7 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags):
     try: 
         scambio = ctl_tags[NomeSegnale].value
     except KeyError:   # interecetto l'assenza del sengnale nel PLCs
-        print('INFO> ' + NomeSegnale + ' NOT PRESENT')
+        print(colored('INFO > ',cfg.ColorInfo) + NomeSegnale + ' NOT PRESENT')
 
   
     #le chiavi rappresentano i campi dei segnali di scambio
@@ -163,8 +164,9 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc,programs):
         for n in nomi_cicli:
             if isinstance(cicli[n],dict):  # solo le strutture sono cicli!!
                 f.write(n + '\n')
-    print ('INFO -> Cycle List generation to file ' + FileOutput + '\n')
-   
+    #print ('INFO -> Cycle List generation to file ' + FileOutput + '\n')
+    print (colored('INFO > ',cfg.ColorInfo)+' Cycle List generation to file ' + FileOutput + '\n')
+
 
 
 

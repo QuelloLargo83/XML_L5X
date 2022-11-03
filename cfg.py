@@ -37,6 +37,12 @@ NomeCartellaOUT = 'IO_OUT'                          # cartella appoggio per copp
 NomeCartellaFINALE = 'IO_OUTFINALE'                 # cartella con risultato finale in cwd per IOMESSAGE
 NomeCartPhasesOUT = 'PHASES_out'                    # cartella in cui mettere i file PHASES
 
+##########
+# COLORS #
+##########
+# Raccolta colori per i significati delle scritte
+#
+ColorInfo = 'cyan' # infomsg
 
 def INIREAD(param):
     """Legge il valore di un parametro dal file Configuration.ini

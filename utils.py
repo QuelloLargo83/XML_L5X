@@ -1,6 +1,7 @@
 import os
 import cfg
 import shutil
+from termcolor import colored
 
 # IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini
 
@@ -69,4 +70,4 @@ def DeleteFilesInFolder(folder):
             elif os.path.isdir(file_path):
                 shutil.rmtree(file_path)
         except Exception as e:
-            print('INFO --> DeleteFilesInFolder: Failed to delete %s. Reason: %s' % (file_path, e))
+            print(colored('INFO > ',cfg.ColorInfo)+' DeleteFilesInFolder: Failed to delete %s. Reason: %s' % (file_path, e))
