@@ -35,7 +35,7 @@ stdargs = args.parse_args()
     # ## STAMPO VERSIONE PROGRAMMA ##
     # ###############################
 if stdargs.version:
-    MainProgram = os.path.splitext(os.path.basename(__file__))[0]
+    MainProgram = os.path.splitext(os.path.basename(__file__))[0] # leggo il nome del file che da il nome al programma
     print()
     print (colored(MainProgram,'yellow') + colored('  version: ','green') + colored(__version__,'yellow' ))
     print()
@@ -48,6 +48,12 @@ if stdargs.version:
 # in questo caso mostro gli switch disponibili
 if len(sys.argv) == 1:
     args.print_help() #stampa con argparse, l'help
+
+    ## //TEST
+    print(colored('!!!!! TEST !!!!!','red'))
+    ValCercato = cfg.INIREAD_Generico('INI/CyclesStruct.ini','SANIFICAZIONE','COP')
+    print(ValCercato)
+    print(colored('!!!!! TEST !!!!!','red'))
 else:
     
     #################################
@@ -87,6 +93,11 @@ else:
         PLCProdCycleVar = cfg.INIREAD('plcprodcyclevar')
         PLCSanCycleVar = cfg.INIREAD('plcsancyclevar')
 
+        ## //TEST svuota cartella
+        # OutDir = os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT + cfg.bars
+        # utils.DeleteFilesInFolder(OutDir)
+        ## //TEST ##############
+
         # SANIFICAZIONE #
         fnz.CycleDesc('FILLER',PLCSanCycleVar,'Drainage','D60_01','FIL','Phase_Drainage.ENG',programs)
         fnz.CycleDesc('FILLER',PLCSanCycleVar,'COP','D60_02','FIL','Phase_COP.ENG',programs)
@@ -113,7 +124,7 @@ else:
         fnz.CycleDesc('FILLER',PLCProdCycleVar,'BaseRinsing','D40_09','FIL','Phase_BaseRinsing.ENG',programs)
         fnz.CycleDesc('FILLER',PLCProdCycleVar,'ProductionDrainage','D40_10','FIL','Phase_ProductionDrainage.ENG',programs)
         fnz.CycleDesc('FILLER',PLCProdCycleVar,'EndProduction','D40_11','FIL','Phase_EndProduction.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'TankRinsing','D40_11','FIL','Phase_TankRinsing.ENG',programs)
+        fnz.CycleDesc('FILLER',PLCProdCycleVar,'TankRinsing','D40_12','FIL','Phase_TankRinsing.ENG',programs)
         fnz.CycleDesc('FILLER',PLCProdCycleVar,'TankCooling', 'D40_13','FIL','Phase_TankCooling.ENG',programs)
         fnz.CycleDesc('FILLER',PLCProdCycleVar,'ShortCycle', 'D40_20','FIL','Phase_ShortCycle.ENG',programs)
         fnz.CycleDesc('FILLER',PLCProdCycleVar,'ShortCycleBMMInterface', 'D40_21','FIL','Phase_ShortCycleBMMInterface.ENG',programs)

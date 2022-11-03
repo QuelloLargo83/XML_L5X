@@ -162,7 +162,7 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc,programs):
     #### FILE CON I NOMI DEI CICLI
     with open(FileOutput,'w',encoding=cfg.IntouchEncoding) as f:
         for n in nomi_cicli:
-            if isinstance(cicli[n],dict):  # solo le strutture sono cicli!!
+            if isinstance(cicli[n],dict):  # solo se le strutture sono cicli!!
                 f.write(n + '\n')
     #print ('INFO -> Cycle List generation to file ' + FileOutput + '\n')
     print (colored('INFO > ',cfg.ColorInfo)+' Cycle List generation to file ' + FileOutput + '\n')
@@ -172,7 +172,7 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc,programs):
 
 
 def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,programs):
-    """Stampa su file i tre blocco di commenti per un ciclo (PHASES.eng)
+    """Stampa su file i tre blocchi di commenti per un ciclo (PHASES.eng)
 
     Args:
         NomePrg (str): Nome del programma PLC in cui riesiede il ciclo (ES: FILLER)

@@ -5,6 +5,18 @@ import configparser
 from os import listdir
 from os.path import isfile, join
 
+class MyParser(configparser.ConfigParser):
+    """Decoratore della classe configparser
+       aggiunge il metodo per trasformare 
+    """
+    def as_dict(self):
+        d = dict(self._sections)
+        for k in d:
+            d[k] = dict(self._defaults, **d[k])
+            d[k].pop('__name__', None)
+        return d
+
+
 #########################################
 ## check del sistema su cui sta girando #
 #########################################
@@ -44,6 +56,12 @@ NomeCartPhasesOUT = 'PHASES_out'                    # cartella in cui mettere i 
 #
 ColorInfo = 'cyan' # infomsg
 
+
+
+############
+## METODI ##
+############
+
 def INIREAD(param):
     """Legge il valore di un parametro dal file Configuration.ini
 
@@ -56,16 +74,34 @@ def INIREAD(param):
     parser = configparser.ConfigParser(strict=False)
     parser.read_file(open(CFGFile,encoding='utf-8'))  # leggo il file di configurazione
 
-    # # QUESTO LEGGE TUTTE LE SEZIONI
-    # for section_name in parser.sections():
-    #     parserDict = dict(parser.items(section_name)) # trasformo in dizionario
-
     # LEGGO SOLO LA SEZIONE SETUP
     parserDict = dict(parser.items('SETUP')) # trasformo in dizionario
 
     return parserDict[param]
 
 
+## RIVEDERE EXCEPT! bisogna che indichi sia la sezione che il parametro
+def INIREAD_Generico(IniFile, SectionName, Param):
+    """Restituisce il valore di un parametro da un file INI
 
+    Args:
+        IniFile (str): percorso completo del file ini
+        SectionName (str): nome della sezione in cui cercare all'interno del file ini
+        Param (str): parametro di cui si intende sapere il valore 
+
+    Returns:
+        any: valore del parametro cercato
+    """
+    parserNew = MyParser(strict=False)
+    parserNew.read_file(open(IniFile,encoding='utf-8'))  # leggo il file di configurazione)
+
+    #parserNew.as_dict() # mi un dizionario con tutto l'INI le cui chiavi di primo livello sono le sezioni
+    try:
+        SectionLevel = parserNew.as_dict()[SectionName] 
+        valore = SectionLevel[Param]
+    except(KeyError):
+        valore = SectionName + ' or ' + Param + ' not Found '
+    return valore
+    
 
 
