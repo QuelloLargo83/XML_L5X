@@ -1,4 +1,8 @@
-IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini
+import os
+import cfg
+import shutil
+
+# IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini
 
 def left(s, amount):
     """Restituisce la parte sinistra di una stringa
@@ -46,5 +50,23 @@ def OutFileUTF16(fileOut,Input):
         fileOut (str): Nome File OutPut
         Input (str): stringa da stampare
     """
-    with open(fileOut,'a',encoding=IntouchEncoding) as f:
+    with open(fileOut,'a',encoding=cfg.IntouchEncoding) as f:
         f.write(Input + '\n')
+
+
+
+def DeleteFilesInFolder(folder):
+    """Cancella tutti i files presenti in una cartella
+
+    Args:
+        folder (str): percorso della cartella da cui rimuovere i files
+    """
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('INFO --> DeleteFilesInFolder: Failed to delete %s. Reason: %s' % (file_path, e))

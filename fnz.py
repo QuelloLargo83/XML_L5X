@@ -86,6 +86,14 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags):
 
         comment = s #per ora commento = variabile l'idea sarebbe di guardare dove ci sono i caratteri maiuscoli e poi inserire uno spazio
         
+        # # \\TEST per scrivere un commento piu significativo
+        # sAppo = ''
+        # for c in comment:
+        #     if c.isupper() == True:
+        #         idC = comment.index(c)  # indice della maiuscola
+        #         sAppo = s.replace(c,)
+
+        
         # dal tipo ricavo la lettera (D : digital, A: analog)
         match type:
             case 'BOOL':

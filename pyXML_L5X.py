@@ -159,9 +159,15 @@ else:
         OutDir = os.getcwd() + cfg.bars + cfg.NomeCartellaOUT + cfg.bars
         if not os.path.exists (OutDir):
             os.makedirs(OutDir)
+        #svuoto la cartella da eventuali files precedenti
+        utils.DeleteFilesInFolder(OutDir)
+        
+        # creo la cartella finale con i file uniti
         OutDirFIN = os.getcwd() + cfg.bars + cfg.NomeCartellaFINALE + cfg.bars
         if not os.path.exists (OutDirFIN):
             os.makedirs(OutDirFIN)
+        # svuoto la cartella da eventuali files precedenti
+        utils.DeleteFilesInFolder(OutDirFIN)
         
         # creo i file IOMESSAGE
         for a in lista_macc:
@@ -172,6 +178,9 @@ else:
         for m in lista_macc:
             fnz.MergeFiles(OutDir,m,OutDirFIN)
         
+        # TEST: provo a svuotare la cartella d'appoggio
+       
+
         print('Files generated in : ' + OutDirFIN ) # avviso in quale cartella ho generato i file uniti
 
 
