@@ -187,6 +187,9 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     OutDir = os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT + cfg.bars
     if not os.path.exists (OutDir):
         os.makedirs(OutDir)
+    
+      # svuoto la cartella da eventuali files precedenti
+    #utils.DeleteFilesInFolder(OutDir)
 
 
     ###########
@@ -276,7 +279,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         os.remove(OutDir + OutFile)
     except OSError:
         pass
-
+    
     # pubblico su file
     with open(OutDir + OutFile,'w',encoding=cfg.IntouchEncoding) as f:
         f.write('[CYCL_'+ MacCyc +'_'+ NomeCiclo +'_Phase]=Program:'+ NomePrg +'.'+ NomeStruct +'.'+ NomeCiclo +'.Phase\n') # Header
