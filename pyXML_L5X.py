@@ -88,10 +88,12 @@ else:
         PLCProdCycleVar = cfg.INIREAD('plcprodcyclevar')
         PLCSanCycleVar = cfg.INIREAD('plcsancyclevar')
 
-        ## //TEST svuota cartella
+    ## //TEST svuota cartella
         OutDir = os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT + cfg.bars
+        if not os.path.exists (OutDir):
+            os.makedirs(OutDir)
         utils.DeleteFilesInFolder(OutDir)
-        ## //TEST ##############
+    ## //TEST ##############
 
     # TEST raggruppamento
         Coppie = cfg.INIREAD_COPPIE(cfg.PhaseINI) # leggo il fiel ini delle fasi
@@ -100,6 +102,10 @@ else:
         for item in Coppie['SANIFICAZIONE'].items(): # ricavo associazione tra NomeCiclo e struct PhaseMsg dal file ini
             fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs) #item[0] = nomeCiclo, item[1] = struct PhMSG
         
+        ## QUESTI RIMANGONO FUORI PERCHE HANNO IL PHASEMSG dipende da FX o CX
+        fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBLoad','D28_60_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_DBLoad.ENG',programs)
+        fnz.CycleDesc('FILLER',PLCSanCycleVar,'SipFiller','D60_06_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_SipFiller.ENG',programs)
+
         # PRODUZIONE #
         for item in Coppie['PRODUZIONE'].items():
             fnz.CycleDesc('FILLER',PLCProdCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs)
@@ -197,7 +203,8 @@ else:
         for m in lista_macc:
             fnz.MergeFiles(OutDir,m,OutDirFIN)
         
-        # TEST: provo a svuotare la cartella d'appoggio
+        # svuoto la cartella d'appoggio
+        utils.DeleteFolder(OutDir)
        
 
         print('Files generated in : ' + OutDirFIN ) # avviso in quale cartella ho generato i file uniti

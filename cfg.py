@@ -40,9 +40,9 @@ fileIOMESSAGE = 'IOMESSAGES_PLXXXX'                 # OUT:
 
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini 
-NomeCartellaOUT = 'IO_OUT'                          # cartella appoggio per coppie di file IOMESSAGE in cwd
-NomeCartellaFINALE = 'IO_OUTFINALE'                 # cartella con risultato finale in cwd per IOMESSAGE
-NomeCartPhasesOUT = 'PHASES_out'                    # cartella in cui mettere i file PHASES
+NomeCartellaOUT = 'IO_OUT_APP'                          # cartella appoggio per coppie di file IOMESSAGE in cwd
+NomeCartellaFINALE = 'IO_OUT'                 # cartella con risultato finale in cwd per IOMESSAGE
+NomeCartPhasesOUT = 'PHASES_OUT'                    # cartella in cui mettere i file PHASES
 
 ##########
 # COLORS #

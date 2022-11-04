@@ -71,3 +71,9 @@ def DeleteFilesInFolder(folder):
                 shutil.rmtree(file_path)
         except Exception as e:
             print(colored('INFO > ',cfg.ColorInfo)+' DeleteFilesInFolder: Failed to delete %s. Reason: %s' % (file_path, e))
+
+def DeleteFolder(path):
+    try:
+        shutil.rmtree(path)
+    except Exception as e:
+        print(colored('INFO > ', cfg.ColorInfo) + str(e))
