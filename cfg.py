@@ -5,16 +5,6 @@ import configparser
 from os import listdir
 from os.path import isfile, join
 
-class MyParser(configparser.ConfigParser):
-    """Decoratore della classe configparser
-       aggiunge il metodo per trasformare 
-    """
-    def as_dict(self):
-        d = dict(self._sections)
-        for k in d:
-            d[k] = dict(self._defaults, **d[k])
-            d[k].pop('__name__', None)
-        return d
 
 
 #########################################
@@ -30,6 +20,10 @@ match SYSTEM:
         bars = '/'
     case "Windows":
         bars = '\\'
+
+#####################################
+## DATI CFG INTERNA DEL PROGRAMMA ###
+#####################################
 
 INIFolder = os.getcwd() + bars + 'INI' + bars          # Cartella dei file INI
 ResourceFolder = os.getcwd() + bars + 'RES'+ bars      # Cartella con le risorse
@@ -57,10 +51,24 @@ NomeCartPhasesOUT = 'PHASES_out'                    # cartella in cui mettere i 
 ColorInfo = 'cyan' # infomsg
 
 
+############
+## CLASSI ##
+############
+class MyParser(configparser.ConfigParser):
+    """Decoratore della classe configparser
+       aggiunge il metodo per trasformare 
+    """
+    def as_dict(self):
+        d = dict(self._sections)
+        for k in d:
+            d[k] = dict(self._defaults, **d[k])
+            d[k].pop('__name__', None)
+        return d
 
-############
-## METODI ##
-############
+
+##############
+## FUNZIONI ##
+##############
 
 def INIREAD(param):
     """Legge il valore di un parametro dal file Configuration.ini
