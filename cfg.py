@@ -27,8 +27,9 @@ match SYSTEM:
 
 INIFolder = os.getcwd() + bars + 'INI' + bars          # Cartella dei file INI
 ResourceFolder = os.getcwd() + bars + 'RES'+ bars      # Cartella con le risorse
-CFGFile = INIFolder + 'Configuration.ini'    # File di configurazione
-fileHELP = INIFolder + 'help.ini'            # File di Help
+CFGFile = INIFolder + 'Configuration.ini'              # File di configurazione
+fileHELP = INIFolder + 'help.ini'                      # File di Help
+PhaseINI = INIFolder + 'CyclesPhMsg.ini'               # File associazione Ciclo -> Struttura PhaseMSG
 
 #################
 ## DATI FISSI ###
@@ -89,7 +90,7 @@ def INIREAD(param):
 
 
 ## RIVEDERE EXCEPT! bisogna che indichi sia la sezione che il parametro
-def INIREAD_Generico(IniFile, SectionName, Param):
+def INIREAD_G(IniFile, SectionName, Param):
     """Restituisce il valore di un parametro da un file INI
 
     Args:
@@ -98,7 +99,7 @@ def INIREAD_Generico(IniFile, SectionName, Param):
         Param (str): parametro di cui si intende sapere il valore 
 
     Returns:
-        any: valore del parametro cercato
+        any: valore del parametro cercato o stringa con non trovato
     """
     parserNew = MyParser(strict=False)
     parserNew.read_file(open(IniFile,encoding='utf-8'))  # leggo il file di configurazione)
@@ -112,4 +113,20 @@ def INIREAD_Generico(IniFile, SectionName, Param):
     return valore
     
 
+def INIREAD_COPPIE(IniFile):
+    """Recupera un file ini e lo trasoforma in un dizionario mantendo il case
+
+    Args:
+        IniFile (str): percorso completo del file INI
+
+    Returns:
+        dict: rappresentazione in dizionario del file INI
+    """
+    parser = MyParser(strict=False)
+    parser.optionxform = str # mantiene il case delle chiavi!!!
+    parser.read_file(open(IniFile,encoding='utf-8')) # leggo il file di cfg
+
+    ret = parser.as_dict()
+
+    return ret
 

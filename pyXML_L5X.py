@@ -48,12 +48,7 @@ if stdargs.version:
 # in questo caso mostro gli switch disponibili
 if len(sys.argv) == 1:
     args.print_help() #stampa con argparse, l'help
-
-    ## //TEST
-    print(colored('!!!!! TEST !!!!!','red'))
-    ValCercato = cfg.INIREAD_Generico('INI/CyclesStruct.ini','SANIFICAZIONE','COP')
-    print(ValCercato)
-    print(colored('!!!!! TEST !!!!!','red'))
+   
 else:
     
     #################################
@@ -94,48 +89,61 @@ else:
         PLCSanCycleVar = cfg.INIREAD('plcsancyclevar')
 
         ## //TEST svuota cartella
-        # OutDir = os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT + cfg.bars
-        # utils.DeleteFilesInFolder(OutDir)
+        OutDir = os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT + cfg.bars
+        utils.DeleteFilesInFolder(OutDir)
         ## //TEST ##############
 
+    # TEST raggruppamento
+        Coppie = cfg.INIREAD_COPPIE(cfg.PhaseINI) # leggo il fiel ini delle fasi
+
         # SANIFICAZIONE #
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'Drainage','D60_01','FIL','Phase_Drainage.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'COP','D60_02','FIL','Phase_COP.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBLoad','D28_60_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_DBLoad.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'CIP','D60_04','FIL','Phase_CIP.ENG',programs) # occhio che questo ne ha due possibili di PhaseMessageInput
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'SteamFilter','D60_05','FIL','Phase_SteamFilter.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'SipFiller','D60_06_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_SipFiller.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'SteamBarrier','D60_09','FIL','Phase_SteamBarrier.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'PAAExternal','D60_07','FIL','Phase_PAAExternal.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'HEPA1','D60_08_SV1','FIL','Phase_HEPA1.ENG',programs)       #occhio che qui c'è SV1!!
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBUnLoad',None,'FIL','Phase_DBUnLoad.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBLoad_PSD',None,'PSD','Phase_DBLoad_PSD.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'Rinse_PSD',None,'PSD','Phase_Rinse_PSD.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'CIP_PSD',None,'PSD','Phase_CIP_PSD.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'SIP_PSD',None,'PSD','Phase_SIP_PSD.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBUnLoad_PSD',None,'PSD','Phase_DBUnLoad_PSD.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'BellowsIntegrity_PSD',None,'PSD','Phase_BellowsIntegrity_PSD.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'SteamBarrier_PSD',None,'PSD','Phase_SteamBarrier_PSD.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'CXJackTest',None,'FIL','Phase_CXJackTest.ENG',programs)
+        for item in Coppie['SANIFICAZIONE'].items(): # ricavo associazione tra NomeCiclo e struct PhaseMsg dal file ini
+            fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs) #item[0] = nomeCiclo, item[1] = struct PhMSG
         
         # PRODUZIONE #
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'TankStartUp','D40_02','FIL','Phase_TankStartup.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'TapsFlowing','D40_03','FIL','Phase_TapsFlowing.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'BaseRinsing','D40_09','FIL','Phase_BaseRinsing.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'ProductionDrainage','D40_10','FIL','Phase_ProductionDrainage.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'EndProduction','D40_11','FIL','Phase_EndProduction.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'TankRinsing','D40_12','FIL','Phase_TankRinsing.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'TankCooling', 'D40_13','FIL','Phase_TankCooling.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'ShortCycle', 'D40_20','FIL','Phase_ShortCycle.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'ShortCycleBMMInterface', 'D40_21','FIL','Phase_ShortCycleBMMInterface.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'EmptyBottles', 'D40_30','FIL','Phase_EmptyBottles.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'MicroSampling', 'D40_31','FIL','Phase_MicroSampling.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'ChangeOver', 'D40_32','FIL','Phase_ChangeOver.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'PSDTapsFlowing', 'D40_15','FIL','Phase_PSDTapsFlowing.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'PSDProductionDrainage', 'D40_16','FIL','Phase_PSDProductionDrainage.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'PSDTankRinsing', 'D40_17','FIL','Phase_PSDTankRinsing.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'PSDTankStartUp', 'D40_07','FIL','Phase_PSDTankStartUp.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCProdCycleVar,'BaseSterilization', 'D40_05','FIL','Phase_BaseSterilization.ENG',programs)
+        for item in Coppie['PRODUZIONE'].items():
+            fnz.CycleDesc('FILLER',PLCProdCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs)
+        
+    # \TEST
+
+        # SANIFICAZIONE #
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'Drainage','D60_01','FIL','Phase_Drainage.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'COP','D60_02','FIL','Phase_COP.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBLoad','D28_60_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_DBLoad.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'CIP','D60_04','FIL','Phase_CIP.ENG',programs) # occhio che questo ne ha due possibili di PhaseMessageInput
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'SteamFilter','D60_05','FIL','Phase_SteamFilter.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'SipFiller','D60_06_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_SipFiller.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'SteamBarrier','D60_09','FIL','Phase_SteamBarrier.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'PAAExternal','D60_07','FIL','Phase_PAAExternal.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'HEPA1','D60_08_SV1','FIL','Phase_HEPA1.ENG',programs)       #occhio che qui c'è SV1!!
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBUnLoad',None,'FIL','Phase_DBUnLoad.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBLoad_PSD',None,'PSD','Phase_DBLoad_PSD.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'Rinse_PSD',None,'PSD','Phase_Rinse_PSD.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'CIP_PSD',None,'PSD','Phase_CIP_PSD.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'SIP_PSD',None,'PSD','Phase_SIP_PSD.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBUnLoad_PSD',None,'PSD','Phase_DBUnLoad_PSD.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'BellowsIntegrity_PSD',None,'PSD','Phase_BellowsIntegrity_PSD.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'SteamBarrier_PSD',None,'PSD','Phase_SteamBarrier_PSD.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'CXJackTest',None,'FIL','Phase_CXJackTest.ENG',programs)
+        
+        # # PRODUZIONE #
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'TankStartUp','D40_02','FIL','Phase_TankStartup.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'TapsFlowing','D40_03','FIL','Phase_TapsFlowing.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'BaseRinsing','D40_09','FIL','Phase_BaseRinsing.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'ProductionDrainage','D40_10','FIL','Phase_ProductionDrainage.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'EndProduction','D40_11','FIL','Phase_EndProduction.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'TankRinsing','D40_12','FIL','Phase_TankRinsing.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'TankCooling', 'D40_13','FIL','Phase_TankCooling.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'ShortCycle', 'D40_20','FIL','Phase_ShortCycle.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'ShortCycleBMMInterface', 'D40_21','FIL','Phase_ShortCycleBMMInterface.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'EmptyBottles', 'D40_30','FIL','Phase_EmptyBottles.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'MicroSampling', 'D40_31','FIL','Phase_MicroSampling.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'ChangeOver', 'D40_32','FIL','Phase_ChangeOver.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'PSDTapsFlowing', 'D40_15','FIL','Phase_PSDTapsFlowing.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'PSDProductionDrainage', 'D40_16','FIL','Phase_PSDProductionDrainage.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'PSDTankRinsing', 'D40_17','FIL','Phase_PSDTankRinsing.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'PSDTankStartUp', 'D40_07','FIL','Phase_PSDTankStartUp.ENG',programs)
+        # fnz.CycleDesc('FILLER',PLCProdCycleVar,'BaseSterilization', 'D40_05','FIL','Phase_BaseSterilization.ENG',programs)
 
         print ('INFO -> FILES GENERATED IN FOLDER ' +  os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT+ cfg.bars)
     #sys.exit(0)
