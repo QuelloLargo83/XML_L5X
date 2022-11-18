@@ -4,19 +4,18 @@
 
 Automazione creazione files .ENG per HMI partendo da `.L5X` del progetto PLC RSLogix5000
 
-## HOW TO
+## ISTRUZIONI
+
+prendere i seguenti files:
 
 - `CFG_INI.ini` da supervisione
 - `****.L5X`        da PLC
 
-Mettere i file nella cartella radice del programma e indicare nel file `Configuration.ini` il nome del file L5X
+1. Mettere i file nella cartella radice del programma e 
+2. Indicare nel file [Configuration.ini](./INI/Configuration.ini) il nome del file L5X
+3. Eventualmentente modificare [CyclesPhMsg.ini](./INI/CyclesPhMsg.ini)
 
-## PREREQUISITI
 
-La lettura del file .L5X è basata sul pacchetto [l5x](https://github.com/jvalenzuela/l5x)
-testato sulla [Release_v1.5](Release_v1.5)
-
-[README_l5x](https://github.com/jvalenzuela/l5x#readme)
 ### Creare il virtual enviroment
 ```ps
 	python -m venv venv
@@ -93,3 +92,10 @@ La funzione `CycleDesc` ha un parametro che indica il nome della struttura Phase
 <p align="center">
 <img src="IMG/Phase.png"  width=50% height=50%>
 </p>
+
+## PREREQUISITI
+
+La lettura del file .L5X è basata sul pacchetto [l5x](https://github.com/jvalenzuela/l5x)
+testato sulla [Release_v1.5](Release_v1.5)
+
+[README_l5x](https://github.com/jvalenzuela/l5x#readme)

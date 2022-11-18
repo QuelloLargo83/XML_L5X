@@ -78,6 +78,11 @@ else:
     ##########
   
     if stdargs.cycles:
+
+        verHMI = cfg.INIREAD('verhmi')
+        verHMI = int(verHMI)
+
+        # leggo i nomi delle aree di memoria corrispondenti ai cicli
         PLCProdCycleVar = cfg.INIREAD('plcprodcyclevar')
         PLCSanCycleVar = cfg.INIREAD('plcsancyclevar')
 
@@ -92,16 +97,16 @@ else:
 
         # SANIFICAZIONE #
         for item in Coppie['SANIFICAZIONE'].items(): 
-            fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs) #item[0] = nomeCiclo, item[1] = struct PhMSG
+            fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,verHMI) #item[0] = nomeCiclo, item[1] = struct PhMSG
         
             ## QUESTI RIMANGONO FUORI PERCHE HANNO IL PHASEMSG dipende da FX o CX
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBLoad','D28_60_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_DBLoad.ENG',programs)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'SipFiller','D60_06_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_SipFiller.ENG',programs)
+        fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBLoad','D28_60_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_DBLoad.ENG',programs,verHMI)
+        fnz.CycleDesc('FILLER',PLCSanCycleVar,'SipFiller','D60_06_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_SipFiller.ENG',programs,verHMI)
         # /SANIFICAZIONE #
 
         # PRODUZIONE #
         for item in Coppie['PRODUZIONE'].items():
-            fnz.CycleDesc('FILLER',PLCProdCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs)
+            fnz.CycleDesc('FILLER',PLCProdCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,verHMI)
         # /PRODUZIONE #
         
 

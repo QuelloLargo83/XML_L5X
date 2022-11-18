@@ -132,7 +132,6 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags):
 
         #compongo l'uscita
         if int(n) == startPos:
-            #Out = Header + FirstCol +'01 = B..\n'+ FirstCol + str(n) + " = " + PRE + Sep + AccessName +'.' + NomeSegnale + '.' + s + Sep + comment
             Out = Header + Nome01 + FirstCol + str(n) + " = " + PRE + cfg.Sep + AccessName +'.' + NomeSegnale + '.' + s + cfg.Sep + comment
         else:
             Out =  FirstCol + str(n) + " = " + PRE + cfg.Sep + AccessName +'.' + NomeSegnale + '.' + s + cfg.Sep + comment
@@ -171,7 +170,7 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc,programs):
 
 
 
-def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,programs):
+def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,programs,HmiVer=0):
     """Stampa su file i tre blocchi di commenti per un ciclo (PHASES.eng)
 
     Args:
@@ -182,6 +181,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         MacCyc (str): nome macchina per header sezione (Es: FIL )
         OutFile (str): File di uscita
         programs (ElementDict): dizionari con l'elenco dei programmi del POS
+        HmiVer (int): 0- mette la 'V;'
     """
     # folder di uscita viene creato se non esiste
     OutDir = os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT + cfg.bars
@@ -197,12 +197,19 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     ###########
     PhaseDesc = programs[NomePrg].tags[NomeStruct][NomeCiclo]['Phase'].description # description indica il commento della tag
     
+    # print(colored(PhaseDesc,'red'))
+
     if PhaseDesc is not None: # potrebbe mancare il commento nella tag a PLC
         # rimuovo header dal commento
         PhaseDesc = PhaseDesc.replace('## PHASE ##','') # tolgo ## PHASE ##
         PhaseDesc = PhaseDesc.strip('\n')
-        # aggiungo =V;
-        PhaseDesc = PhaseDesc.replace('=','= V;')
+        PhaseDesc = '0='+ '\n' + PhaseDesc # aggiungo lo zero alla prima riga
+        if HmiVer == 0:
+            # aggiungo '=V;' (HMI blu)
+            PhaseDesc = PhaseDesc.replace('=','= V;')
+        else:               #(HMI Grigia)
+            pass
+            
     else:
         PhaseDesc = '!! NO_COMMENTS_IN_PLC TAGS !!' # se mancano i commenti nella tag a plc lo segnalo nel file
 
@@ -220,7 +227,6 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                     CycleMsgDescSplit = CycleMsgDescA.split('\n')
                     msg = CycleMsgDescSplit[2].strip('\n') + '\n'
                 except:
-                    # print('EXCEPT CycleMSG per ' + NomeCiclo)
                         # nel caso nei commenti le frasi abbiamo almeno un message
                     try:
                         # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
@@ -229,13 +235,12 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                     except:
                         # print('INFO-> EXCEPT ANNIDATO CycleMSG per ' + NomeCiclo)
                         msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
-                #         print('INFO-> CYCLEMSG di '+ NomeCiclo +' Manca Message nei commenti PLC')
-                #         id = 0
-                        
-                # else:
-                #     print('INFO-> Else attivo per ' + NomeCiclo)
-                    #msg = CycleMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
-                CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + msg.strip('\n') + ('\n')
+                
+                # ALLA FINE    
+                if HmiVer == 0:  #(HMI BLU)
+                    CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + msg.strip('\n') + ('\n')
+                else:               #(HMI GRIGIA)
+                    CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= - ' + msg.strip('\n') + ('\n')
 
     # se non ho trovato neanche un commento nelle variabili lo segnalo nel file
     if CycleMsgDesc == '':
@@ -267,8 +272,10 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                             except:
                                 #print('EXCEPT ANNIDATO PhaseMSG per ' + NomeCiclo)
                                 msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
-
-                        PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
+                        if HmiVer == 0:  #(HMI BLU):
+                            PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
+                        else:               #(HMI GRIGIA)
+                            PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= ' + msg.strip('\n') + ('\n')
                 except(KeyError):
                     pass
     else:
