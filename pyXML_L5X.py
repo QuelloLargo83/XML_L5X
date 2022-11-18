@@ -43,7 +43,6 @@ if stdargs.version:
 
     
 #  GESTIONE HELP #
-
 #se non viene passato alcun argomento, la lista ha un solo elemento che è il percorso completo del sorgente
 # in questo caso mostro gli switch disponibili
 if len(sys.argv) == 1:
@@ -69,7 +68,6 @@ else:
     # LISTA NOMI CICLI #
     ####################
    
-    # if sys.argv[1].strip() == '--cycleslist':
     if stdargs.cycleslist:
         fnz.ListaCicli(cfg.INIREAD('plcprodcyclevar'),cfg.INIREAD('filecicliprod'),'FILLER',programs) # Cicli Prod
         fnz.ListaCicli(cfg.INIREAD('plcsancyclevar'),cfg.INIREAD('fileciclisan'),'FILLER',programs)   # Cicli San
@@ -78,39 +76,34 @@ else:
     ##########
     # PHASES #
     ##########
-    # SANIFICAZIONE #
-    # with open (os.getcwd() + '\\' + fileCicliSan,'r',encoding=IntouchEncoding) as fcs:
-    #     SanCycles = fcs.readlines()
-    #     for sanc in SanCycles:
-    #         CycleDesc('FILLER','D60_00',sanc.strip('\n'),20,'D60_01','FIL',os.getcwd() + '\Phase_'+ sanc.strip('\n') +'_TEST.ENG')
-    # if sys.argv[1].strip() == '--cycles':
+  
     if stdargs.cycles:
         PLCProdCycleVar = cfg.INIREAD('plcprodcyclevar')
         PLCSanCycleVar = cfg.INIREAD('plcsancyclevar')
 
-    ## //TEST svuota cartella
+        #  svuota cartella
         OutDir = os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT + cfg.bars
         if not os.path.exists (OutDir):
             os.makedirs(OutDir)
         utils.DeleteFilesInFolder(OutDir)
-    ## //TEST ##############
-
-    # TEST raggruppamento
-        Coppie = cfg.INIREAD_COPPIE(cfg.PhaseINI) # leggo il fiel ini delle fasi
+    
+        # leggo Associazione tra Nome Ciclo e struttura del Phase Message
+        Coppie = cfg.INIREAD_COPPIE(cfg.PhaseINI)
 
         # SANIFICAZIONE #
-        for item in Coppie['SANIFICAZIONE'].items(): # ricavo associazione tra NomeCiclo e struct PhaseMsg dal file ini
+        for item in Coppie['SANIFICAZIONE'].items(): 
             fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs) #item[0] = nomeCiclo, item[1] = struct PhMSG
         
-        ## QUESTI RIMANGONO FUORI PERCHE HANNO IL PHASEMSG dipende da FX o CX
+            ## QUESTI RIMANGONO FUORI PERCHE HANNO IL PHASEMSG dipende da FX o CX
         fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBLoad','D28_60_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_DBLoad.ENG',programs)
         fnz.CycleDesc('FILLER',PLCSanCycleVar,'SipFiller','D60_06_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_SipFiller.ENG',programs)
+        # /SANIFICAZIONE #
 
         # PRODUZIONE #
         for item in Coppie['PRODUZIONE'].items():
             fnz.CycleDesc('FILLER',PLCProdCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs)
+        # /PRODUZIONE #
         
-    # \TEST
 
         # SANIFICAZIONE #
         # fnz.CycleDesc('FILLER',PLCSanCycleVar,'Drainage','D60_01','FIL','Phase_Drainage.ENG',programs)
@@ -158,7 +151,7 @@ else:
     ###############
     # IO MESSAGES #
     ###############
-    #if sys.argv[1].strip() == '--iomsg':
+    
     if stdargs.iomsg:
         # TO DO: trovare il modo di leggere ACCESSNAME
         #      : Unire a modo le coppie di files
