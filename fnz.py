@@ -200,6 +200,18 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     # print(colored(PhaseDesc,'red'))
 
     if PhaseDesc is not None: # potrebbe mancare il commento nella tag a PLC
+        
+        ## !!!TEST!!!
+        #  RIMUOVI PHASE INTELLIGENTE
+        # print('PRIMA OCCORRENZA DI #: ' + str(PhaseDesc.find('#')))
+        # print('ULTIMA OCCORRENZA DI #: ' + str(PhaseDesc.rfind('#')))
+
+        import re
+        res = re.sub(r'[+^#][+$#]','',PhaseDesc) # QUESTO TOGLIE SOLO GLI n #
+        print (res)
+
+        #/TEST
+
         # rimuovo header dal commento
         PhaseDesc = PhaseDesc.replace('## PHASE ##','') # tolgo ## PHASE ##
         PhaseDesc = PhaseDesc.strip('\n')
