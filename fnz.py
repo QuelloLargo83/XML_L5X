@@ -216,12 +216,19 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     ############
     # CYCLEMSG #
     ############
+
     CycleMsgDesc = ''
-    for a in range(0,3): # .CycleMsgInput è un array DINT[3]
-        for i in range(0,31): # scorro ogni DINT ci .CycleMsgInput
+
+    # Ricavo la dimensione del CycleMsgInput
+    CMIArrSize = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'].shape[0]
+
+    for a in range(0,CMIArrSize): # scorro .CycleMsgInput è un array 
+        for i in range(0,31): # scorro ogni DINT di .CycleMsgInput
+
             if programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][a][i].description is not None:
                 nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
                 CycleMsgDescA = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][a][i].description + '\n'
+                
                 try:
                     # nel caso nei commenti le frasi siano separate da newline
                     CycleMsgDescSplit = CycleMsgDescA.split('\n')

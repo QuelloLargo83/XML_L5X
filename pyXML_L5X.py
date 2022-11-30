@@ -86,7 +86,7 @@ else:
         PLCProdCycleVar = cfg.INIREAD('plcprodcyclevar')
         PLCSanCycleVar = cfg.INIREAD('plcsancyclevar')
 
-        #  svuota cartella
+        #  svuota cartella di OUTPUT
         OutDir = os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT + cfg.bars
         if not os.path.exists (OutDir):
             os.makedirs(OutDir)
