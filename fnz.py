@@ -199,6 +199,8 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         PhaseDesc = re.sub(r'(?:#+)(.*?)(?:#+)','',PhaseDesc) # tolgo qualsiasi cosa tra n# e n# (## PHASE ##)
         PhaseDesc = PhaseDesc.strip('\n')
         PhaseDesc = '0='+ '\n' + PhaseDesc # aggiungo lo zero alla prima riga
+        #PhaseDesc = re.sub(r'^\s*','',PhaseDesc)
+
         if HmiVer == 0:
             # aggiungo '=V;' (HMI blu)
             PhaseDesc = PhaseDesc.replace('=','= V;')
