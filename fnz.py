@@ -260,13 +260,11 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
 
             # Ricavo la dimensione dell'array PhaseMessageInput
             PMIArrSize = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'].shape[0]
-            # for a in range(0,2): 
-
+        
             for a in range(0,PMIArrSize): #scorro ogni array
                 for i in range(0,31):   #scorro ogni bit dell array
                     try: # nel caso non ci sia la variabile di struttura Phase Msg
                         description = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description               
-                        #if programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description is not None:
                         if description is not None:
                             nMSG = i+1
                             PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description + '\n'
@@ -275,17 +273,15 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                                 PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
                                 msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
                             except:
-                                #print('EXCEPT PhaseMsg per ' + NomeCiclo)
                                 try:
                                     # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
                                     id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
                                     msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
                                 except:
-                                    #print('EXCEPT ANNIDATO PhaseMSG per ' + NomeCiclo)
                                     msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
                             if HmiVer == 0:  #(HMI BLU):
                                 PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
-                            else:               #(HMI GRIGIA)
+                            else:            #(HMI GRIGIA)
                                 PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= ' + msg.strip('\n') + ('\n')
                     except(KeyError):
                         pass
