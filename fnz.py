@@ -196,8 +196,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     if PhaseDesc is not None: # potrebbe mancare il commento nella tag a PLC
         # rimuovo header dal commento
         #PhaseDesc = PhaseDesc.replace('## PHASE ##','') # tolgo ## PHASE ##
-        PhaseDesc = re.sub(r'##(.*?)##','',PhaseDesc) # tolgo qualsiasi cosa tra # e # (## PHASE ##)
-        #PhaseDesc = re.sub(r'(?:#)(.*?)(?:#)','',PhaseDesc)
+        PhaseDesc = re.sub(r'(?:#+)(.*?)(?:#+)','',PhaseDesc) # tolgo qualsiasi cosa tra n# e n# (## PHASE ##)
         PhaseDesc = PhaseDesc.strip('\n')
         PhaseDesc = '0='+ '\n' + PhaseDesc # aggiungo lo zero alla prima riga
         if HmiVer == 0:
