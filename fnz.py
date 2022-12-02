@@ -215,15 +215,17 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     ############
 
     CycleMsgDesc = ''
+    MaxNCycleMsg = 32
 
     # Ricavo la dimensione del CycleMsgInput
     CMIArrSize = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'].shape[0]
 
     for a in range(0,CMIArrSize): # scorro .CycleMsgInput è un array 
-        for i in range(0,31): # scorro ogni DINT di .CycleMsgInput
-
+       # for i in range(0,31): # scorro ogni DINT di .CycleMsgInput
+        for i in range(0,MaxNCycleMsg): # scorro ogni DINT di .CycleMsgInput
             if programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][a][i].description is not None:
-                nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
+                # nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
+                nMSG = MaxNCycleMsg * a + i+1  # il numero del messaggio è il bit + 1 nel PLC e si va avanti
                 CycleMsgDescA = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][a][i].description + '\n'
                 
                 try:
@@ -254,6 +256,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     # PHASEMSG #
     ############
     PhaseMsgDesc = ''
+    MaxNMsg = 32
 
     if NomeStructPhMsg is not None: # NON TUTTI I CICLI HANNO PHASE MESSAGE
         try: # potrebbe non essere presente nel software PLC in esame il PhaseMessageInput
@@ -262,11 +265,12 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
             PMIArrSize = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'].shape[0]
         
             for a in range(0,PMIArrSize): #scorro ogni array
-                for i in range(0,31):   #scorro ogni bit dell array
+                for i in range(0,MaxNMsg):   #scorro ogni bit dell array
                     try: # nel caso non ci sia la variabile di struttura Phase Msg
                         description = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description               
                         if description is not None:
-                            nMSG = i+1
+                            # nMSG = i+1
+                            nMSG = MaxNMsg * a + i + 1 # i msg nell'array successivo hanno numero incrementale
                             PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description + '\n'
                             try:
                                 # nel caso nei commenti le frasi siano separate da newline
