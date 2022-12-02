@@ -199,7 +199,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         PhaseDesc = re.sub(r'(?:#+)(.*?)(?:#+)','',PhaseDesc) # tolgo qualsiasi cosa tra n# e n# (## PHASE ##)
         PhaseDesc = PhaseDesc.strip('\n')
         PhaseDesc = '0='+ '\n' + PhaseDesc # aggiungo lo zero alla prima riga
-        #PhaseDesc = re.sub(r'^\s*','',PhaseDesc)
+        PhaseDesc = re.sub(r'(\n)(?:\s+)','\n',PhaseDesc) # tolgo eventuali spazi all'inizio di ogni entry
 
         if HmiVer == 0:
             # aggiungo '=V;' (HMI blu)
