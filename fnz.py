@@ -197,6 +197,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         # rimuovo header dal commento
         #PhaseDesc = PhaseDesc.replace('## PHASE ##','') # tolgo ## PHASE ##
         PhaseDesc = re.sub(r'##(.*?)##','',PhaseDesc) # tolgo qualsiasi cosa tra # e # (## PHASE ##)
+        #PhaseDesc = re.sub(r'(?:#)(.*?)(?:#)','',PhaseDesc)
         PhaseDesc = PhaseDesc.strip('\n')
         PhaseDesc = '0='+ '\n' + PhaseDesc # aggiungo lo zero alla prima riga
         if HmiVer == 0:
