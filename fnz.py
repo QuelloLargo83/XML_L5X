@@ -1,14 +1,10 @@
-from argparse import HelpFormatter
-import cmd
 import os
-import sys
-import l5x
-import configparser
 import utils
 from os import listdir
 from os.path import isfile, join
 import cfg
 from termcolor import colored
+import re
 
 
 def MergeFiles(dir,mac,outdir):
@@ -196,24 +192,11 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     ## PHASE ##
     ###########
     PhaseDesc = programs[NomePrg].tags[NomeStruct][NomeCiclo]['Phase'].description # description indica il commento della tag
-    
-    # print(colored(PhaseDesc,'red'))
 
     if PhaseDesc is not None: # potrebbe mancare il commento nella tag a PLC
-        
-        ## !!!TEST!!!
-        #  RIMUOVI PHASE INTELLIGENTE
-        # print('PRIMA OCCORRENZA DI #: ' + str(PhaseDesc.find('#')))
-        # print('ULTIMA OCCORRENZA DI #: ' + str(PhaseDesc.rfind('#')))
-
-        import re
-        res = re.sub(r'[+^#][+$#]','',PhaseDesc) # QUESTO TOGLIE SOLO GLI n #
-        print (res)
-
-        #/TEST
-
         # rimuovo header dal commento
-        PhaseDesc = PhaseDesc.replace('## PHASE ##','') # tolgo ## PHASE ##
+        #PhaseDesc = PhaseDesc.replace('## PHASE ##','') # tolgo ## PHASE ##
+        PhaseDesc = re.sub(r'##(.*?)##','',PhaseDesc) # tolgo qualsiasi cosa tra # e # (## PHASE ##)
         PhaseDesc = PhaseDesc.strip('\n')
         PhaseDesc = '0='+ '\n' + PhaseDesc # aggiungo lo zero alla prima riga
         if HmiVer == 0:
