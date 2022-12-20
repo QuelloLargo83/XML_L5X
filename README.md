@@ -8,7 +8,7 @@ Automazione creazione files .ENG per HMI partendo da `.L5X` del progetto PLC RSL
 
 prendere i seguenti files:
 
-- `CFG_INI.ini` da supervisione
+- `CFG_PAGE.ini` da supervisione
 - `****.L5X`        da PLC
 
 1. Mettere i file nella cartella radice del programma e 
