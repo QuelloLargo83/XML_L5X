@@ -221,10 +221,10 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     CMIArrSize = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'].shape[0]
 
     for a in range(0,CMIArrSize): # scorro .CycleMsgInput è un array 
-       # for i in range(0,31): # scorro ogni DINT di .CycleMsgInput
+       
         for i in range(0,MaxNCycleMsg): # scorro ogni DINT di .CycleMsgInput
             if programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][a][i].description is not None:
-                # nMSG = i+1 # il numero del messaggio è il bit + 1 nel PLC
+            
                 nMSG = MaxNCycleMsg * a + i+1  # il numero del messaggio è il bit + 1 nel PLC e si va avanti
                 CycleMsgDescA = programs[NomePrg].tags[NomeStruct][NomeCiclo]['CycleMsgInput'][a][i].description + '\n'
                 
@@ -245,8 +245,10 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                 # ALLA FINE    
                 if HmiVer == 0:  #(HMI BLU)
                     CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= V; - ' + msg.strip('\n') + ('\n')
-                else:               #(HMI GRIGIA)
+                else:            #(HMI GRIGIA)
                     CycleMsgDesc = CycleMsgDesc + str(nMSG) + '= - ' + msg.strip('\n') + ('\n')
+
+    CycleMsgDesc = '0= \n' + CycleMsgDesc # aggiungo lo 0= all'inizio del blocco
 
     # se non ho trovato neanche un commento nelle variabili lo segnalo nel file
     if CycleMsgDesc == '':
