@@ -1,5 +1,11 @@
 ![pyversion](https://img.shields.io/badge/Python%20-3.10.3-green)
 
+## SVILUPPI E CONSIDERAZIONI
+
+- sarebbe bene che il nome del GRUPPO in [CFG_IOMAC] corrispondesse sempre al nome del gruppo nel PLC
+   adesso per esempio su CFG_IOMAC
+       `CFT` indica cio che su PLC è `BFT`
+
 ## SCOPO
 
 Automazione creazione files .ENG per HMI partendo da `.L5X` del progetto PLC RSLogix5000

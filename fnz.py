@@ -59,10 +59,18 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags):
 
     scambio = {}
     PRE = ''
+    splitted = False
 
     # scambio è un dizionario le cui chiavi rappresentano i nomi dei segnali di scambio
     try: 
-        scambio = ctl_tags[NomeSegnale].value
+        posPunto = NomeSegnale.find('.')
+        if posPunto != -1:                          # se ce un punto (esempio SignalFILToPRO.UTH) devo splittare 
+            splitted = True # indico che la tag nomesegnale ha un punto in mezzo
+            LS = utils.left(NomeSegnale,posPunto)
+            RS = utils.mid(NomeSegnale,posPunto+1,len(NomeSegnale))
+            scambio = ctl_tags[LS][RS].value
+        else:
+            scambio = ctl_tags[NomeSegnale].value
     except KeyError:   # interecetto l'assenza del sengnale nel PLCs
         print(colored('INFO > ',cfg.ColorInfo) + NomeSegnale + ' NOT PRESENT')
 
@@ -76,7 +84,11 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags):
 
     # scorro la struttura per ricavare tutti i dati dei segnali di scambio
     for s in scambio.keys():
-        lev2 = ctl_tags[NomeSegnale][s] # oggetto EnumDict che contiene l'informazione sul tipo di dato
+        if splitted == True:
+            lev2 = ctl_tags[LS][RS][s]
+        else:
+            lev2 = ctl_tags[NomeSegnale][s] # oggetto EnumDict che contiene l'informazione sul tipo di dato
+        
         lev2str = str(lev2) 
         type = lev2str[9:13]            # recupero il TIPO di dato con un mid dell'oggetto
        # print (lev2str[9:13], ':',s) 

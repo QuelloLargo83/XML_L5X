@@ -52,6 +52,8 @@ else:
     #################################
     ##### PREPARAZIONE STRUTTURE ####
     #################################
+    
+    #### PLC FILLER #####
     # carico il file L5X in memoria
     prj = l5x.Project(cfg.INIREAD('fileplc'))
     # ctl_tags è un ElementDict contenente le tag a livello controllore
@@ -62,6 +64,13 @@ else:
     programs = prj.programs
     # lista nomi programmi
     programs_names = programs.names
+
+    #### PLC PROCESSO #####
+    PROC_prj = l5x.Project(cfg.INIREAD('fileplcproc'))
+    PROC_ctl_tags = PROC_prj.controller.tags
+    PROC_tag_names = PROC_ctl_tags.names
+    PROC_programs = PROC_prj.programs
+    PROC_programs_names = PROC_programs.names
 
     ####################
     # LISTA NOMI CICLI #
@@ -155,10 +164,26 @@ else:
         # svuoto la cartella da eventuali files precedenti
         utils.DeleteFilesInFolder(OutDirFIN)
         
+        # variabili standard
+        ACNAME = 'ABFIL1'
+        SigFROM = 'SignalFILFrom'
+        SigTO = 'SignalFILTo'
+
         # creo i file IOMESSAGE
         for a in lista_macc:
-            fnz.SignalExc('SignalFILFrom'+a,'ABFIL1',a,OutDir,ctl_tags)
-            fnz.SignalExc('SignalFILTo'+a,'ABFIL1',a,OutDir,ctl_tags)
+
+            if a == 'UTH':
+                ACNAME = 'ABUTH1'
+                SigFROM = 'SignalUTHToFIL'
+                SigTO = 'SignalFILToPRO.UTH'
+            # !!! DA FINIRE !!! bisogna capire perché non salva le due parti nello stesso file
+                fnz.SignalExc(SigFROM,ACNAME,a,OutDir,PROC_ctl_tags)
+                fnz.SignalExc(SigTO,'ABFIL1',a,OutDir,ctl_tags)
+
+            else: # casi standard
+                pass
+                fnz.SignalExc(SigFROM + a,ACNAME,a,OutDir,ctl_tags)
+                fnz.SignalExc(SigTO + a,ACNAME,a,OutDir,ctl_tags)
         
         # unisco i file corrispondenti
         for m in lista_macc:
