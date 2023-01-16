@@ -30,7 +30,7 @@ def MergeFiles(dir,mac,outdir):
                     outfile.write(infile.read())
 
 
-def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags):
+def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
     """Stampa su File un gruppo di segnali di scambio
        per ogni gruppo (es: BSI) stampa due files From e To
 
@@ -40,18 +40,29 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags):
         Mac (str): Nome Macchina (es: BSI)
         OutDirFile (str): Nome cartella di Output per i files
         ctl_tags (ElementDict): contenitore tags livello controllore
+        DIR : (optional) indicare SX o DX se non si puo ricavare questa info dal nome segnale
     """
     startPos = 2 #posizione iniziale dell'incrementale per SXxx e DXxx
 
-    # ricavo la prima parte (SX o DX in base al nome del segnale FROM or TO)
-    FromTo = NomeSegnale[9:11] # puo essere Fr o To
-    match FromTo.lower():
-        case 'fr':
-            FirstCol = 'SX'
-            FromTo = 'From' #poi viene usato nel nome File
-        case 'to':
-            FirstCol = 'DX'
-            FromTo = 'To'   #poi viene usato nel nome File
+    # se il parametro DIR non viene passato rimane a -1
+    if DIR == '-1':  
+        # ricavo la prima parte (SX o DX in base al nome del segnale FROM or TO)
+        FromTo = NomeSegnale[9:11] # puo essere Fr o To
+        match FromTo.lower():
+            case 'fr':
+                FirstCol = 'SX'
+                FromTo = 'From' #poi viene usato nel nome File
+            case 'to':
+                FirstCol = 'DX'
+                FromTo = 'To'   #poi viene usato nel nome File
+    else:
+        # nei casi in cui non è possibile ricavare l'info dal Nome del segnale
+        FirstCol = DIR
+        match DIR:
+            case 'SX':
+                FromTo = 'From'
+            case 'DX':
+                FromTo = 'To'
 
     # cancello il file di output se esiste
     if os.path.exists(OutDirFile + cfg.fileIOMESSAGE_Pre + '_' + FromTo + Mac):

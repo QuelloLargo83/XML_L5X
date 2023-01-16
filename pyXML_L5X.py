@@ -176,12 +176,12 @@ else:
                 ACNAME = 'ABUTH1'
                 SigFROM = 'SignalUTHToFIL'
                 SigTO = 'SignalFILToPRO.UTH'
-            # !!! DA FINIRE !!! bisogna capire perché non salva le due parti nello stesso file
-                fnz.SignalExc(SigFROM,ACNAME,a,OutDir,PROC_ctl_tags)
-                fnz.SignalExc(SigTO,'ABFIL1',a,OutDir,ctl_tags)
+            
+                fnz.SignalExc(SigFROM,ACNAME,a,OutDir,PROC_ctl_tags,'SX')    
+                fnz.SignalExc(SigTO,'ABFIL1',a,OutDir,ctl_tags,'DX')        
 
             else: # casi standard
-                pass
+                #  pass
                 fnz.SignalExc(SigFROM + a,ACNAME,a,OutDir,ctl_tags)
                 fnz.SignalExc(SigTO + a,ACNAME,a,OutDir,ctl_tags)
         
@@ -189,7 +189,7 @@ else:
         for m in lista_macc:
             fnz.MergeFiles(OutDir,m,OutDirFIN)
         
-        # svuoto la cartella d'appoggio
+        # CANCELLO la cartella d'appoggio
         utils.DeleteFolder(OutDir)
        
 
