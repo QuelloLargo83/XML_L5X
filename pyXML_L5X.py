@@ -145,9 +145,13 @@ else:
         lista_macc = []     # lista delle macchine 
         
         # leggo la lista delle macchine di cui leggere i segnali di scambio
-        for k in range(1,len(lista_itemDICT.keys())):
-            if (lista_itemDICT.get(str(k)) is not None):      # salto eventuali buchi
-                lista_macc.append(lista_itemDICT.get(str(k))) # prendo le prime tre lettere che indicano la macchina 
+        # for k in range(1,len(lista_itemDICT.keys())):
+        for k in lista_itemDICT.keys():
+            mac = lista_itemDICT.get(str(k))
+            # if (lista_itemDICT.get(str(k)) is not None) and (lista_itemDICT.get(str(k)) != '') :      # salto eventuali buchi
+            #     lista_macc.append(lista_itemDICT.get(str(k))) # prendo le prime tre lettere che indicano la macchina 
+            if (mac is not None) and (mac != '') and utils.left(mac,1) != '_' :      # salto eventuali buchi e mac disabilitate
+                lista_macc.append(mac) # pre
 
         
         # creo la cartella temporanea di uscita se non esiste
@@ -178,10 +182,21 @@ else:
                 SigTO = 'SignalFILToPRO.UTH'
             
                 fnz.SignalExc(SigFROM,ACNAME,a,OutDir,PROC_ctl_tags,'SX')    
-                fnz.SignalExc(SigTO,'ABFIL1',a,OutDir,ctl_tags,'DX')        
+                fnz.SignalExc(SigTO,'ABFIL1',a,OutDir,ctl_tags,'DX')  
+
+            if a == 'UDX':
+                ACNAME = 'ABUTH1'     
+                SigFROM = 'SignalUDXToFIL'    
+                SigTO = 'SignalFILToPRO.UDX' 
+
+                fnz.SignalExc(SigFROM,ACNAME,a,OutDir,PROC_ctl_tags,'SX')    
+                fnz.SignalExc(SigTO,'ABFIL1',a,OutDir,ctl_tags,'DX') 
 
             else: # casi standard
                 #  pass
+                if a == 'CFT': # correzione estemporanea perché nel plc si chiamano signalfilfromBFT
+                    a = 'BFT'
+
                 fnz.SignalExc(SigFROM + a,ACNAME,a,OutDir,ctl_tags)
                 fnz.SignalExc(SigTO + a,ACNAME,a,OutDir,ctl_tags)
         

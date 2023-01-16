@@ -75,8 +75,8 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
     # scambio è un dizionario le cui chiavi rappresentano i nomi dei segnali di scambio
     try: 
         posPunto = NomeSegnale.find('.')
-        if posPunto != -1:                          # se ce un punto (esempio SignalFILToPRO.UTH) devo splittare 
-            splitted = True # indico che la tag nomesegnale ha un punto in mezzo
+        if posPunto != -1:         # se ce un punto (esempio SignalFILToPRO.UTH) devo splittare 
+            splitted = True        # indico che la tag nomesegnale ha un punto in mezzo
             LS = utils.left(NomeSegnale,posPunto)
             RS = utils.mid(NomeSegnale,posPunto+1,len(NomeSegnale))
             scambio = ctl_tags[LS][RS].value
