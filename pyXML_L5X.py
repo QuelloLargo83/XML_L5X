@@ -168,34 +168,45 @@ else:
         # svuoto la cartella da eventuali files precedenti
         utils.DeleteFilesInFolder(OutDirFIN)
         
-        # variabili standard
-        ACNAME = 'ABFIL1'
-        SigFROM = 'SignalFILFrom'
-        SigTO = 'SignalFILTo'
-
-        # creo i file IOMESSAGE
+      
+        # creo i file IOMESSAGE facendo scorrere la lista delle macchine
         for a in lista_macc:
+           
             match a:
-            # if a == 'UTH':
+            # casi speciali    
                 case 'UTH':    
                     ACNAME = 'ABUTH1'
-                    SigFROM_Spec = 'SignalUTHToFIL'
-                    SigTO_Spec = 'SignalFILToPRO.UTH'
+                    SigFROM = 'SignalUTHToFIL'
+                    SigTO = 'SignalFILToPRO.UTH'
                     
-                    fnz.SignalExc(SigFROM_Spec,ACNAME,a,OutDir,PROC_ctl_tags,'SX')    
-                    fnz.SignalExc(SigTO_Spec,'ABFIL1',a,OutDir,ctl_tags,'DX')  
+                    fnz.SignalExc(SigFROM,ACNAME,a,OutDir,PROC_ctl_tags,'SX')    
+                    fnz.SignalExc(SigTO,'ABFIL1',a,OutDir,ctl_tags,'DX')  
 
-            # if a == 'UDX':
                 case 'UDX':
                     ACNAME = 'ABUTH1'     
-                    SigFROM_Spec = 'SignalUDXToFIL'    
-                    SigTO_Spec = 'SignalFILToPRO.UDX' 
+                    SigFROM= 'SignalUDXToFIL'    
+                    SigTO = 'SignalFILToPRO.UDX' 
 
-                    fnz.SignalExc(SigFROM_Spec,ACNAME,a,OutDir,PROC_ctl_tags,'SX')    
-                    fnz.SignalExc(SigTO_Spec,'ABFIL1',a,OutDir,ctl_tags,'DX') 
+                    fnz.SignalExc(SigFROM,ACNAME,a,OutDir,PROC_ctl_tags,'SX')    
+                    fnz.SignalExc(SigTO,'ABFIL1',a,OutDir,ctl_tags,'DX') 
+                
 
-            # else: # casi standard
+                case 'CFT':
+                    ACNAME = 'ABFIL1'     
+                    SigFROM= 'SignalFILFromBFT'    
+                    SigTO = 'SignalFILToBFT' 
+
+                    fnz.SignalExc(SigFROM,ACNAME,a,OutDir,ctl_tags)
+                    fnz.SignalExc(SigTO,ACNAME,a,OutDir,ctl_tags) 
+
+            # casi standard
                 case _:
+
+                    # variabili standard
+                    ACNAME = 'ABFIL1'
+                    SigFROM = 'SignalFILFrom'
+                    SigTO = 'SignalFILTo'
+
                     if a == 'CFT': # correzione estemporanea perché nel plc si chiamano signalfilfromBFT
                         a = 'BFT'
                     
