@@ -2,9 +2,11 @@
 
 ## SVILUPPI E CONSIDERAZIONI
 
-- sarebbe bene che il nome del GRUPPO in [CFG_IOMAC] corrispondesse sempre al nome del gruppo nel PLC
-   adesso per esempio su CFG_IOMAC
-       `CFT` indica cio che su PLC è `BFT`
+- Quando la variabile a PLC non corrisponde a SignalFILfrom_MAC_ viene gestito a sw 
+  una sezione per segnali di scambio non ordinari:
+	es:
+       - `CFT` indica cio che su PLC è `BFT`
+	   - `UTH` ha `SignalUTHToFIL` e `SignalFILToPRO.UTH`
 
 ## SCOPO
 
@@ -14,7 +16,7 @@ Automazione creazione files .ENG per HMI partendo da `.L5X` del progetto PLC RSL
 
 prendere i seguenti files:
 
-- `CFG_PAGE.ini` da supervisione
+- `CFG_PAGE.ini` da supervisione e integrare la sezione [CFG_IOMAC] con [LIST] del file IOMessages_PLXXXXX.ENG
 - `****.L5X`        da PLC
 
 1. Mettere i file nella cartella radice del programma e 
