@@ -175,30 +175,32 @@ else:
 
         # creo i file IOMESSAGE
         for a in lista_macc:
+            match a:
+            # if a == 'UTH':
+                case 'UTH':    
+                    ACNAME = 'ABUTH1'
+                    SigFROM_Spec = 'SignalUTHToFIL'
+                    SigTO_Spec = 'SignalFILToPRO.UTH'
+                    
+                    fnz.SignalExc(SigFROM_Spec,ACNAME,a,OutDir,PROC_ctl_tags,'SX')    
+                    fnz.SignalExc(SigTO_Spec,'ABFIL1',a,OutDir,ctl_tags,'DX')  
 
-            if a == 'UTH':
-                ACNAME = 'ABUTH1'
-                SigFROM = 'SignalUTHToFIL'
-                SigTO = 'SignalFILToPRO.UTH'
-            
-                fnz.SignalExc(SigFROM,ACNAME,a,OutDir,PROC_ctl_tags,'SX')    
-                fnz.SignalExc(SigTO,'ABFIL1',a,OutDir,ctl_tags,'DX')  
+            # if a == 'UDX':
+                case 'UDX':
+                    ACNAME = 'ABUTH1'     
+                    SigFROM_Spec = 'SignalUDXToFIL'    
+                    SigTO_Spec = 'SignalFILToPRO.UDX' 
 
-            if a == 'UDX':
-                ACNAME = 'ABUTH1'     
-                SigFROM = 'SignalUDXToFIL'    
-                SigTO = 'SignalFILToPRO.UDX' 
+                    fnz.SignalExc(SigFROM_Spec,ACNAME,a,OutDir,PROC_ctl_tags,'SX')    
+                    fnz.SignalExc(SigTO_Spec,'ABFIL1',a,OutDir,ctl_tags,'DX') 
 
-                fnz.SignalExc(SigFROM,ACNAME,a,OutDir,PROC_ctl_tags,'SX')    
-                fnz.SignalExc(SigTO,'ABFIL1',a,OutDir,ctl_tags,'DX') 
-
-            else: # casi standard
-                #  pass
-                if a == 'CFT': # correzione estemporanea perché nel plc si chiamano signalfilfromBFT
-                    a = 'BFT'
-
-                fnz.SignalExc(SigFROM + a,ACNAME,a,OutDir,ctl_tags)
-                fnz.SignalExc(SigTO + a,ACNAME,a,OutDir,ctl_tags)
+            # else: # casi standard
+                case _:
+                    if a == 'CFT': # correzione estemporanea perché nel plc si chiamano signalfilfromBFT
+                        a = 'BFT'
+                    
+                    fnz.SignalExc(SigFROM + a,ACNAME,a,OutDir,ctl_tags)
+                    fnz.SignalExc(SigTO + a,ACNAME,a,OutDir,ctl_tags)
         
         # unisco i file corrispondenti
         for m in lista_macc:
