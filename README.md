@@ -8,6 +8,9 @@
        - `CFT` indica cio che su PLC è `BFT`
 	   - `UTH` ha `SignalUTHToFIL` e `SignalFILToPRO.UTH`
 
+- Fare in modo che compili sempre SX1--SX28 e DX1 --- DX28 anche se ci sono spazi vuoti
+- gestire per le Analogiche la parte finale con [TIPO]..K[n]   esempio ..TIMS..K100
+
 ## SCOPO
 
 Automazione creazione files .ENG per HMI partendo da `.L5X` del progetto PLC RSLogix5000
