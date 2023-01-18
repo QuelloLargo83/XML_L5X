@@ -1,4 +1,5 @@
 import os
+from tkinter import N
 import utils
 from os import listdir
 from os.path import isfile, join
@@ -43,6 +44,7 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
         DIR (optional): indicare SX o DX se non si puo ricavare questa info dal nome segnale
     """
     startPos = 2 #posizione iniziale dell'incrementale per SXxx e DXxx
+    MaxRow = int(cfg.INIREAD('sigmaxrow'))
 
     # se il parametro DIR non viene passato rimane a -1
     if DIR == '-1':  
@@ -91,6 +93,8 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
         lev2str = [] # coverto poi l'oggetto in stringa (lista di char)
         n = startPos        # incrementale della prima colonna S01, SX02, ecc
 
+        last = list(scambio.keys())[-1] #memorizzo l'ultimo elemento del gruppo di segnali
+
         # scorro la struttura per ricavare tutti i dati dei segnali di scambio
         for s in scambio.keys():
             if splitted == True:
@@ -126,8 +130,8 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
                     PRE = 'D'
 
             
-            #separo in blocchi da 28
-            if int(n) > 28:
+            #separo in blocchi 
+            if int(n) > MaxRow:
                 n = startPos
 
             # aggiungo lo zero all'incrementale se sono entro la decina 
@@ -153,14 +157,24 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
             else:
                 Out =  FirstCol + str(n) + " = " + PRE + cfg.Sep + AccessName +'.' + NomeSegnale + '.' + s + cfg.Sep + comment
 
-            utils.OutFileUTF16(os.getcwd() + cfg.bars + cfg.NomeCartellaOUT + cfg.bars  + cfg.fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
-            n = int(n) + 1
+            # stampo l'uscita sul file
+            utils.OutFileUTF16(os.getcwd() + cfg.bars + cfg.NomeCartellaOUT + cfg.bars  + cfg.fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) 
+            
+            # se sono in fondo ai segnali, completo il file fino all'ultimo numero utile 
+            if s == last:
+                #print('Siamo in fondo a ' + NomeSegnale + ' che contiene ' + str(n) + ' elementi')
+                for d in range(int(n) + 1, MaxRow + 1):
+                    if d in range(1,10):
+                        d = '0' + str(d)
+                    Out = FirstCol + str(d) + " = "
+                    utils.OutFileUTF16(os.getcwd() + cfg.bars + cfg.NomeCartellaOUT + cfg.bars  + cfg.fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) 
 
-    except KeyError:   # interecetto l'assenza del sengnale nel PLCs
+            n = int(n) + 1 # avanti il prossimo
+            
+    except KeyError:   # interecetto l'assenza del sengnale nel PLC
         print(colored('INFO > ',cfg.ColorInfo) + NomeSegnale + ' NOT PRESENT')
     
-    # if (int(n) - 28) != 0:
-    #     print (Mac +' - ' +  FromTo +' - ' + str(n))
+
 
 
 def ListaCicli (StructCicli,FileOutput,NomePOSPlc,programs):

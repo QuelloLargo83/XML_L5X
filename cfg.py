@@ -102,7 +102,7 @@ def INIREAD_G(IniFile, SectionName, Param):
         any: valore del parametro cercato o stringa con non trovato
     """
     parserNew = MyParser(strict=False)
-    parserNew.read_file(open(IniFile,encoding='utf-8'))  # leggo il file di configurazione)
+    parserNew.read_file(open(IniFile,encoding='utf-8'))  # leggo il file di configurazione
 
     #parserNew.as_dict() # mi un dizionario con tutto l'INI le cui chiavi di primo livello sono le sezioni
     try:
