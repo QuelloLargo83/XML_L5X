@@ -106,12 +106,14 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
 
         comment = s #per ora commento = variabile l'idea sarebbe di guardare dove ci sono i caratteri maiuscoli e poi inserire uno spazio
         
-        # # \\TEST per scrivere un commento piu significativo
-        # sAppo = ''
-        # for c in comment:
-        #     if c.isupper() == True:
-        #         idC = comment.index(c)  # indice della maiuscola
-        #         sAppo = s.replace(c,)
+        # ricavo commento separando il nome dove trovo una maiuscol
+        sAppo = ''
+        for c in comment:
+            if c.isupper() == True:
+                idC = comment.index(c)  # indice della maiuscola
+                comment = ''.join((comment[:idC],' ', comment[idC:])) # aggiungo uno spazio dove trovo la maiuscola, aggiungendo anche uno spazio all'inizio
+                comment = comment.lstrip() # rimuovo lo spazio iniziale indesiderato
+                #print (comment)
 
         
         # dal tipo ricavo la lettera (D : digital, A: analog)
@@ -154,10 +156,13 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
             Out = Header + Nome01 + FirstCol + str(n) + " = " + PRE + cfg.Sep + AccessName +'.' + NomeSegnale + '.' + s + cfg.Sep + comment
         else:
             Out =  FirstCol + str(n) + " = " + PRE + cfg.Sep + AccessName +'.' + NomeSegnale + '.' + s + cfg.Sep + comment
-        
+
         utils.OutFileUTF16(os.getcwd() + cfg.bars + cfg.NomeCartellaOUT + cfg.bars  + cfg.fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
         n = int(n) + 1
 
+    
+    # if (int(n) - 28) != 0:
+    #     print (Mac +' - ' +  FromTo +' - ' + str(n))
 
 
 def ListaCicli (StructCicli,FileOutput,NomePOSPlc,programs):
