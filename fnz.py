@@ -40,7 +40,7 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
         Mac (str): Nome Macchina (es: BSI)
         OutDirFile (str): Nome cartella di Output per i files
         ctl_tags (ElementDict): contenitore tags livello controllore
-        DIR : (optional) indicare SX o DX se non si puo ricavare questa info dal nome segnale
+        DIR (optional): indicare SX o DX se non si puo ricavare questa info dal nome segnale
     """
     startPos = 2 #posizione iniziale dell'incrementale per SXxx e DXxx
 
@@ -82,81 +82,82 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
             scambio = ctl_tags[LS][RS].value
         else:
             scambio = ctl_tags[NomeSegnale].value
-    except KeyError:   # interecetto l'assenza del sengnale nel PLCs
-        print(colored('INFO > ',cfg.ColorInfo) + NomeSegnale + ' NOT PRESENT')
+    # except KeyError:   # interecetto l'assenza del sengnale nel PLCs
+    #     print(colored('INFO > ',cfg.ColorInfo) + NomeSegnale + ' NOT PRESENT')
 
   
-    #le chiavi rappresentano i campi dei segnali di scambio
-    comment = [] # bisogna ricavarlo dalle chiavi
-    lev2str = [] # coverto poi l'oggetto in stringa (lista di char)
-    n = startPos        # incrementale della prima colonna S01, SX02, ecc
+        #le chiavi rappresentano i campi dei segnali di scambio
+        comment = [] # bisogna ricavarlo dalle chiavi
+        lev2str = [] # coverto poi l'oggetto in stringa (lista di char)
+        n = startPos        # incrementale della prima colonna S01, SX02, ecc
 
-    # scorro la struttura per ricavare tutti i dati dei segnali di scambio
-    for s in scambio.keys():
-        if splitted == True:
-            lev2 = ctl_tags[LS][RS][s]
-        else:
-            lev2 = ctl_tags[NomeSegnale][s] # oggetto EnumDict che contiene l'informazione sul tipo di dato
+        # scorro la struttura per ricavare tutti i dati dei segnali di scambio
+        for s in scambio.keys():
+            if splitted == True:
+                lev2 = ctl_tags[LS][RS][s]
+            else:
+                lev2 = ctl_tags[NomeSegnale][s] # oggetto EnumDict che contiene l'informazione sul tipo di dato
+            
+            lev2str = str(lev2) 
+            type = lev2str[9:13]            # recupero il TIPO di dato con un mid dell'oggetto
         
-        lev2str = str(lev2) 
-        type = lev2str[9:13]            # recupero il TIPO di dato con un mid dell'oggetto
-       # print (lev2str[9:13], ':',s) 
+            comment = s # rinomico in comment per chiarezza
+            
+            # ricavo commento separando il nome dove trovo una maiuscola
+            for c in comment:
+                if c.isupper() == True:
+                    idC = comment.index(c)  # indice della maiuscola
+                    comment = ''.join((comment[:idC],' ', comment[idC:])) # aggiungo uno spazio dove trovo la maiuscola, aggiungendo anche uno spazio all'inizio
+                    comment = comment.lstrip() # rimuovo lo spazio iniziale indesiderato
+            
+            # dal tipo ricavo la lettera (D : digital, A: analog)
+            match type:
+                case 'BOOL':
+                    PRE = 'D'
+                case 'INT':
+                    PRE = 'A'
+                case 'DINT':
+                    PRE = 'A'
+                case 'SINT':
+                    PRE = 'A'
+                case 'REAL':
+                    PRE = 'A'
+                case _:         #default
+                    PRE = 'D'
 
-        comment = s #per ora commento = variabile l'idea sarebbe di guardare dove ci sono i caratteri maiuscoli e poi inserire uno spazio
-        
-        # ricavo commento separando il nome dove trovo una maiuscola
-        for c in comment:
-            if c.isupper() == True:
-                idC = comment.index(c)  # indice della maiuscola
-                comment = ''.join((comment[:idC],' ', comment[idC:])) # aggiungo uno spazio dove trovo la maiuscola, aggiungendo anche uno spazio all'inizio
-                comment = comment.lstrip() # rimuovo lo spazio iniziale indesiderato
-        
-        # dal tipo ricavo la lettera (D : digital, A: analog)
-        match type:
-            case 'BOOL':
-                PRE = 'D'
-            case 'INT':
-                PRE = 'A'
-            case 'DINT':
-                PRE = 'A'
-            case 'SINT':
-                PRE = 'A'
-            case 'REAL':
-                PRE = 'A'
-            case _:         #default
-                PRE = 'D'
+            
+            #separo in blocchi da 28
+            if int(n) > 28:
+                n = startPos
 
-        
-        #separo in blocchi da 28
-        if int(n) > 28:
-            n = startPos
+            # aggiungo lo zero all'incrementale se sono entro la decina 
+            if n in range(1,10):
+                n = '0' + str(n)
 
-        # aggiungo lo zero all'incrementale se sono entro la decina 
-        if n in range(1,10):
-            n = '0' + str(n)
-
-        # gestione nome sezione
-        Header = ''
-        if FirstCol == 'SX' and int(n) == startPos:
-            Header = '\n' + '['+ Mac + ']'
-        else:
+            # gestione nome sezione
             Header = ''
+            if FirstCol == 'SX' and int(n) == startPos:
+                Header = '\n' + '['+ Mac + ']'
+            else:
+                Header = ''
 
-        # gestione prima riga di SX o DX
-        if FirstCol == 'DX' and int(n) == startPos:
-            Nome01 = '\n' + FirstCol +'01 = B..FILLER\n'
-        else:
-            Nome01 = '\n' + FirstCol +'01 = B..\n'
+            # gestione prima riga di SX o DX
+            if FirstCol == 'DX' and int(n) == startPos:
+                Nome01 = '\n' + FirstCol +'01 = B..FILLER\n'
+            else:
+                Nome01 = '\n' + FirstCol +'01 = B..\n'
 
-        #compongo l'uscita
-        if int(n) == startPos:
-            Out = Header + Nome01 + FirstCol + str(n) + " = " + PRE + cfg.Sep + AccessName +'.' + NomeSegnale + '.' + s + cfg.Sep + comment
-        else:
-            Out =  FirstCol + str(n) + " = " + PRE + cfg.Sep + AccessName +'.' + NomeSegnale + '.' + s + cfg.Sep + comment
+            #compongo l'uscita
+            if int(n) == startPos:
+                Out = Header + Nome01 + FirstCol + str(n) + " = " + PRE + cfg.Sep + AccessName +'.' + NomeSegnale + '.' + s + cfg.Sep + comment
+            else:
+                Out =  FirstCol + str(n) + " = " + PRE + cfg.Sep + AccessName +'.' + NomeSegnale + '.' + s + cfg.Sep + comment
 
-        utils.OutFileUTF16(os.getcwd() + cfg.bars + cfg.NomeCartellaOUT + cfg.bars  + cfg.fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
-        n = int(n) + 1
+            utils.OutFileUTF16(os.getcwd() + cfg.bars + cfg.NomeCartellaOUT + cfg.bars  + cfg.fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) # stampo il file
+            n = int(n) + 1
 
+    except KeyError:   # interecetto l'assenza del sengnale nel PLCs
+        print(colored('INFO > ',cfg.ColorInfo) + NomeSegnale + ' NOT PRESENT')
     
     # if (int(n) - 28) != 0:
     #     print (Mac +' - ' +  FromTo +' - ' + str(n))
