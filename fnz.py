@@ -87,8 +87,6 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
 
   
     #le chiavi rappresentano i campi dei segnali di scambio
-    # for s in scambio.keys():
-    #     print(s)
     comment = [] # bisogna ricavarlo dalle chiavi
     lev2str = [] # coverto poi l'oggetto in stringa (lista di char)
     n = startPos        # incrementale della prima colonna S01, SX02, ecc
@@ -106,15 +104,12 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
 
         comment = s #per ora commento = variabile l'idea sarebbe di guardare dove ci sono i caratteri maiuscoli e poi inserire uno spazio
         
-        # ricavo commento separando il nome dove trovo una maiuscol
-        sAppo = ''
+        # ricavo commento separando il nome dove trovo una maiuscola
         for c in comment:
             if c.isupper() == True:
                 idC = comment.index(c)  # indice della maiuscola
                 comment = ''.join((comment[:idC],' ', comment[idC:])) # aggiungo uno spazio dove trovo la maiuscola, aggiungendo anche uno spazio all'inizio
                 comment = comment.lstrip() # rimuovo lo spazio iniziale indesiderato
-                #print (comment)
-
         
         # dal tipo ricavo la lettera (D : digital, A: analog)
         match type:
@@ -125,6 +120,8 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
             case 'DINT':
                 PRE = 'A'
             case 'SINT':
+                PRE = 'A'
+            case 'REAL':
                 PRE = 'A'
             case _:         #default
                 PRE = 'D'
