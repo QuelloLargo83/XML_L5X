@@ -207,8 +207,6 @@ else:
                     SigFROM = 'SignalFILFrom'
                     SigTO = 'SignalFILTo'
 
-                    if a == 'CFT': # correzione estemporanea perché nel plc si chiamano signalfilfromBFT
-                        a = 'BFT'
                     
                     fnz.SignalExc(SigFROM + a,ACNAME,a,OutDir,ctl_tags)
                     fnz.SignalExc(SigTO + a,ACNAME,a,OutDir,ctl_tags)
