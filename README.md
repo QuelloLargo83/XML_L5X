@@ -5,11 +5,15 @@
 - Quando la variabile a PLC non corrisponde a SignalFILfrom_MAC_ viene gestito a sw 
   una sezione per segnali di scambio non ordinari:
 	es:
+	
        - `CFT` indica cio che su PLC è `BFT`
 	   - `UTH` ha `SignalUTHToFIL` e `SignalFILToPRO.UTH`
 
-- Fare in modo che compili sempre SX1--SX28 e DX1 --- DX28 anche se ci sono spazi vuoti
+- [x] Fare in modo che compili sempre SX1--SX28 e DX1 --- DX28 anche se ci sono spazi vuoti
+
 - gestire per le Analogiche la parte finale con [TIPO]..K[n]   esempio ..TIMS..K100
+
+- Controllare la questione della @ davanti ai nomi dei dispositivi (es: @CA1VPP25)
 
 ## SCOPO
 
