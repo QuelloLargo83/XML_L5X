@@ -11,9 +11,12 @@
 
 - [x] Fare in modo che compili sempre SX1--SX28 e DX1 --- DX28 anche se ci sono spazi vuoti
 
-- gestire per le Analogiche la parte finale con [TIPO]..K[n]   esempio ..TIMS..K100
+- [x] gestire per le Analogiche la parte finale con [TIPO]..K[n]   esempio ..TIMS..K100
 
-- Controllare la questione della @ davanti ai nomi dei dispositivi (es: @CA1VPP25)
+- [ ] i segnali di scambio delle macchine sono un po' in CFG_PAGE.ini e un po' in IOMESSAGES.ENG
+      cercare di unirli in modo furbo
+
+- [ ] gestire il titolo della della parte sx con nomi sensati
 
 ## SCOPO
 

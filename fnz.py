@@ -43,6 +43,7 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
         ctl_tags (ElementDict): contenitore tags livello controllore
         DIR (optional): indicare SX o DX se non si puo ricavare questa info dal nome segnale
     """
+
     startPos = 2 #posizione iniziale dell'incrementale per SXxx e DXxx
     MaxRow = int(cfg.INIREAD('sigmaxrow'))
 
@@ -151,11 +152,34 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
             else:
                 Nome01 = '\n' + FirstCol +'01 = B..\n'
 
+              ### TENTO DI INSERIRE ..[DIM]..[Kx]
+            if PRE == 'A':
+                K = 'K1' # lascio per ora la costante =1
+                #print(colored(NomeSegnale,'yellow') + '.' + colored(s,'red'))
+                if('flow' in s or 'Flow' in s):
+                    Dim = 'FLWL'
+                elif('speed' in s or 'Speed' in s):
+                    Dim = 'SPDH'
+                elif('weight' in s or 'Weight' in s):
+                    Dim = 'SPDH..K1'
+                elif('pressure' in s or 'Pressure' in s):
+                    Dim = 'PRSM'
+                elif('time' in s or 'Time' in s):
+                    Dim = 'TIME'
+                elif('level' in s or 'Level' in s):
+                    Dim = 'LVLT'
+                else:
+                    Dim = 'NONE'
+                
+                comment = comment + cfg.Sep + Dim + cfg.Sep + K
+            ###
+
             #compongo l'uscita
             if int(n) == startPos:
                 Out = Header + Nome01 + FirstCol + str(n) + " = " + PRE + cfg.Sep + AccessName +'.' + NomeSegnale + '.' + s + cfg.Sep + comment
             else:
                 Out =  FirstCol + str(n) + " = " + PRE + cfg.Sep + AccessName +'.' + NomeSegnale + '.' + s + cfg.Sep + comment
+            
 
             # stampo l'uscita sul file
             utils.OutFileUTF16(os.getcwd() + cfg.bars + cfg.NomeCartellaOUT + cfg.bars  + cfg.fileIOMESSAGE_Pre + '_' + FromTo + Mac,Out) 
@@ -174,8 +198,6 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
     except KeyError:   # interecetto l'assenza del sengnale nel PLC
         print(colored('INFO > ',cfg.ColorInfo) + NomeSegnale + ' NOT PRESENT')
     
-
-
 
 def ListaCicli (StructCicli,FileOutput,NomePOSPlc,programs):
     """Crea un file con i nomi dei cicli presi dal plc

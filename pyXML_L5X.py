@@ -130,6 +130,7 @@ else:
     ###############
     
     if stdargs.iomsg:
+        listaAnalogica = []
         # TO DO: trovare il modo di leggere ACCESSNAME
         #      : Unire a modo le coppie di files
         #      : 
@@ -179,8 +180,8 @@ else:
                     SigFROM = 'SignalUTHToFIL'
                     SigTO = 'SignalFILToPRO.UTH'
                     
-                    fnz.SignalExc(SigFROM,ACNAME,a,OutDir,PROC_ctl_tags,'SX')    
-                    fnz.SignalExc(SigTO,'ABFIL1',a,OutDir,ctl_tags,'DX')  
+                    fnz.SignalExc(SigFROM,ACNAME,a,OutDir,PROC_ctl_tags,'SX')  
+                    fnz.SignalExc(SigTO,'ABFIL1',a,OutDir,ctl_tags,'DX')   
 
                 case 'UDX':
                     ACNAME = 'ABUTH1'     
