@@ -130,7 +130,6 @@ else:
     ###############
     
     if stdargs.iomsg:
-        listaAnalogica = []
         # TO DO: trovare il modo di leggere ACCESSNAME
         #      : Unire a modo le coppie di files
         #      : 
@@ -169,7 +168,7 @@ else:
         # svuoto la cartella da eventuali files precedenti
         utils.DeleteFilesInFolder(OutDirFIN)
         
-      
+
         # creo i file IOMESSAGE facendo scorrere la lista delle macchine
         for a in lista_macc:
            

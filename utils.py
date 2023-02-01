@@ -73,7 +73,31 @@ def DeleteFilesInFolder(folder):
             print(colored('INFO > ',cfg.ColorInfo)+' DeleteFilesInFolder: Failed to delete %s. Reason: %s' % (file_path, e))
 
 def DeleteFolder(path):
+    """cancella una cartella
+
+    Args:
+        path (_type_): percorso completo della cartella
+    """
     try:
         shutil.rmtree(path)
     except Exception as e:
         print(colored('INFO > ', cfg.ColorInfo) + str(e))
+
+def indices(lst, element):
+    """restituisce un array con gli indici delle occorrenze di elemnt in list
+
+    Args:
+        lst (list): lista da scorrere
+        element (any): elemento 
+
+    Returns:
+        list: lista degli indici
+    """
+    result = []
+    offset = -1
+    while True:
+        try:
+            offset = lst.index(element, offset+1)
+        except ValueError:
+            return result
+        result.append(offset)
