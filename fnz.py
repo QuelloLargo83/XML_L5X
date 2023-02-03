@@ -107,25 +107,33 @@ def SignalExc(NomeSegnale,AccessName,Mac,OutDirFile,ctl_tags, DIR = '-1'):
             type = lev2str[9:13]            # recupero il TIPO di dato con un mid dell'oggetto
         
             comment = s # rinomico in comment per chiarezza
+
+            ##############################################################
+            # ricavo commento separando il nome dove trovo una maiuscola #
+            ##############################################################
             
-            # ricavo commento separando il nome dove trovo una maiuscola
-            commentOrig = comment
-            for c in comment:
-                if c.isupper() == True:
-                    # idC = comment.index(c)  # indice della maiuscola
-                    lstIndex = utils.indices(comment,c) # lista delle posizioni in cui trova la lettera maiuscola
-                    idC = lstIndex[len(lstIndex)-1] # indice della maiuscola (tiene conto dell'ultima occorrenza)
+            mem = [] # appoggio per le maiuscole
 
-                    #for idC in lstIndex:
-                    try:
-                        if comment[idC-1].isupper() == True and comment[idC+1].isupper() == True :  # se anche la lettera precedente e consec sono maiuscole
+            for c in comment: # scorro ogni lettera di ogni commento
+                
+                if c in mem: continue # se ho gia visto questa lettera maiuscola vado avanti perche ho gia sistemato il commento
+
+                if c.isupper() == True:   
+    
+                    lstIndex = utils.indices(comment,c) # lista delle posizioni in cui trova la lettera maiuscola (la stessa lettera puo essere in piu posizioni)
+                    
+                    for idC in lstIndex: # ci possono essere due lettere maiuscole uguali
+                        
+                        mem.append(comment[idC])
+                        try:
+                            if comment[idC-1].isupper() == True and comment[idC+1].isupper() == True :  # se anche la lettera precedente e consec sono maiuscole (es: PAA)
+                                pass
+                            else:
+                                comment = ''.join((comment[:idC],' ', comment[idC:])) # aggiungo uno spazio dove trovo la maiuscola, aggiungendo anche uno spazio all'inizio
+                                comment = comment.lstrip() # rimuovo lo spazio iniziale indesiderato
+                        except(IndexError): # intercetto il fatto che la maiuscola sia alla fine del testo
                             pass
-                        else:
-                            comment = ''.join((comment[:idC],' ', comment[idC:])) # aggiungo uno spazio dove trovo la maiuscola, aggiungendo anche uno spazio all'inizio
-                            comment = comment.lstrip() # rimuovo lo spazio iniziale indesiderato
-                    except(IndexError): # intercetto il fatto che la maiuscola sia alla fine del testo
-                        pass
-
+                                   
             # dal tipo ricavo la lettera (D : digital, A: analog)
             match type:
                 case 'BOOL':
