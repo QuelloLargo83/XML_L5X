@@ -1,6 +1,7 @@
 
 import argparse
 import cmd
+from distutils.command.config import config
 import os
 import sys
 import l5x
@@ -144,6 +145,21 @@ else:
         lista_itemDICT = dict(lista_item)               
         lista_macc = []     # lista delle macchine 
         
+
+
+        ## TEST per leggere da IOMESSAGE.eng
+        IOMSG = configparser.ConfigParser(strict=False)
+        IOMSG.read_file(open(cfg.INIREAD('fileiomsg'),encoding='utf-16'))
+        IOMSG_listSec = IOMSG.sections()
+        IOMSG_listIt = IOMSG.items(IOMSG_listSec[0]) # 'LIST è la prima sezione quindi 0
+        IOMSG_listItDICT = dict(IOMSG_listIt)
+        
+        print(IOMSG_listItDICT)
+        ############
+
+
+
+
         # leggo la lista delle macchine di cui leggere i segnali di scambio
         # for k in range(1,len(lista_itemDICT.keys())):
         for k in lista_itemDICT.keys():
