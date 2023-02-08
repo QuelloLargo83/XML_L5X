@@ -18,6 +18,8 @@
 
 - [ ] gestire il titolo della della parte sx con nomi sensati
 
+- [ ] gestire la tilde (~) davanti ad alcuni strumenti (es: ~CA1PTK51)
+
 ## SCOPO
 
 Automazione creazione files .ENG per HMI partendo da `.L5X` del progetto PLC RSLogix5000
