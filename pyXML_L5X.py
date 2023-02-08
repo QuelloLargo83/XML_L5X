@@ -88,8 +88,8 @@ else:
   
     if stdargs.cycles:
 
-        verHMI = cfg.INIREAD('verhmi')
-        verHMI = int(verHMI)
+        verHMI = int(cfg.INIREAD('verhmi'))
+        # verHMI = int(verHMI)
 
         # leggo i nomi delle aree di memoria corrispondenti ai cicli
         PLCProdCycleVar = cfg.INIREAD('plcprodcyclevar')
@@ -122,7 +122,7 @@ else:
         # SANIFICAZIONE #
         # fnz.CycleDesc('FILLER',PLCSanCycleVar,'Drainage','D60_01','FIL','Phase_Drainage.ENG',programs)
         
-        print ('INFO -> FILES GENERATED IN FOLDER ' +  os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT+ cfg.bars)
+        print ('INFO -> FILES GENERATED IN FOLDER ' + colored(os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT+ cfg.bars,cfg.ColorInfo))
     #sys.exit(0)
 
 
@@ -235,7 +235,7 @@ else:
         utils.DeleteFolder(OutDir)
        
 
-        print('Files generated in : ' + OutDirFIN ) # avviso in quale cartella ho generato i file uniti
+        print('Files generated in : ' + colored(OutDirFIN,cfg.ColorInfo) ) # avviso in quale cartella ho generato i file uniti
 
 
     ####################
