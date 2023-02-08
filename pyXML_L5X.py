@@ -145,16 +145,20 @@ else:
         lista_itemDICT = dict(lista_item)               
         lista_macc = []     # lista delle macchine 
         
-
-
-        ## TEST per leggere da IOMESSAGE.eng
+        ## recupero le altre macchine da IOMESSAGE.eng e integro la lista
         IOMSG = configparser.ConfigParser(strict=False)
         IOMSG.read_file(open(cfg.INIREAD('fileiomsg'),encoding='utf-16'))
         IOMSG_listSec = IOMSG.sections()
         IOMSG_listIt = IOMSG.items(IOMSG_listSec[0]) # 'LIST è la prima sezione quindi 0
         IOMSG_listItDICT = dict(IOMSG_listIt)
         
-        print(IOMSG_listItDICT)
+        IOMSG_mac = list(IOMSG_listItDICT.values()) #prendo solo i valori
+        
+        for i in range(1, len(IOMSG_mac)):
+            mac = utils.left(IOMSG_mac[i],3)
+            if utils.left(mac,1) != cfg.DisablingChar:  # ricavo solo le sigle delle macchine abilitate
+                # print(mac)                 
+                lista_macc.append(mac)                  # e le aggiungo alla lista
         ############
 
 

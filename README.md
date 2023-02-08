@@ -13,7 +13,7 @@
 
 - [x] gestire per le Analogiche la parte finale con [TIPO]..K[n]   esempio ..TIMS..K100
 
-- [ ] i segnali di scambio delle macchine sono un po' in CFG_PAGE.ini e un po' in IOMESSAGES.ENG
+- [x] i segnali di scambio delle macchine sono un po' in CFG_PAGE.ini e un po' in IOMESSAGES.ENG
       cercare di unirli in modo furbo
 
 - [ ] gestire il titolo della della parte sx con nomi sensati
@@ -28,11 +28,12 @@ Automazione creazione files .ENG per HMI partendo da `.L5X` del progetto PLC RSL
 
 prendere i seguenti files:
 
-- `CFG_PAGE.ini` da supervisione e integrare la sezione [CFG_IOMAC] con [LIST] del file IOMessages_PLXXXXX.ENG
+- `CFG_PAGE.ini` da supervisione 
+- `IOMessages_PLXXXXX.ENG` da supervisione
 - `****.L5X`        da PLC
 
 1. Mettere i file nella cartella radice del programma e 
-2. Indicare nel file [Configuration.ini](./INI/Configuration.ini) il nome del file L5X
+2. Indicare nel file [Configuration.ini](./INI/Configuration.ini) il nome dei file appena messi
 3. Eventualmentente modificare [CyclesPhMsg.ini](./INI/CyclesPhMsg.ini)
 
 
