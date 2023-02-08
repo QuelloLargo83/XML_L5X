@@ -57,7 +57,7 @@ ColorInfo = 'cyan' # infomsg
 ############
 class MyParser(configparser.ConfigParser):
     """Decoratore della classe configparser
-       aggiunge il metodo per trasformare 
+       aggiunge il metodo per trasformare l'oggetto in dizionario
     """
     def as_dict(self):
         d = dict(self._sections)
