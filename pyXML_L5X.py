@@ -149,19 +149,17 @@ else:
         IOMSG = configparser.ConfigParser(strict=False)
         IOMSG.read_file(open(cfg.INIREAD('fileiomsg'),encoding='utf-16'))
         IOMSG_listSec = IOMSG.sections()
-        IOMSG_listIt = IOMSG.items(IOMSG_listSec[0]) # 'LIST è la prima sezione quindi 0
+        IOMSG_listIt = IOMSG.items(IOMSG_listSec[0]) # LIST è la prima sezione quindi 0
         IOMSG_listItDICT = dict(IOMSG_listIt)
         
-        IOMSG_mac = list(IOMSG_listItDICT.values()) #prendo solo i valori
+        IOMSG_mac = list(IOMSG_listItDICT.values()) #prendo solo i valori e li metto in una lista
         
         for i in range(1, len(IOMSG_mac)):
             mac = utils.left(IOMSG_mac[i],3)
-            if utils.left(mac,1) != cfg.DisablingChar:  # ricavo solo le sigle delle macchine abilitate
-                # print(mac)                 
+            if  (mac is not None) and (mac != '') and utils.left(mac,1) != cfg.DisablingChar:  # salto eventuali buchi e macchine disabilitate        
                 lista_macc.append(mac)                  # e le aggiungo alla lista
+
         ############
-
-
 
 
         # leggo la lista delle macchine di cui leggere i segnali di scambio
@@ -170,8 +168,8 @@ else:
             mac = lista_itemDICT.get(str(k))
             # if (lista_itemDICT.get(str(k)) is not None) and (lista_itemDICT.get(str(k)) != '') :      # salto eventuali buchi
             #     lista_macc.append(lista_itemDICT.get(str(k))) # prendo le prime tre lettere che indicano la macchina 
-            if (mac is not None) and (mac != '') and utils.left(mac,1) != '_' :      # salto eventuali buchi e mac disabilitate
-                lista_macc.append(mac) # pre
+            if (mac is not None) and (mac != '') and utils.left(mac,1) != cfg.DisablingChar :      # salto eventuali buchi e mac disabilitate
+                lista_macc.append(mac) # aggiungo alla lista macchine
 
         
         # creo la cartella temporanea di uscita se non esiste
