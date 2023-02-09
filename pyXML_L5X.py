@@ -111,6 +111,7 @@ else:
             ## QUESTI RIMANGONO FUORI PERCHE HANNO IL PHASEMSG dipende da FX o CX
         fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBLoad','D28_60_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_DBLoad.ENG',programs,verHMI)
         fnz.CycleDesc('FILLER',PLCSanCycleVar,'SipFiller','D60_06_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_SipFiller.ENG',programs,verHMI)
+        fnz.CycleDesc('FILLER',PLCSanCycleVar,'CIP','D60_04_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_CIP.ENG',programs,verHMI)
         # /SANIFICAZIONE #
 
         # PRODUZIONE #
