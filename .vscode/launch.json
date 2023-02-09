@@ -10,7 +10,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args":["--iomsg"],    //immettere gli argomenti
+            "args":["--cycles"],    //immettere gli argomenti
             "purpose": ["debug-in-terminal"]
         }
     ]
