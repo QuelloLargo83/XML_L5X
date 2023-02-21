@@ -46,6 +46,10 @@ if stdargs.version:
 #se non viene passato alcun argomento, la lista ha un solo elemento che è il percorso completo del sorgente
 # in questo caso mostro gli switch disponibili
 if len(sys.argv) == 1:
+    MainProgram = os.path.splitext(os.path.basename(__file__))[0] # leggo il nome del file che da il nome al programma
+    print()
+    print (colored(MainProgram,'yellow') + colored('  version: ','green') + colored(__version__,'yellow' ))
+    print()
     args.print_help() #stampa con argparse, l'help
    
 else:
