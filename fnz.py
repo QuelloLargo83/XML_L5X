@@ -341,6 +341,9 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     PhaseMsgDesc = ''
     MaxNMsg = 32
 
+    if NomeCiclo == 'DBLoad':
+        print('DBLoad')
+
     if NomeStructPhMsg is not None: # NON TUTTI I CICLI HANNO PHASE MESSAGE
         try: # potrebbe non essere presente nel software PLC in esame il PhaseMessageInput
 

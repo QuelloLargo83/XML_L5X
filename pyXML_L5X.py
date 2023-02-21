@@ -106,14 +106,21 @@ else:
 
         # SANIFICAZIONE #
         for item in Coppie['SANIFICAZIONE'].items(): 
+
+            # INTERCETTO I CICLI CHE HANNO PHASE MESSAGE DIPENDENTE DAL SUFFISSO CX o FX CHE PESCO DA INI
+            if item[0] == 'SipFiller' or item[0] == 'CIP' or item[0] == 'DBLoad':
+                item = list(item) # per modificare devo convertire in list (tupla non è modificabile)
+                item[1] = item[1] + '_'+ cfg.INIREAD('fx_cx')
+                #item = tuple(item)
+
             fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,verHMI) #item[0] = nomeCiclo, item[1] = struct PhMSG
         
             ## QUESTI RIMANGONO FUORI PERCHE HANNO IL PHASEMSG dipende da FX o CX
         ## NOTA: la var phasemsginput del dbload è stata messa a livello controllore e non a livello programma filler.!!!!!! prevedere questa condizione
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBLoad','D28_60_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_DBLoad.ENG',programs,verHMI)
+        #fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBLoad','D28_60_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_DBLoad.ENG',programs,verHMI)
         #####
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'SipFiller','D60_06_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_SipFiller.ENG',programs,verHMI)
-        fnz.CycleDesc('FILLER',PLCSanCycleVar,'CIP','D60_04_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_CIP.ENG',programs,verHMI)
+        #fnz.CycleDesc('FILLER',PLCSanCycleVar,'SipFiller','D60_06_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_SipFiller.ENG',programs,verHMI)
+        #fnz.CycleDesc('FILLER',PLCSanCycleVar,'CIP','D60_04_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_CIP.ENG',programs,verHMI)
         # /SANIFICAZIONE #
 
         # PRODUZIONE #
