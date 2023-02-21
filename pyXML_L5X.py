@@ -89,7 +89,6 @@ else:
     if stdargs.cycles:
 
         verHMI = int(cfg.INIREAD('verhmi'))
-        # verHMI = int(verHMI)
 
         # leggo i nomi delle aree di memoria corrispondenti ai cicli
         PLCProdCycleVar = cfg.INIREAD('plcprodcyclevar')
@@ -105,6 +104,7 @@ else:
         Coppie = cfg.INIREAD_COPPIE(cfg.PhaseINI)
 
         # SANIFICAZIONE #
+        ctl_tags_fake = None
         for item in Coppie['SANIFICAZIONE'].items(): 
 
             # INTERCETTO I CICLI CHE HANNO PHASE MESSAGE DIPENDENTE DAL SUFFISSO CX o FX CHE PESCO DA INI
@@ -112,15 +112,12 @@ else:
                 item = list(item) # per modificare devo convertire in list (tupla non è modificabile)
                 item[1] = item[1] + '_'+ cfg.INIREAD('fx_cx')
                 #item = tuple(item)
+                if item[0] == 'DBLoad':  # condizione speciale perché il phasemsginput è nelle tag a livello controllore
+                    ctl_tags_fake = ctl_tags
+                else:
+                    ctl_tags_fake = None
 
-            fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,verHMI) #item[0] = nomeCiclo, item[1] = struct PhMSG
-        
-            ## QUESTI RIMANGONO FUORI PERCHE HANNO IL PHASEMSG dipende da FX o CX
-        ## NOTA: la var phasemsginput del dbload è stata messa a livello controllore e non a livello programma filler.!!!!!! prevedere questa condizione
-        #fnz.CycleDesc('FILLER',PLCSanCycleVar,'DBLoad','D28_60_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_DBLoad.ENG',programs,verHMI)
-        #####
-        #fnz.CycleDesc('FILLER',PLCSanCycleVar,'SipFiller','D60_06_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_SipFiller.ENG',programs,verHMI)
-        #fnz.CycleDesc('FILLER',PLCSanCycleVar,'CIP','D60_04_'+ cfg.INIREAD('fx_cx'),'FIL','Phase_CIP.ENG',programs,verHMI)
+            fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,verHMI,ctl_tags_fake) #item[0] = nomeCiclo, item[1] = struct PhMSG
         # /SANIFICAZIONE #
 
         # PRODUZIONE #
@@ -128,9 +125,6 @@ else:
             fnz.CycleDesc('FILLER',PLCProdCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,verHMI)
         # /PRODUZIONE #
 
-
-        # SANIFICAZIONE #
-        # fnz.CycleDesc('FILLER',PLCSanCycleVar,'Drainage','D60_01','FIL','Phase_Drainage.ENG',programs)
         
         print ('INFO -> FILES GENERATED IN FOLDER ' + colored(os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT+ cfg.bars,cfg.ColorInfo))
     #sys.exit(0)

@@ -247,7 +247,7 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc,programs):
 
 
 
-def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,programs,HmiVer=0):
+def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,programs,HmiVer=0,contr_tags = None):
     """Stampa su file i tre blocchi di commenti per un ciclo (PHASES.eng)
 
     Args:
@@ -259,6 +259,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         OutFile (str): File di uscita
         programs (ElementDict): dizionari con l'elenco dei programmi del POS
         HmiVer (int): 0- mette la 'V;'
+        contr_tags : struttura tag controllore se necessario usarla (es: il phmsginput del ciclo dbload è nelle tag controllore)
     """
     # folder di uscita viene creato se non esiste
     OutDir = os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT + cfg.bars
@@ -341,23 +342,39 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     PhaseMsgDesc = ''
     MaxNMsg = 32
 
-    if NomeCiclo == 'DBLoad':
-        print('DBLoad')
-
+    
     if NomeStructPhMsg is not None: # NON TUTTI I CICLI HANNO PHASE MESSAGE
+        
+        ## Verifico se devo usare la tag a livello controllore 
+        Flag_CTL = False
+        if contr_tags != None:
+            Flag_CTL = True
+        else:
+            Flag_CTL = False
+        ##
+
         try: # potrebbe non essere presente nel software PLC in esame il PhaseMessageInput
 
             # Ricavo la dimensione dell'array PhaseMessageInput
-            PMIArrSize = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'].shape[0]
+            if Flag_CTL:
+                PMIArrSize = contr_tags[NomeStructPhMsg]['PhaseMessageInput'].shape[0]
+            else:
+                PMIArrSize = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'].shape[0]
         
             for a in range(0,PMIArrSize): #scorro ogni array
                 for i in range(0,MaxNMsg):   #scorro ogni bit dell array
                     try: # nel caso non ci sia la variabile di struttura Phase Msg
-                        description = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description               
+                        if Flag_CTL:
+                            description = contr_tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description
+                        else:
+                            description = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description               
                         if description is not None:
                             # nMSG = i+1
                             nMSG = MaxNMsg * a + i + 1 # i msg nell'array successivo hanno numero incrementale
-                            PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description + '\n'
+                            if Flag_CTL:
+                                PhaseMsgDescA = contr_tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description + '\n'
+                            else:
+                                PhaseMsgDescA = programs[NomePrg].tags[NomeStructPhMsg]['PhaseMessageInput'][a][i].description + '\n'
                             try:
                                 # nel caso nei commenti le frasi siano separate da newline
                                 PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
