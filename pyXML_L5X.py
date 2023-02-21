@@ -20,6 +20,7 @@ from termcolor import colored
 ## MAIN ##
 ##########
 
+
 #####################
 ## HELP e ARGPARSE ##
 #####################
@@ -39,6 +40,13 @@ if stdargs.version:
     print()
     print (colored(MainProgram,'yellow') + colored('  version: ','green') + colored(__version__,'yellow' ))
     print()
+
+    # TEST PER RICAVARE AUTOMATICAMENTE I FILE 
+    # cwd = os.getcwd()
+    # for file in os.listdir(cwd):
+    #     if file.endswith(".L5X"):
+    #         print(os.path.join(cwd, file))
+
     raise SystemExit(0) # esci immediatamente dal programma
 
     
