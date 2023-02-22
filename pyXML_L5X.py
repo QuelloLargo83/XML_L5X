@@ -41,12 +41,6 @@ if stdargs.version:
     print (colored(MainProgram,'yellow') + colored('  version: ','green') + colored(__version__,'yellow' ))
     print()
 
-    # TEST PER RICAVARE AUTOMATICAMENTE I FILE 
-    # cwd = os.getcwd()
-    # for file in os.listdir(cwd):
-    #     if file.endswith(".L5X"):
-    #         print(os.path.join(cwd, file))
-
     raise SystemExit(0) # esci immediatamente dal programma
 
     
@@ -65,10 +59,33 @@ else:
     #################################
     ##### PREPARAZIONE STRUTTURE ####
     #################################
+
+    # RICAVO .L5X della filler
+    for file in os.listdir(cfg.PLCFilFolder):
+        if file.endswith(".L5X"):
+            FilL5X = cfg.PLCFilFolder + file
+
+    # RICAVO .L5X della filler
+    for file in os.listdir(cfg.PLCProFolder):
+        if file.endswith(".L5X"):
+            ProL5X = cfg.PLCProFolder + file
+
+    # RICAVO CFG_PAGE.ini
+    CFGPAGEini = ''
+    for file in os.listdir(cfg.HMIFolder):
+        if file.endswith(".INI"):
+            CFGPAGEini = cfg.HMIFolder + file
     
+    # RICAVO IOMESSAGES_PLxxxx.ENG
+    for file in os.listdir(cfg.HMIFolder):
+        if file.endswith(".ENG"):
+            IOMSGENG = cfg.HMIFolder + file
+
+
     #### PLC FILLER #####
     # carico il file L5X in memoria
-    prj = l5x.Project(cfg.INIREAD('fileplc'))
+    #prj = l5x.Project(cfg.INIREAD('fileplc'))
+    prj = l5x.Project(FilL5X)
     # ctl_tags è un ElementDict contenente le tag a livello controllore
     ctl_tags = prj.controller.tags
     # lista tag name livello controllore
@@ -79,7 +96,8 @@ else:
     programs_names = programs.names
 
     #### PLC PROCESSO #####
-    PROC_prj = l5x.Project(cfg.INIREAD('fileplcproc'))
+    #PROC_prj = l5x.Project(cfg.INIREAD('fileplcproc'))
+    PROC_prj = l5x.Project(ProL5X)
     PROC_ctl_tags = PROC_prj.controller.tags
     PROC_tag_names = PROC_ctl_tags.names
     PROC_programs = PROC_prj.programs
@@ -153,8 +171,8 @@ else:
 
         #  ricavo la lista della macchine esterne #
         CFGPAGE = configparser.ConfigParser(strict= False)
-        #CFGPAGE.read_file(open(cfg.fileCFG_PAGE,encoding='utf-8')) 
-        CFGPAGE.read_file(open(cfg.INIREAD('filecfgpage'),encoding='utf-8'))
+        #CFGPAGE.read_file(open(cfg.INIREAD('filecfgpage'),encoding='utf-8'))
+        CFGPAGE.read_file(open(CFGPAGEini,encoding='utf-8'))
        
         lista_sezioni = CFGPAGE.sections()               # lista con le sezioni
         lista_item = CFGPAGE.items(lista_sezioni[int( cfg.INIREAD('cfg_iomac')) ])     # lista della sezione CFG_IOMAC
@@ -163,7 +181,8 @@ else:
         
         ## recupero le altre macchine da IOMESSAGE.eng e integro la lista
         IOMSG = configparser.ConfigParser(strict=False)
-        IOMSG.read_file(open(cfg.INIREAD('fileiomsg'),encoding='utf-16'))
+        #IOMSG.read_file(open(cfg.INIREAD('fileiomsg'),encoding='utf-16'))
+        IOMSG.read_file(open(IOMSGENG,encoding='utf-16'))
         IOMSG_listSec = IOMSG.sections()
         IOMSG_listIt = IOMSG.items(IOMSG_listSec[0]) # LIST è la prima sezione quindi 0
         IOMSG_listItDICT = dict(IOMSG_listIt)

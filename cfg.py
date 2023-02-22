@@ -25,11 +25,14 @@ match SYSTEM:
 ## DATI CFG INTERNA DEL PROGRAMMA ###
 #####################################
 
-INIFolder = os.getcwd() + bars + 'INI' + bars          # Cartella dei file INI
-ResourceFolder = os.getcwd() + bars + 'RES'+ bars      # Cartella con le risorse
-CFGFile = INIFolder + 'Configuration.ini'              # File di configurazione
-fileHELP = INIFolder + 'help.ini'                      # File di Help
-PhaseINI = INIFolder + 'CyclesPhMsg.ini'               # File associazione Ciclo -> Struttura PhaseMSG
+INIFolder = os.getcwd() + bars + 'INI' + bars                   # Cartella dei file INI
+ResourceFolder = os.getcwd() + bars + 'RES'+ bars               # Cartella con le risorse
+HMIFolder = INIFolder  + 'HMI' + bars
+PLCFilFolder = INIFolder  + 'PLC' + bars + 'FILLER' + bars
+PLCProFolder = INIFolder  + 'PLC' + bars + 'PROCESSO' + bars
+CFGFile = INIFolder + 'Configuration.ini'                       # File di configurazione
+fileHELP = INIFolder + 'help.ini'                               # File di Help
+PhaseINI = INIFolder + 'CyclesPhMsg.ini'                        # File associazione Ciclo -> Struttura PhaseMSG
 
 #################
 ## DATI FISSI ###

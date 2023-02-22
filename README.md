@@ -32,9 +32,10 @@ prendere i seguenti files:
 - `IOMessages_PLXXXXX.ENG` da supervisione
 - `****.L5X`        da PLC
 
-1. Mettere i file nella cartella radice del programma e 
-2. Indicare nel file [Configuration.ini](./INI/Configuration.ini) il nome dei file appena messi
+1. Mettere i files presi dalla supervisione nella cartella `INI/HMI`
+2. Mettere i files .L5X nella cartella `INI/PLC` dividendo filler e processo
 3. Eventualmentente modificare [CyclesPhMsg.ini](./INI/CyclesPhMsg.ini)
+4. Eventualmente modificare il file di configurazione
 
 
 ### Creare il virtual enviroment
