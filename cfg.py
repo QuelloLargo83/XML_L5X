@@ -54,6 +54,7 @@ NomeCartPhasesOUT = 'PHASES_OUT'                    # cartella in cui mettere i 
 # Raccolta colori per i significati delle scritte
 #
 ColorInfo = 'cyan' # infomsg
+ColorAlarm = 'red' # alarmmsg
 
 
 ############
