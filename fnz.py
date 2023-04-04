@@ -378,13 +378,33 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                                 # nel caso nei commenti le frasi siano separate da newline
                                 PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
                                 msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
+
+                                 ### TEST PER AGGIUNGERE TILDE NEI TAG
+                                if 'CA1' in msg:
+                                    idxTag = msg.index('CA1') 
+                                    msg = msg[:idxTag] + '~' + msg[idxTag:]
+
                             except:
                                 try:
                                     # casefold rende tutto minuscolo in modo piu aggressivo rispetto a lower
                                     id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
                                     msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
+
+                                    ### TEST PER AGGIUNGERE TILDE NEI TAG
+                                    if 'CA1' in msg:
+                                        idxTag = msg.index('CA1') 
+                                        msg = msg[:idxTag] + '~' + msg[idxTag:]
+                                        
+
                                 except:
                                     msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
+
+                                     ### TEST PER AGGIUNGERE TILDE NEI TAG
+                                    if 'CA1' in msg:
+                                        idxTag = msg.index('CA1') 
+                                        msg = msg[:idxTag] + '~' + msg[idxTag:]
+                                       
+
                             if HmiVer == 0:  #(HMI BLU):
                                 PhaseMsgDesc = PhaseMsgDesc + str(nMSG) + '= V;' + msg.strip('\n') + ('\n')
                             else:            #(HMI GRIGIA)
