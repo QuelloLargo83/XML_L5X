@@ -381,11 +381,11 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                                 PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
                                 msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
 
-                                #  ### AGGIUNGE TILDE NEI TAG DISPOSITIVO
-                                # for tag in MacCodeList:
-                                #     idxTag = msg.find(tag) #cerco l'indice della tag
-                                #     if idxTag >= 0:
-                                #         msg = msg[:idxTag] + cfg.TagChar + msg[idxTag:]
+                                 ### AGGIUNGE TILDE NEI TAG DISPOSITIVO
+                                for tag in MacCodeList:
+                                    idxTag = msg.find(tag) #cerco l'indice della tag
+                                    if idxTag >= 0:
+                                        msg = msg[:idxTag] + cfg.TagChar + msg[idxTag:]
 
 
                             except:
@@ -394,21 +394,21 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                                     id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
                                     msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
 
-                                    #  ### AGGIUNGE TILDE NEI TAG DISPOSITIVO
-                                    # for tag in MacCodeList:
-                                    #     idxTag = msg.find(tag) #cerco l'indice della tag
-                                    #     if idxTag >= 0:
-                                    #         msg = msg[:idxTag] + cfg.TagChar + msg[idxTag:]
+                                     ### AGGIUNGE TILDE NEI TAG DISPOSITIVO
+                                    for tag in MacCodeList:
+                                        idxTag = msg.find(tag) #cerco l'indice della tag
+                                        if idxTag >= 0:
+                                            msg = msg[:idxTag] + cfg.TagChar + msg[idxTag:]
                                         
 
                                 except:
                                     msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
 
-                                    #  ### AGGIUNGE TILDE NEI TAG DISPOSITIVO
-                                    # for tag in MacCodeList:
-                                    #     idxTag = msg.find(tag) #cerco l'indice della tag
-                                    #     if idxTag >= 0:
-                                    #         msg = msg[:idxTag] + cfg.TagChar + msg[idxTag:]
+                                     ### AGGIUNGE TILDE NEI TAG DISPOSITIVO
+                                    for tag in MacCodeList:
+                                        idxTag = msg.find(tag) #cerco l'indice della tag
+                                        if idxTag >= 0:
+                                            msg = msg[:idxTag] + cfg.TagChar + msg[idxTag:]
                                        
 
                             if HmiVer == 0:  #(HMI BLU):
