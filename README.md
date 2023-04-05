@@ -18,7 +18,7 @@
 
 - [ ] gestire il titolo della della parte sx con nomi sensati
 
-- [ ] gestire la tilde (~) davanti ad alcuni strumenti (es: ~CA1PTK51)
+- [x] gestire la tilde (~) davanti ad alcuni strumenti (es: ~CA1PTK51)
 
 ## SCOPO
 
@@ -30,6 +30,7 @@ prendere i seguenti files:
 
 - `CFG_PAGE.ini` da supervisione 
 - `IOMessages_PLXXXXX.ENG` da supervisione
+- `SETUP_HMI.ini` da supervisione
 - `****.L5X`        da PLC
 
 1. Mettere i files presi dalla supervisione nella cartella `INI/HMI`

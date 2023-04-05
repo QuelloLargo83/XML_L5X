@@ -4,6 +4,7 @@ import os,sys
 import configparser
 from os import listdir
 from os.path import isfile, join
+import utils
 
 
 
@@ -28,6 +29,7 @@ match SYSTEM:
 INIFolder = os.getcwd() + bars + 'INI' + bars                   # Cartella dei file INI
 ResourceFolder = os.getcwd() + bars + 'RES'+ bars               # Cartella con le risorse
 HMIFolder = INIFolder  + 'HMI' + bars
+SETUPfile = HMIFolder + 'SETUP_HMI.ini'                         # file SETUP_HMI.ini
 PLCFilFolder = INIFolder  + 'PLC' + bars + 'FILLER' + bars
 PLCProFolder = INIFolder  + 'PLC' + bars + 'PROCESSO' + bars
 CFGFile = INIFolder + 'Configuration.ini'                       # File di configurazione
@@ -43,6 +45,7 @@ fileIOMESSAGE = 'IOMESSAGES_PLXXXX'                 # OUT:
 
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 DisablingChar = '_'
+TagChar = '~'                                       # carattere usato nei phase message per evidenziare le tag (~CA1)
 IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini 
 NomeCartellaOUT = 'IO_OUT_APP'                          # cartella appoggio per coppie di file IOMESSAGE in cwd
 NomeCartellaFINALE = 'IO_OUT'                 # cartella con risultato finale in cwd per IOMESSAGE
@@ -135,3 +138,77 @@ def INIREAD_COPPIE(IniFile):
 
     return ret
 
+def INIREAD2(IniFile,Section,param,Encoding):
+    """legge un parametro all'interno di una sezione di un file ini
+
+    Args:
+        IniFile (str): percorso completo del file ini
+        Section (str): nome sezione (senza parentesi quadre)
+        param (str): parametro (o chiave) 
+        Encoding (str): encoding del file ini (es: utf-8)
+
+    Returns:
+        dict: valore del parametro richiesto (ogni chiave rappresenta un carattere)
+    """
+    parser = configparser.ConfigParser(strict=False)
+    parser.read_file(open(IniFile,encoding=Encoding))  # leggo il file di configurazione
+
+    parserDict = dict(parser.items(Section)) # trasformo in dizionario
+    return parserDict[param]
+
+def INIREADKeys(IniFile,Section,Encoding):
+    """Restituisce l'elenco delle chiavi di una sezione di un ini file
+
+    Args:
+        IniFile (str): percorso completo del file ini
+        Section (str): sezione all'interno del file ini (senza parentesi quadre)
+        Encoding (str): encoding del file ini (es: utf-8)
+
+    Returns:
+        list: lista delle chiavi della sezione 
+    """
+    parser = configparser.ConfigParser(strict=False)
+    parser.read_file(open(IniFile,encoding=Encoding))  # leggo il file di configurazione
+
+    # LEGGO SOLO LA SEZIONE SETUP
+    parserDict = dict(parser.items(Section)) # trasformo in dizionario
+    return list(parserDict.keys())
+
+def INIGETMacCodes():
+    """Ricava la lista dei nomi commerciali delle macchine configurate nel file SETUP_HMI.ini (es: CA1, CI1,..)
+
+    Returns:
+        list: lista senza duplicati dei nomi commerciali
+    """
+    AppoFile = 'trashINI.ini'
+    CodeList =[]
+
+    # leggo il file SETUP_HMI.ini e copio in un file di appoggio
+    # solo la parte che mi serve
+    with open(SETUPfile,'r',encoding=IntouchEncoding) as setupFILE:
+        content = setupFILE.readlines()
+
+        count = 0
+        for line in content:
+            if utils.left(line,5) == '[CFG]':
+                with open(AppoFile,'w',encoding='utf-8') as out:
+                    for l in content[count:]:
+                        if utils.left(l,1) != '{':  # rimuovo commenti che non sono INI approved
+                            out.write(l)
+            count +=1
+
+    # leggo la lista delle macchine presenti nel SETUP_HMI
+    listParam = INIREADKeys(AppoFile,'CFG','utf-8')
+        
+    for par in listParam:
+        code = INIREAD2(AppoFile,'CFG',str(par),'utf-8').split(';')[3].strip()  # il codice commerciale è il terzo campo
+        if code != '0' and code != 'XXX': # filtro il global e le non configuate
+            CodeList.append(code)
+
+    # cancello il file di appoggio
+    if os.path.exists(AppoFile):
+        os.remove(AppoFile)
+    
+    CodeList = list(set(CodeList)) # rimuovo eventuali duplicati
+
+    return CodeList

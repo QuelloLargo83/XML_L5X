@@ -125,6 +125,10 @@ else:
   
     if stdargs.cycles:
 
+        #ricavo la lista dei nomi commerciali delle macchine da SETUP_HMI.ini (es: CA1)
+        MacList = cfg.INIGETMacCodes() 
+        # print(MacList)
+
         if FilL5X != None and ProL5X != None:
 
             verHMI = int(cfg.INIREAD('verhmi'))
@@ -156,12 +160,12 @@ else:
                     else:
                         ctl_tags_fake = None
 
-                fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,verHMI,ctl_tags_fake) #item[0] = nomeCiclo, item[1] = struct PhMSG
+                fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,MacList,verHMI,ctl_tags_fake) #item[0] = nomeCiclo, item[1] = struct PhMSG
             # /SANIFICAZIONE #
 
             # PRODUZIONE #
             for item in Coppie['PRODUZIONE'].items():
-                fnz.CycleDesc('FILLER',PLCProdCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,verHMI)
+                fnz.CycleDesc('FILLER',PLCProdCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,MacList,verHMI)
             # /PRODUZIONE #
 
             print ('INFO -> FILES GENERATED IN FOLDER ' + colored(os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT+ cfg.bars,cfg.ColorInfo))

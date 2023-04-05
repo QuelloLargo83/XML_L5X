@@ -247,7 +247,7 @@ def ListaCicli (StructCicli,FileOutput,NomePOSPlc,programs):
 
 
 
-def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,programs,HmiVer=0,contr_tags = None):
+def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,programs,MacCodeList,HmiVer=0,contr_tags = None):
     """Stampa su file i tre blocchi di commenti per un ciclo (PHASES.eng)
 
     Args:
@@ -258,6 +258,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         MacCyc (str): nome macchina per header sezione (Es: FIL )
         OutFile (str): File di uscita
         programs (ElementDict): dizionari con l'elenco dei programmi del POS
+        MacCodeList (list): lista dei codici commerciali di macchina (CA1 etc , per mettere tilde) 
         HmiVer (int): 0- mette la 'V;'
         contr_tags : struttura tag controllore se necessario usarla (es: il phmsginput del ciclo dbload è nelle tag controllore)
     """
@@ -340,6 +341,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     ############
     PhaseMsgDesc = ''
     MaxNMsg = 32
+   
 
     
     if NomeStructPhMsg is not None: # NON TUTTI I CICLI HANNO PHASE MESSAGE
@@ -379,10 +381,12 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                                 PhaseMsgDescSplit =  PhaseMsgDescA.split('\n')
                                 msg = PhaseMsgDescSplit[2].strip('\n') + '\n'
 
-                                 ### TEST PER AGGIUNGERE TILDE NEI TAG
-                                if 'CA1' in msg:
-                                    idxTag = msg.index('CA1') 
-                                    msg = msg[:idxTag] + '~' + msg[idxTag:]
+                                #  ### AGGIUNGE TILDE NEI TAG DISPOSITIVO
+                                # for tag in MacCodeList:
+                                #     idxTag = msg.find(tag) #cerco l'indice della tag
+                                #     if idxTag >= 0:
+                                #         msg = msg[:idxTag] + cfg.TagChar + msg[idxTag:]
+
 
                             except:
                                 try:
@@ -390,19 +394,21 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
                                     id = PhaseMsgDescA.casefold().index('message') + len('message') + 3 # cerco MESSAGE
                                     msg = utils.mid(PhaseMsgDescA,id,len(PhaseMsgDescA))
 
-                                    ### TEST PER AGGIUNGERE TILDE NEI TAG
-                                    if 'CA1' in msg:
-                                        idxTag = msg.index('CA1') 
-                                        msg = msg[:idxTag] + '~' + msg[idxTag:]
+                                    #  ### AGGIUNGE TILDE NEI TAG DISPOSITIVO
+                                    # for tag in MacCodeList:
+                                    #     idxTag = msg.find(tag) #cerco l'indice della tag
+                                    #     if idxTag >= 0:
+                                    #         msg = msg[:idxTag] + cfg.TagChar + msg[idxTag:]
                                         
 
                                 except:
                                     msg = PhaseMsgDescA #nel caso peggiore il messaggio è tutto il commento così come lo trovo
 
-                                     ### TEST PER AGGIUNGERE TILDE NEI TAG
-                                    if 'CA1' in msg:
-                                        idxTag = msg.index('CA1') 
-                                        msg = msg[:idxTag] + '~' + msg[idxTag:]
+                                    #  ### AGGIUNGE TILDE NEI TAG DISPOSITIVO
+                                    # for tag in MacCodeList:
+                                    #     idxTag = msg.find(tag) #cerco l'indice della tag
+                                    #     if idxTag >= 0:
+                                    #         msg = msg[:idxTag] + cfg.TagChar + msg[idxTag:]
                                        
 
                             if HmiVer == 0:  #(HMI BLU):

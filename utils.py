@@ -9,11 +9,11 @@ def left(s, amount):
     """Restituisce la parte sinistra di una stringa
 
     Args:
-        s (str): _description_
-        amount (int): _description_
+        s (str): stringa in cui cercare
+        amount (int): quantita di caratteri
 
     Returns:
-        _type_: _description_
+        str: parte sinistra
     """
     return s[:amount]
 
@@ -21,11 +21,11 @@ def right(s, amount):
     """Restituisce la parte destra di una stringa
 
     Args:
-        s (str): _description_
-        amount (int): _description_
+        s (str): stringa in cui cercare
+        amount (int): quantita di caratteri
 
     Returns:
-        _type_: _description_
+        str: parte destra
     """
     return s[-amount:]
 
@@ -33,12 +33,12 @@ def mid(s, offset, amount):
     """Restituisce una perte delimitata di una stringa
 
     Args:
-        s (str): _description_
-        offset (int): _description_
-        amount (int): _description_
+        s (str): stringa in cui cercare
+        offset (int): indice di partenza
+        amount (int): quantita di caratteri
 
     Returns:
-        _type_: _description_
+        str: substring
     """
     return s[offset:offset+amount]
 
