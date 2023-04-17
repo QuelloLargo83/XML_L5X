@@ -73,10 +73,11 @@ else:
             ProL5X = cfg.PLCProFolder + file
 
     # RICAVO CFG_PAGE.ini
-    CFGPAGEini = None
-    for file in os.listdir(cfg.HMIFolder):
-        if file.endswith(".INI"):
-            CFGPAGEini = cfg.HMIFolder + file
+    CFGPAGEini = cfg.CFGPAGEiniFile
+    # CFGPAGEini = None
+    # for file in os.listdir(cfg.HMIFolder):
+    #     if file.endswith(".INI"):
+    #         CFGPAGEini = cfg.HMIFolder + file
     
     # RICAVO IOMESSAGES_PLxxxx.ENG
     IOMSGENG = None
@@ -146,7 +147,9 @@ else:
             # leggo Associazione tra Nome Ciclo e struttura del Phase Message
             Coppie = cfg.INIREAD_COPPIE(cfg.PhaseINI)
 
+            #################
             # SANIFICAZIONE #
+            #################
             ctl_tags_fake = None
             for item in Coppie['SANIFICAZIONE'].items(): 
 
@@ -163,9 +166,35 @@ else:
                 fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,MacList,verHMI,ctl_tags_fake) #item[0] = nomeCiclo, item[1] = struct PhMSG
             # /SANIFICAZIONE #
 
+            ##############
             # PRODUZIONE #
+            ##############
+            # FILLER
             for item in Coppie['PRODUZIONE'].items():
                 fnz.CycleDesc('FILLER',PLCProdCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,MacList,verHMI)
+
+            # SH1 #
+            for item in Coppie['PRODUZIONE.SH1'].items():
+                fnz.CycleDesc('STERILCAP_VHP_L',PLCProdCycleVar,item[0],item[1],'SH1','SH1Phase_'+ item[0] + '.ENG',programs,MacList,verHMI)
+            
+            ## TENTO DI UNIFICARE.....
+            # macchine = cfg.INIGetMacList()
+            # for macT in macchine:
+            #     try:
+            #         for item in Coppie['PRODUZIONE.' + macT].items():
+            #             match macT:
+            #                 case 'FIL':
+            #                     prg = 'FILLER'
+            #                 case 'SH1':
+            #                     prg = 'STERILCAP_VHP_L'
+                        
+            #             fnz.CycleDesc(prg,PLCProdCycleVar, item[0], item[1], macT, macT +'Phase_'+ item[0]+'.ENG',programs,MacList,verHMI) #item[0] = nomeCiclo, item[1] = struct PhMSG
+            #     except:
+            #         print(macT + ' not present in list')
+            
+            #####
+
+
             # /PRODUZIONE #
 
             print ('INFO -> FILES GENERATED IN FOLDER ' + colored(os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT+ cfg.bars,cfg.ColorInfo))

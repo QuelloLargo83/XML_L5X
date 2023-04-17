@@ -20,6 +20,8 @@
 
 - [x] gestire la tilde (~) davanti ad alcuni strumenti (es: ~CA1PTK51)
 
+- [ ] il phaseMsgInput di SH1 ha un problema nel plc: la struttura PhaseMessageInput si chiama MessageInput...prevedere questa eccezione
+
 ## SCOPO
 
 Automazione creazione files .ENG per HMI partendo da `.L5X` del progetto PLC RSLogix5000

@@ -30,6 +30,7 @@ INIFolder = os.getcwd() + bars + 'INI' + bars                   # Cartella dei f
 ResourceFolder = os.getcwd() + bars + 'RES'+ bars               # Cartella con le risorse
 HMIFolder = INIFolder  + 'HMI' + bars
 SETUPfile = HMIFolder + 'SETUP_HMI.ini'                         # file SETUP_HMI.ini
+CFGPAGEiniFile = HMIFolder + 'CFG_PAGE.INI'
 PLCFilFolder = INIFolder  + 'PLC' + bars + 'FILLER' + bars
 PLCProFolder = INIFolder  + 'PLC' + bars + 'PROCESSO' + bars
 CFGFile = INIFolder + 'Configuration.ini'                       # File di configurazione
@@ -212,3 +213,29 @@ def INIGETMacCodes():
     CodeList = list(set(CodeList)) # rimuovo eventuali duplicati
 
     return CodeList
+
+def INIGetMacList():
+    """Ricavo lista delle macchine presenti dal file CFG_PAGE.ini
+
+    Returns:
+        list: macchine presenti nel progetto
+    """
+
+    # RICAVO CFG_PAGE.ini
+    CFGPAGEini = CFGPAGEiniFile
+    
+    # leggo il file
+    CFGPAGE = configparser.ConfigParser(strict= False)
+    CFGPAGE.read_file(open(CFGPAGEini,encoding='utf-8'))
+
+    lista_sezioni = CFGPAGE.sections()               # lista con le sezioni
+
+    lista_item = CFGPAGE.items(lista_sezioni[int( INIREAD('cfg_maccode')) ])     # lista della sezione CFG_IOMAC
+    lista_itemDICT = dict(lista_item)               
+    lista_macc = []     # lista delle macchine 
+    for k in lista_itemDICT.keys():
+        mac = lista_itemDICT.get(str(k))
+        if  (mac is not None) and (mac != ''):
+            lista_macc.append(mac)
+    
+    return lista_macc
