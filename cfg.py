@@ -5,6 +5,7 @@ import configparser
 from os import listdir
 from os.path import isfile, join
 import utils
+import re
 
 
 
@@ -31,6 +32,7 @@ ResourceFolder = os.getcwd() + bars + 'RES'+ bars               # Cartella con l
 HMIFolder = INIFolder  + 'HMI' + bars
 SETUPfile = HMIFolder + 'SETUP_HMI.ini'                         # file SETUP_HMI.ini
 CFGPAGEiniFile = HMIFolder + 'CFG_PAGE.INI'
+CYCLESiniFile = HMIFolder + 'Cycles.INI'
 PLCFilFolder = INIFolder  + 'PLC' + bars + 'FILLER' + bars
 PLCProFolder = INIFolder  + 'PLC' + bars + 'PROCESSO' + bars
 CFGFile = INIFolder + 'Configuration.ini'                       # File di configurazione
@@ -175,6 +177,29 @@ def INIREADKeys(IniFile,Section,Encoding):
     parserDict = dict(parser.items(Section)) # trasformo in dizionario
     return list(parserDict.keys())
 
+
+def INIREADPars(IniFile,Section,Encoding):
+    """restituisce tutti i valori di una sezione (valori a dx dell'uguale)
+
+    Args:
+        IniFile (str): _description_
+        Section (str): _description_
+        Encoding (str): _description_
+
+    Returns:
+        list: lista dei parametri
+    """
+
+    parser = configparser.ConfigParser(strict=False)
+    parser.read_file(open(IniFile,encoding=Encoding))  # leggo il file di configurazione
+
+    parameters =[]
+    for p in parser.items(Section):
+        parameters.append(p[1])
+        
+    return parameters
+    
+
 def INIGETMacCodes():
     """Ricava la lista dei nomi commerciali delle macchine configurate nel file SETUP_HMI.ini (es: CA1, CI1,..)
 
@@ -239,3 +264,72 @@ def INIGetMacList():
             lista_macc.append(mac)
     
     return lista_macc
+
+def IniGetSections(Inifile, encoding):
+    """restituisce la lista degli header di un file ini
+
+    Args:
+        Inifile (_type_): _description_
+        encoding (_type_): _description_
+
+    Returns:
+        lista: lista headers
+    """
+    IniParser = configparser.ConfigParser(strict=False)
+    IniParser.read_file(open(Inifile ,encoding=encoding))
+
+    sections = IniParser.sections()
+
+    return sections
+
+def IniGetSectionItems(Inifile,sezione,encoding):
+    """ricava tutte le voci di una sezione (chiavi e valori)
+
+    Args:
+        Inifile (str): _description_
+        sezione (str): _description_
+        encoding (str): _description_
+
+    Returns:
+        lista: item della sezione
+    """
+    IniParser = configparser.ConfigParser(strict=False)
+    IniParser.read_file(open(Inifile ,encoding=encoding))
+
+    items = IniParser.items(sezione)
+
+    return items
+
+
+def CyclesGetNames():
+    """prende i nomi dei cicli dal file Cycles.ini
+
+    Returns:
+        dict: dizionario con chiavi  MacCyclesName e valori liste dei nomi cicli associati
+    """
+    enc = 'utf-16' # codifica da usare per il file Cycles.ini
+
+    sez = IniGetSections(CYCLESiniFile,enc) #
+    # mac = INIGetMacList()
+    
+    # filtro solo le sezioni con i nomi dei cicli
+    pattern = 'CyclesName$'
+    nameSections = [x for x in sez if re.search(pattern,x)]
+
+    #creo un dizionario con le liste dei nomi cicli per ogni sezione
+    MacCyclesNames = {}
+    for name in nameSections:
+        
+        cycles = INIREADPars(CYCLESiniFile,name,enc)
+
+        # rimuovo  ;F e  ;T dai nomi dei cicli
+        for idx, item in enumerate(cycles):
+            if re.search(';[A-Z]$',item):
+                cycles[idx] = re.sub(';[A-Z]$','',item)
+            
+        cycles = [e for e in cycles if e != ''] # rimuovo gli item vuoti
+        
+        MacCyclesNames[name] = cycles
+        
+    
+    return MacCyclesNames
