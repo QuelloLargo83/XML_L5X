@@ -331,5 +331,20 @@ def CyclesGetNames():
         
         MacCyclesNames[name] = cycles
         
+#############
+    # patternref = 'CyclesReference$'
+    # refSections = [x for x in sez if re.search(patternref,x)]
+
+    # MacCyclesRefs = {}
+    # for ref in refSections:
+    #     referencelist = INIREADPars(CYCLESiniFile,ref,enc)
+
+    #     MacCyclesRefs[ref] = referencelist
+    
+    # # unisce elemento per elemento due liste
+    # joined =  [i + ';' + j for i, j in zip(cycles, referencelist)]
+    # print (joined)
+
+
     
     return MacCyclesNames
