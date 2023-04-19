@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 import os
 from tkinter import N
 import utils
@@ -270,6 +271,12 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
       # svuoto la cartella da eventuali files precedenti
     #utils.DeleteFilesInFolder(OutDir)
 
+    # Trappola per verificare che esista il ciclo nel PLC
+    try:
+        programs[NomePrg].tags[NomeStruct][NomeCiclo]
+    except:
+        print('Cycle ' + NomeStruct + '.' + NomeCiclo + ' Not Found in PLC')
+        return False
 
     ###########
     ## PHASE ##

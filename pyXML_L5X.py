@@ -1,5 +1,6 @@
 
 import argparse
+from calendar import c
 import cmd
 from distutils.command.config import config
 import os
@@ -13,6 +14,7 @@ import fnz
 import cfg
 from version import __version__, __author__
 from termcolor import colored
+import json
 
 
 
@@ -126,6 +128,8 @@ else:
   
     if stdargs.cycles:
 
+        oldschool = 1 # se metti nuova cambia il file CyclesPhMsg.ini
+
         #ricavo la lista dei nomi commerciali delle macchine da SETUP_HMI.ini (es: CA1)
         MacList = cfg.INIGETMacCodes() 
         # print(MacList)
@@ -134,71 +138,92 @@ else:
 
             verHMI = int(cfg.INIREAD('verhmi'))
 
-            # leggo i nomi delle aree di memoria corrispondenti ai cicli
+            # # leggo i nomi delle aree di memoria corrispondenti ai cicli
             PLCProdCycleVar = cfg.INIREAD('plcprodcyclevar')
             PLCSanCycleVar = cfg.INIREAD('plcsancyclevar')
 
-            #  svuota cartella di OUTPUT
+            # #  svuota cartella di OUTPUT
             OutDir = os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT + cfg.bars
             if not os.path.exists (OutDir):
                 os.makedirs(OutDir)
             utils.DeleteFilesInFolder(OutDir)
         
-            # leggo Associazione tra Nome Ciclo e struttura del Phase Message
+            # # leggo Associazione tra Nome Ciclo e struttura del Phase Message
             Coppie = cfg.INIREAD_COPPIE(cfg.PhaseINI)
 
-            #################
-            # SANIFICAZIONE #
-            #################
-            ctl_tags_fake = None
-            for item in Coppie['SANIFICAZIONE'].items(): 
-
-                # INTERCETTO I CICLI CHE HANNO PHASE MESSAGE DIPENDENTE DAL SUFFISSO CX o FX CHE PESCO DA INI
-                if item[0] == 'SipFiller' or item[0] == 'CIP' or item[0] == 'DBLoad':
-                    item = list(item) # per modificare devo convertire in list (tupla non è modificabile)
-                    item[1] = item[1] + '_'+ cfg.INIREAD('fx_cx')
-                    #item = tuple(item)
-                    if item[0] == 'DBLoad':  # condizione speciale perché il phasemsginput è nelle tag a livello controllore
-                        ctl_tags_fake = ctl_tags
-                    else:
-                        ctl_tags_fake = None
-
-                fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,MacList,verHMI,ctl_tags_fake) #item[0] = nomeCiclo, item[1] = struct PhMSG
-            # /SANIFICAZIONE #
-
-            ##############
-            # PRODUZIONE #
-            ##############
-            # FILLER
-            for item in Coppie['PRODUZIONE'].items():
-                fnz.CycleDesc('FILLER',PLCProdCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,MacList,verHMI)
-
-            # SH1 #
-            for item in Coppie['PRODUZIONE.SH1'].items():
-                fnz.CycleDesc('STERILCAP_VHP_L',PLCProdCycleVar,item[0],item[1],'SH1','SH1Phase_'+ item[0] + '.ENG',programs,MacList,verHMI)
-            
-            ## TENTO DI UNIFICARE.....
-            # macchine = cfg.INIGetMacList()
-            # for macT in macchine:
-            #     try:
-            #         for item in Coppie['PRODUZIONE.' + macT].items():
-            #             match macT:
-            #                 case 'FIL':
-            #                     prg = 'FILLER'
-            #                 case 'SH1':
-            #                     prg = 'STERILCAP_VHP_L'
-                        
-            #             fnz.CycleDesc(prg,PLCProdCycleVar, item[0], item[1], macT, macT +'Phase_'+ item[0]+'.ENG',programs,MacList,verHMI) #item[0] = nomeCiclo, item[1] = struct PhMSG
-            #     except:
-            #         print(macT + ' not present in list')
-            
-            #####
 
 
-            # /PRODUZIONE #
+            if oldschool ==1:
+                print ('USING ' + colored('OLD SCHOOL','red') + ' FOR CYCLE')
+                #################
+                # SANIFICAZIONE #
+                #################
+                ctl_tags_fake = None
+                for item in Coppie['SANIFICAZIONE'].items(): 
+
+                    # INTERCETTO I CICLI CHE HANNO PHASE MESSAGE DIPENDENTE DAL SUFFISSO CX o FX CHE PESCO DA INI
+                    if item[0] == 'SipFiller' or item[0] == 'CIP' or item[0] == 'DBLoad':
+                        item = list(item) # per modificare devo convertire in list (tupla non è modificabile)
+                        item[1] = item[1] + '_'+ cfg.INIREAD('fx_cx')
+                        #item = tuple(item)
+                        if item[0] == 'DBLoad':  # condizione speciale perché il phasemsginput è nelle tag a livello controllore
+                            ctl_tags_fake = ctl_tags
+                        else:
+                            ctl_tags_fake = None
+
+                    fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,MacList,verHMI,ctl_tags_fake) #item[0] = nomeCiclo, item[1] = struct PhMSG
+                # /SANIFICAZIONE #
+
+                ##############
+                # PRODUZIONE #
+                ##############
+                # FILLER
+                for item in Coppie['PRODUZIONE'].items():
+                    fnz.CycleDesc('FILLER',PLCProdCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,MacList,verHMI)
+
+                # SH1 #
+                for item in Coppie['PRODUZIONE.SH1'].items():
+                    fnz.CycleDesc('STERILCAP_VHP_L',PLCProdCycleVar,item[0],item[1],'SH1','SH1Phase_'+ item[0] + '.ENG',programs,MacList,verHMI)
+                # /PRODUZIONE #
+            else:
+
+                                                             #####   TEST ##############
+                
+                #### ANCORA PROBLEMI A TROVARE I CICLI ANCHE SE CI SONO NEL PLC ###
+
+                ## TENTO DI UNIFICARE.....
+                print ('USING ' + colored('NEW SCHOOL','red') + ' FOR CYCLE')
+
+                CyclesDict = cfg.CyclesGetNames()
+
+                indiceNome = 'FILCyclesName' # questo poi dovra diventare dinamico
+
+                # Unisco in un unica tabella le info da passare alla funzione che provengono da Cycles.ini e CyclesPhMsg.ini
+                # si tratta di un join tipo SQL tra due liste e si basa sull'uguaglianza tra il nome del ciclo nel reference e il nome del file CyclePhMsgBK.ini
+                joined =  [i + ';' + j[1] for i in CyclesDict[indiceNome] for j in Coppie['CICLI'].items() if i.partition('.')[2].partition('.')[2].lower() == j[0].lower()]
+
+                for cyc in joined:
+                    ref = cyc.split(cfg.SepCycle)[1]
+                    CYCprogram = utils.find_between(ref,'Program:','.')            # da Cycles.INI
+                    CYCcycleVar = utils.find_between(ref,CYCprogram + '.', '.')    # da Cycles.INI
+                    
+                    NomeCiclo = ref.split('.')[2]                                  # dal reference di Cycles.INI
+                    
+                    PhaseMsgStruct = cyc.split(';')[2]                             # da CyclesPhMsg.ini
+                    
+                    Mac = utils.left(indiceNome,3)
+
+                    
+                    fnz.CycleDesc(CYCprogram,CYCcycleVar,NomeCiclo,PhaseMsgStruct,Mac, Mac + '_Phase_' + NomeCiclo + '.ENG',programs,MacList,verHMI)
+                                   
+                                   
+                                     #####          /TEST       #######################
+
+
+                
 
             print ('INFO -> FILES GENERATED IN FOLDER ' + colored(os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT+ cfg.bars,cfg.ColorInfo))
-        #sys.exit(0)
+            #sys.exit(0)
         else:
             print (colored('PLC L5x files not supplied!',cfg.ColorAlarm))
 

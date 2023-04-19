@@ -46,6 +46,7 @@ fileControllerTags = 'ControllerTags.txt'
 fileIOMESSAGE_Pre = 'IOMESSAGES_PLXXXX.ENG'         # OUT:
 fileIOMESSAGE = 'IOMESSAGES_PLXXXX'                 # OUT:
 
+SepCycle = ';'                                      # separatore usato per il dizionario dei cicli
 Sep = '..'                                          # separatore per parti della stringa IOMESSAGE
 DisablingChar = '_'
 TagChar = '~'                                       # carattere usato nei phase message per evidenziare le tag (~CA1)
@@ -339,10 +340,12 @@ def CyclesGetNames():
         referencelist = [e for e in referencelist if e != ''] # rimuovo gli item vuoti
 
         # unisce elemento per elemento due liste
-        joined =  [i + ';' + j for i, j in zip(cycles, referencelist)]
+        joined =  [i + SepCycle + j for i, j in zip(cycles, referencelist)]
        
         # metto l'unione di nomi e reference in un dizionario le cui chiavi sono i nomi        
         MacCyclesNames[name] = joined
     
     
     return MacCyclesNames
+
+

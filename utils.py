@@ -101,3 +101,21 @@ def indices(lst, element):
         except ValueError:
             return result
         result.append(offset)
+
+def find_between( s, first, last ):
+    """estrae una sottostringa tra due caratteri o stringhe all'interno di un'altra stringa
+
+    Args:
+        s (string): stringa completa
+        first (str): carattere o stringa iniziale 
+        last (str): carattere o stringa finale
+
+    Returns:
+        str: sottostringa cercata
+    """
+    try:
+        start = s.index( first ) + len( first )
+        end = s.index( last, start )
+        return s[start:end]
+    except ValueError:
+        return ''
