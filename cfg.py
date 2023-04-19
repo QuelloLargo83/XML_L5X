@@ -302,25 +302,33 @@ def IniGetSectionItems(Inifile,sezione,encoding):
 
 
 def CyclesGetNames():
-    """prende i nomi dei cicli dal file Cycles.ini
+    """prende i nomi e i reference dei cicli dal file Cycles.ini
 
     Returns:
-        dict: dizionario con chiavi  MacCyclesName e valori liste dei nomi cicli associati
+        dict: dizionario con chiavi  MacCyclesName e valori liste dei nomi e reference cicli associati
     """
     enc = 'utf-16' # codifica da usare per il file Cycles.ini
 
     sez = IniGetSections(CYCLESiniFile,enc) #
     # mac = INIGetMacList()
+
+
+    # RICAVO LA LISTA delle sezioni CON I CYCLE REFERENCE
+    patternref = 'CyclesReference$'
+    refSections = [x for x in sez if re.search(patternref,x)]
+
     
-    # filtro solo le sezioni con i nomi dei cicli
+    # RICAVO la LISTA delle sezioni con i NOMI dei cicli
     pattern = 'CyclesName$'
     nameSections = [x for x in sez if re.search(pattern,x)]
 
     #creo un dizionario con le liste dei nomi cicli per ogni sezione
     MacCyclesNames = {}
-    for name in nameSections:
+   
+    for name, ref in zip(nameSections,refSections): # scorro entrambe le liste nomi e reference
         
         cycles = INIREADPars(CYCLESiniFile,name,enc)
+        referencelist = INIREADPars(CYCLESiniFile,ref,enc)
 
         # rimuovo  ;F e  ;T dai nomi dei cicli
         for idx, item in enumerate(cycles):
@@ -328,23 +336,13 @@ def CyclesGetNames():
                 cycles[idx] = re.sub(';[A-Z]$','',item)
             
         cycles = [e for e in cycles if e != ''] # rimuovo gli item vuoti
-        
-        MacCyclesNames[name] = cycles
-        
-#############
-    # patternref = 'CyclesReference$'
-    # refSections = [x for x in sez if re.search(patternref,x)]
+        referencelist = [e for e in referencelist if e != ''] # rimuovo gli item vuoti
 
-    # MacCyclesRefs = {}
-    # for ref in refSections:
-    #     referencelist = INIREADPars(CYCLESiniFile,ref,enc)
-
-    #     MacCyclesRefs[ref] = referencelist
+        # unisce elemento per elemento due liste
+        joined =  [i + ';' + j for i, j in zip(cycles, referencelist)]
+       
+        # metto l'unione di nomi e reference in un dizionario le cui chiavi sono i nomi        
+        MacCyclesNames[name] = joined
     
-    # # unisce elemento per elemento due liste
-    # joined =  [i + ';' + j for i, j in zip(cycles, referencelist)]
-    # print (joined)
-
-
     
     return MacCyclesNames
