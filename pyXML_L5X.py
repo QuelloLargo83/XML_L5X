@@ -153,7 +153,7 @@ else:
 
 
 
-            if oldschool ==1:
+            if oldschool ==0:
                 print ('USING ' + colored('OLD SCHOOL','red') + ' FOR CYCLE')
                 #################
                 # SANIFICAZIONE #
@@ -222,32 +222,50 @@ else:
 
                                                              #####   TEST ##############
                 
-                #### ANCORA PROBLEMI A TROVARE I CICLI ANCHE SE CI SONO NEL PLC ###
 
                 ## TENTO DI UNIFICARE.....
                 print ('USING ' + colored('NEW SCHOOL','red') + ' FOR CYCLE')
 
                 CyclesDict = cfg.CyclesGetNames()
 
-                indiceNome = 'FILCyclesName' # questo poi dovra diventare dinamico
+                
+                
+                for indiceNome in CyclesDict.keys():
+                    Mac = utils.left(indiceNome,3) # le prime tre lettere di ogni sezione di Cycles.INI
 
-                # Unisco in un unica tabella le info da passare alla funzione che provengono da Cycles.ini e CyclesPhMsg.ini
-                # si tratta di un join tipo SQL tra due liste e si basa sull'uguaglianza tra il nome del ciclo nel reference e il nome del file CyclePhMsgBK.ini
-                joined =  [i + ';' + j[1] for i in CyclesDict[indiceNome] for j in Coppie['CICLI'].items() if i.partition('.')[2].partition('.')[2].lower() == j[0].lower()]
+                    # decido qualche PLC utilizzare per leggere i cicli
+                    if Mac in ['CLE','UTH','UDX']:
+                        lstProgrammi = PROC_programs
+                    else:
+                        lstProgrammi = programs
 
-                for cyc in joined:
-                    ref = cyc.split(cfg.SepCycle)[1]
-                    CYCprogram = utils.find_between(ref,'Program:','.')            # da Cycles.INI
-                    CYCcycleVar = utils.find_between(ref,CYCprogram + '.', '.')    # da Cycles.INI
-                    
-                    NomeCiclo = ref.split('.')[2]                                  # dal reference di Cycles.INI
-                    
-                    PhaseMsgStruct = cyc.split(';')[2]                             # da CyclesPhMsg.ini
-                    
-                    Mac = utils.left(indiceNome,3)
+                    # Unisco in un unica tabella le info da passare alla funzione che provengono da Cycles.ini e CyclesPhMsg.ini
+                    # si tratta di un join tipo SQL tra due liste e si basa sull'uguaglianza tra il nome del ciclo nel reference e il nome del file CyclePhMsgBK.ini
+                    try:
+                        joined =  [i + ';' + j[1] for i in CyclesDict[indiceNome] for j in Coppie[Mac].items() if i.partition('.')[2].partition('.')[2].lower() == j[0].lower()]
+                    except (KeyError):
+                        continue # se non trovo corrispondenze in uno dei due file vai comunque avanti
 
-                    
-                    fnz.CycleDesc(CYCprogram,CYCcycleVar,NomeCiclo,PhaseMsgStruct,Mac, Mac + '_Phase_' + NomeCiclo + '.ENG',programs,MacList,verHMI)
+                    for cyc in joined:
+                        ref = cyc.split(cfg.SepCycle)[1]
+                        CYCprogram = utils.find_between(ref,'Program:','.')            # da Cycles.INI
+                        CYCcycleVar = utils.find_between(ref,CYCprogram + '.', '.')    # da Cycles.INI
+                        
+                        NomeCiclo = ref.split('.')[2]                                  # dal reference di Cycles.INI
+                        
+                        PhaseMsgStruct = cyc.split(';')[2]                             # da CyclesPhMsg.ini
+                        
+                        # Mac = utils.left(indiceNome,3)
+
+                        # MALEDETTO CASE SENSITIVE!
+                        if NomeCiclo == 'Cip':
+                            NomeCiclo = 'CIP'
+                        if NomeCiclo == 'Cop':
+                            NomeCiclo = 'COP'
+                        if NomeCiclo == 'DBunload':
+                            NomeCiclo = 'DBUnLoad'
+
+                        fnz.CycleDesc(CYCprogram,CYCcycleVar,NomeCiclo,PhaseMsgStruct,Mac, Mac + '_Phase_' + NomeCiclo + '.ENG', lstProgrammi,MacList,verHMI)
                                    
                                    
                                      #####          /TEST       #######################

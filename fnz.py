@@ -258,7 +258,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         NomeStructPhMsg (str): Nome struttura PhaseMsgInput (ed: D40_01)
         MacCyc (str): nome macchina per header sezione (Es: FIL )
         OutFile (str): File di uscita
-        programs (ElementDict): dizionari con l'elenco dei programmi del POS
+        programs (ElementDict): dizionari con l'elenco dei programmi del POS (es: PLC della filler, PLC del processo)
         MacCodeList (list): lista dei codici commerciali di macchina (CA1 etc , per mettere tilde) 
         HmiVer (int): 0- mette la 'V;'
         contr_tags : struttura tag controllore se necessario usarla (es: il phmsginput del ciclo dbload è nelle tag controllore)

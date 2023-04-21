@@ -2,6 +2,7 @@ import os
 import cfg
 import shutil
 from termcolor import colored
+import json
 
 # IntouchEncoding = 'utf-16-le'                       # codifica della maggior parte dei file ini
 
@@ -119,3 +120,12 @@ def find_between( s, first, last ):
         return s[start:end]
     except ValueError:
         return ''
+
+def JsonPrettify(Dict: dict):
+    """stampa un dizionario in modo leggibile su terminale
+
+    Args:
+        Dict (dict): un dizionario da stampare
+    """
+    pretty = json.dumps(Dict,indent=4)
+    print (pretty)
