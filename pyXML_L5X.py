@@ -213,6 +213,10 @@ else:
                  # UHT Rinse
                 for item in Coppie['SPECIAL2.UHT'].items():
                     fnz.CycleDesc('ECOFLUX_H_THERM','D50_00',item[0],item[1],'UHT','UHTPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
+                
+                 # UDX Drain
+                for item in Coppie['SPECIAL1.UDX'].items():
+                    fnz.CycleDesc('ECOFLUX_H_DOX','D55_00',item[0],item[1],'UDX','UDXPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
 
             else:
 
