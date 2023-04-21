@@ -20,7 +20,9 @@
 
 - [x] gestire la tilde (~) davanti ad alcuni strumenti (es: ~CA1PTK51)
 
-- [ ] il phaseMsgInput di SH1 ha un problema nel plc: la struttura PhaseMessageInput si chiama MessageInput...prevedere questa eccezione
+- [ ] il phaseMsgInput di SH1 ha un problema nel plc: la struttura PhaseMessageInput si chiama MessageInput...prevedere questa eccezione!!!
+
+- [ ] HEPA1 non trova i commenti PhaseMsgInput ma ci sono (sono con _SVHP ma ci sono e ho provato mettendo _SVHP nel file CyclePhMsg.ini )
 
 - [ ] fnz.CycleDesc: nella parte cyclemsg prendere anche gli eventuali a capo (esempio ciclo uht production prende solo la prima riga del commento)
 

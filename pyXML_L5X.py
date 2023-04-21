@@ -128,7 +128,7 @@ else:
   
     if stdargs.cycles:
 
-        oldschool = 1 # se metti nuova cambia il file CyclesPhMsg.ini
+        oldschool = 0 # se metti 1 cambia il file CyclesPhMsg.ini
 
         #ricavo la lista dei nomi commerciali delle macchine da SETUP_HMI.ini (es: CA1)
         MacList = cfg.INIGETMacCodes() 
@@ -153,7 +153,7 @@ else:
 
 
 
-            if oldschool ==0:
+            if oldschool ==1:
                 print ('USING ' + colored('OLD SCHOOL','red') + ' FOR CYCLE')
                 #################
                 # SANIFICAZIONE #

@@ -429,6 +429,9 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     else:
         PhaseMsgDesc = ''
 
+    if PhaseMsgDesc == '':
+        PhaseMsgDesc = '! NO COMMENTS IN PLC TAGS !'
+
     # se il file esiste lo cancello        
     try:
         os.remove(OutDir + OutFile)
