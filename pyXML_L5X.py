@@ -172,7 +172,16 @@ else:
                             ctl_tags_fake = None
 
                     fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,MacList,verHMI,ctl_tags_fake) #item[0] = nomeCiclo, item[1] = struct PhMSG
-                # /SANIFICAZIONE #
+
+                # UHT
+                for item in Coppie['SANIFICAZIONE.UHT'].items():
+                    fnz.CycleDesc('ECOFLUX_H_THERM',PLCSanCycleVar,item[0],item[1],'UHT','UHTPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
+
+                # UDX
+                for item in Coppie['SANIFICAZIONE.UDX'].items():
+                    fnz.CycleDesc('ECOFLUX_H_DOX',PLCSanCycleVar,item[0],item[1],'UDX','UDXPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
+
+                 # /SANIFICAZIONE #
 
                 ##############
                 # PRODUZIONE #
@@ -184,7 +193,27 @@ else:
                 # SH1 #
                 for item in Coppie['PRODUZIONE.SH1'].items():
                     fnz.CycleDesc('STERILCAP_VHP_L',PLCProdCycleVar,item[0],item[1],'SH1','SH1Phase_'+ item[0] + '.ENG',programs,MacList,verHMI)
+                
+                # UHT 
+                for item in Coppie['PRODUZIONE.UHT'].items():
+                    fnz.CycleDesc('ECOFLUX_H_THERM',PLCProdCycleVar,item[0],item[1],'UHT','UHTPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
+                
+                # UDX
+                for item in Coppie['PRODUZIONE.UDX'].items():
+                    fnz.CycleDesc('ECOFLUX_H_DOX',PLCProdCycleVar,item[0],item[1],'UDX','UDXPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
                 # /PRODUZIONE #
+
+                ###########
+                # SPECIAL #
+                ###########
+                # UHT Tkw02 sterilization
+                for item in Coppie['SPECIAL1.UHT'].items():
+                    fnz.CycleDesc('ECOFLUX_H_THERM','D80_00',item[0],item[1],'UHT','UHTPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
+
+                 # UHT Rinse
+                for item in Coppie['SPECIAL2.UHT'].items():
+                    fnz.CycleDesc('ECOFLUX_H_THERM','D50_00',item[0],item[1],'UHT','UHTPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
+
             else:
 
                                                              #####   TEST ##############

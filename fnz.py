@@ -275,7 +275,7 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
     try:
         programs[NomePrg].tags[NomeStruct][NomeCiclo]
     except:
-        print('Cycle ' + NomeStruct + '.' + NomeCiclo + ' Not Found in PLC')
+        print(colored('INFO -> Cycle ' + NomeStruct + '.' + NomeCiclo + ' Not Found in PLC program ' + NomePrg,cfg.ColorInfo))
         return False
 
     ###########

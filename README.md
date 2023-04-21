@@ -22,6 +22,8 @@
 
 - [ ] il phaseMsgInput di SH1 ha un problema nel plc: la struttura PhaseMessageInput si chiama MessageInput...prevedere questa eccezione
 
+- [ ] fnz.CycleDesc: nella parte cyclemsg prendere anche gli eventuali a capo (esempio ciclo uht production prende solo la prima riga del commento)
+
 ## SCOPO
 
 Automazione creazione files .ENG per HMI partendo da `.L5X` del progetto PLC RSLogix5000
