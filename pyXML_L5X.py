@@ -225,7 +225,7 @@ else:
 
                 ## TENTO DI UNIFICARE.....
                 print ('USING ' + colored('NEW SCHOOL','red') + ' FOR CYCLE')
-
+                ctl_tags_fake = None
                 CyclesDict = cfg.CyclesGetNames()
 
                 
@@ -252,10 +252,16 @@ else:
                         CYCcycleVar = utils.find_between(ref,CYCprogram + '.', '.')    # da Cycles.INI
                         
                         NomeCiclo = ref.split('.')[2]                                  # dal reference di Cycles.INI
-                        
+
                         PhaseMsgStruct = cyc.split(';')[2]                             # da CyclesPhMsg.ini
                         
-                        # Mac = utils.left(indiceNome,3)
+                        ## CONDIZIONI PARTICOLARI
+                        if NomeCiclo == 'SipFiller' or (lstProgrammi == programs and NomeCiclo == 'Cip') or NomeCiclo == 'DBLoad':
+                            PhaseMsgStruct = cyc.split(';')[2] + '_'+ cfg.INIREAD('fx_cx')
+                            if NomeCiclo == 'DBLoad':    
+                                ctl_tags_fake = ctl_tags                          # condizione speciale perché il phasemsginput è nelle tag a livello controllore
+                            else:
+                                ctl_tags_fake = None
 
                         # MALEDETTO CASE SENSITIVE!
                         if NomeCiclo == 'Cip':
@@ -265,13 +271,11 @@ else:
                         if NomeCiclo == 'DBunload':
                             NomeCiclo = 'DBUnLoad'
 
-                        fnz.CycleDesc(CYCprogram,CYCcycleVar,NomeCiclo,PhaseMsgStruct,Mac, Mac + '_Phase_' + NomeCiclo + '.ENG', lstProgrammi,MacList,verHMI)
+                        fnz.CycleDesc(CYCprogram,CYCcycleVar,NomeCiclo,PhaseMsgStruct,Mac, Mac + '_Phase_' + NomeCiclo + '.ENG', lstProgrammi,MacList,verHMI,ctl_tags_fake)
                                    
                                    
                                      #####          /TEST       #######################
 
-
-                
 
             print ('INFO -> FILES GENERATED IN FOLDER ' + colored(os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT+ cfg.bars,cfg.ColorInfo))
             #sys.exit(0)
