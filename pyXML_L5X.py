@@ -68,18 +68,22 @@ else:
         if file.endswith(".L5X"):
             FilL5X = cfg.PLCFilFolder + file
 
-    # RICAVO .L5X della filler
+    # RICAVO .L5X del processo
     ProL5X = None
     for file in os.listdir(cfg.PLCProFolder):
         if file.endswith(".L5X"):
             ProL5X = cfg.PLCProFolder + file
 
+    
+    # RICAVO .L5X della STERILCAPVHP
+    STCL5X = None
+    for file in os.listdir(cfg.PLCStcFolder):
+        if file.endswith(".L5X"):
+            STCL5X = cfg.PLCStcFolder + file
+    
+
     # RICAVO CFG_PAGE.ini
     CFGPAGEini = cfg.CFGPAGEiniFile
-    # CFGPAGEini = None
-    # for file in os.listdir(cfg.HMIFolder):
-    #     if file.endswith(".INI"):
-    #         CFGPAGEini = cfg.HMIFolder + file
     
     # RICAVO IOMESSAGES_PLxxxx.ENG
     IOMSGENG = None
@@ -113,13 +117,37 @@ else:
     except:
         print(colored('PROCESS L5X not supplied!',cfg.ColorAlarm))
 
+    #### PLC STERILCAP #####
+    try:
+        STC_prj = l5x.Project(STCL5X)
+        STC_ctl_tags = STC_prj.controller.tags
+        STC_tag_names = STC_ctl_tags.names
+        STC_programs = STC_prj.programs
+        STC_programs_names = STC_programs.names
+    except:
+        print(colored('STERILCAP L5X not supplied!',cfg.ColorAlarm))
+
+
     ####################
     # LISTA NOMI CICLI #
     ####################
    
     if stdargs.cycleslist:
-        fnz.ListaCicli(cfg.INIREAD('plcprodcyclevar'),cfg.INIREAD('filecicliprod'),'FILLER',programs) # Cicli Prod
-        fnz.ListaCicli(cfg.INIREAD('plcsancyclevar'),cfg.INIREAD('fileciclisan'),'FILLER',programs)   # Cicli San
+        try:
+            fnz.ListaCicli(cfg.INIREAD('plcprodcyclevar'),cfg.INIREAD('filecicliprod'),'FILLER',programs) # Cicli Prod
+            fnz.ListaCicli(cfg.INIREAD('plcsancyclevar'),cfg.INIREAD('fileciclisan'),'FILLER',programs)   # Cicli San
+        except:
+            print('CYCLELIST: not found')
+
+        ##TEST STERILCAP VHP STAND ALONE
+        try:
+            fnz.ListaCicli(cfg.INIREAD('plcsancyclevar'),cfg.INIREAD('stcfileciclisan'),'STERILCAP_VHP_L',STC_programs)
+        except Exception as e:
+            print(colored( 'CYCLELIST: Sterilcap VHP no Sanification Cycles '+ str(e),cfg.ColorAlarm))
+        try:
+            fnz.ListaCicli(cfg.INIREAD('plcprodcyclevar'),cfg.INIREAD('stcfilecicliprod'),'STERILCAP_VHP_L',STC_programs)
+        except Exception as e:
+            print(colored('CYCLELIST: Sterilcap VHP no Production Cycles ' + str(e),cfg.ColorAlarm))
    
 
     ##########
@@ -229,7 +257,6 @@ else:
                 CyclesDict = cfg.CyclesGetNames()
 
                 
-                
                 for indiceNome in CyclesDict.keys():
                     Mac = utils.left(indiceNome,3) # le prime tre lettere di ogni sezione di Cycles.INI
 
@@ -327,7 +354,6 @@ else:
             
                 if (mac is not None) and (mac != '') and utils.left(mac,1) != cfg.DisablingChar :      # salto eventuali buchi e mac disabilitate
                     lista_macc.append(mac) # aggiungo alla lista macchine
-
             
             # creo la cartella temporanea di uscita se non esiste
             OutDir = os.getcwd() + cfg.bars + cfg.NomeCartellaOUT + cfg.bars

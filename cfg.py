@@ -35,6 +35,7 @@ CFGPAGEiniFile = HMIFolder + 'CFG_PAGE.INI'
 CYCLESiniFile = HMIFolder + 'Cycles.INI'
 PLCFilFolder = INIFolder  + 'PLC' + bars + 'FILLER' + bars
 PLCProFolder = INIFolder  + 'PLC' + bars + 'PROCESSO' + bars
+PLCStcFolder = INIFolder  + 'PLC' + bars + 'STERILCAP' + bars
 CFGFile = INIFolder + 'Configuration.ini'                       # File di configurazione
 fileHELP = INIFolder + 'help.ini'                               # File di Help
 PhaseINI = INIFolder + 'CyclesPhMsg.ini'                        # File associazione Ciclo -> Struttura PhaseMSG
