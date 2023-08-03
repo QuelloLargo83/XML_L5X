@@ -1,5 +1,4 @@
 import cfg
-import xmltodict
 import utils
 
 XML_FILE = cfg.PLCStcFolder + cfg.bars + 'P16378_PLC_00P.L5X'
