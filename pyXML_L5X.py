@@ -31,6 +31,7 @@ args.add_argument("-v", "--version",action="store_true", help = "show program ve
 args.add_argument("--cycleslist",	action="store_true", help = "extract cycle list")
 args.add_argument("--cycles",	    action="store_true", help = "extract PHASES")
 args.add_argument("--iomsg",	    action="store_true", help = "extract IOMESSAGES")
+args.add_argument("--taglist",      action="store_true", help = "extract TAGNAMELISTLANG")
 stdargs = args.parse_args()
 
 
@@ -425,9 +426,30 @@ else:
             print(colored('HMI or PLC files not supplied!',cfg.ColorAlarm))
 
 
-    ####################
-    # TAG CONTROLLORE  #
-    ####################
+    ####################################
+    # GENERAZIONE TAGNAMELISTLANG.ENG  #
+    ####################################
+
+    if stdargs.taglist:
+        #FILLER
+        try:
+            fnz.ExportTagsComments(ctl_tags,os.getcwd() + cfg.bars +  'TAGNAMELISTLANG' +cfg.bars +'TagNameListLang_PLxxx_FIL.ENG')
+        except:
+            pass
+        #PROCESSO
+        try:
+            fnz.ExportTagsComments(PROC_ctl_tags,os.getcwd() + cfg.bars + 'TAGNAMELISTLANG' +cfg.bars + 'TagNameListLang_PLxxx_PRO.ENG')
+        except:
+            pass
+        #STERILCAP
+        try:
+            fnz.ExportTagsComments(STC_ctl_tags,os.getcwd() + cfg.bars + 'TAGNAMELISTLANG' +cfg.bars + 'TagNameListLang_PLxxx_STC.ENG')
+        except:
+            pass
+
+####################
+# TAG CONTROLLORE  #
+####################
 
     #stampa lista tag a livello controllore
 # with open(fileControllerTags,'w',encoding=IntouchEncoding) as f:

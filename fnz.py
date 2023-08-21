@@ -452,3 +452,39 @@ def CycleDesc(NomePrg,NomeStruct,NomeCiclo,NomeStructPhMsg,MacCyc,OutFile,progra
         f.write(PhaseMsgDesc)
         f.write('\n')
         f.write('\n')
+
+
+#######################
+# TAGNAMELIST LANG ####
+#######################
+
+def ExportTagsComments(tags,outfile):
+    """crea un file di testo con i commenti delle tags (TagNameListLang)
+
+    Args:
+        tags (ElementDict): variabili da cui ricavare i commenti dal plc
+        outfile (str): percorso completo del file di output
+    """
+    if tags is not None:
+        # lista di tutti le possibili iniziali delle variabili con commento
+        deviceCodes = ['CONC','DGTA','DGTL','DGTH','FLWL','FLWN','FLWV','LVLM','MMOD','MOTR','PRSM','PRSP','TEMP','VALV','VMOD','VOLU','WGTG']
+
+        # lista con le variabili a livello controllore
+        nomi_variabili = tags.names
+        
+        # cancello il file di output se già esiste
+        if os.path.exists(outfile):
+            os.remove(outfile)
+
+        # scrivo nome della sezione nel file
+        utils.OutFileUCS2LeBom(outfile,'[TAGNAMELISTLANG]')
+
+        for n in nomi_variabili:
+            # la lunghezza delle variabili è 17 (esempio MOTR_SH1_D61PPX01)
+            if utils.left(n,4) in deviceCodes and len(n)==17:
+                line = n +' = ' + tags[n].description.replace('\n',' ')
+                utils.OutFileUCS2LeBom(outfile,line)
+
+        print(colored('Tags comment printed to file '+ outfile,cfg.ColorInfo))
+    else:
+        print(colored('ExportTagsComments: Tag structure is not present!',cfg.ColorAlarm))

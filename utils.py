@@ -55,6 +55,18 @@ def OutFileUTF16(fileOut,Input):
     with open(fileOut,'a',encoding=cfg.IntouchEncoding) as f:
         f.write(Input + '\n')
 
+def OutFileUCS2LeBom(fileOut,Input):
+    """Crea un file di output in utf-16-le e scrive la stringa passata
+       Se il file non esiste lo crea
+       le stringhe vengono aggiunte al file
+
+    Args:
+        fileOut (str): Nome File OutPut
+        Input (str): stringa da stampare
+    """
+    with open(fileOut,'a',encoding='utf-16') as f:
+        f.write(Input + '\n')
+
 
 
 def DeleteFilesInFolder(folder):
