@@ -1,31 +1,5 @@
 ![pyversion](https://img.shields.io/badge/Python%20-3.10.3-green)
 
-## SVILUPPI E CONSIDERAZIONI
-
-- Quando la variabile a PLC non corrisponde a SignalFILfrom_MAC_ viene gestito a sw 
-  una sezione per segnali di scambio non ordinari:
-	es:
-	
-       - `CFT` indica cio che su PLC è `BFT`
-	   - `UTH` ha `SignalUTHToFIL` e `SignalFILToPRO.UTH`
-
-- [x] Fare in modo che compili sempre SX1--SX28 e DX1 --- DX28 anche se ci sono spazi vuoti
-
-- [x] gestire per le Analogiche la parte finale con [TIPO]..K[n]   esempio ..TIMS..K100
-
-- [x] i segnali di scambio delle macchine sono un po' in CFG_PAGE.ini e un po' in IOMESSAGES.ENG
-      cercare di unirli in modo furbo
-
-- [ ] gestire il titolo della della parte sx con nomi sensati
-
-- [x] gestire la tilde (~) davanti ad alcuni strumenti (es: ~CA1PTK51)
-
-- [ ] il phaseMsgInput di SH1 ha un problema nel plc: la struttura PhaseMessageInput si chiama MessageInput...prevedere questa eccezione!!!
-
-- [ ] HEPA1 non trova i commenti PhaseMsgInput ma ci sono (sono con _SVHP ma ci sono e ho provato mettendo _SVHP nel file CyclePhMsg.ini )
-
-- [ ] fnz.CycleDesc: nella parte cyclemsg prendere anche gli eventuali a capo (esempio ciclo uht production prende solo la prima riga del commento)
-
 ## SCOPO
 
 Automazione creazione files .ENG per HMI partendo da `.L5X` del progetto PLC RSLogix5000
@@ -155,3 +129,29 @@ La lettura del file .L5X è basata sul pacchetto [l5x](https://github.com/jvalen
 testato sulla [Release_v1.5](Release_v1.5)
 
 [README_l5x](https://github.com/jvalenzuela/l5x#readme)
+
+## SVILUPPI E CONSIDERAZIONI
+
+- Quando la variabile a PLC non corrisponde a SignalFILfrom_MAC_ viene gestito a sw 
+  una sezione per segnali di scambio non ordinari:
+	es:
+	
+       - `CFT` indica cio che su PLC è `BFT`
+	   - `UTH` ha `SignalUTHToFIL` e `SignalFILToPRO.UTH`
+
+- [x] Fare in modo che compili sempre SX1--SX28 e DX1 --- DX28 anche se ci sono spazi vuoti
+
+- [x] gestire per le Analogiche la parte finale con [TIPO]..K[n]   esempio ..TIMS..K100
+
+- [x] i segnali di scambio delle macchine sono un po' in CFG_PAGE.ini e un po' in IOMESSAGES.ENG
+      cercare di unirli in modo furbo
+
+- [ ] gestire il titolo della della parte sx con nomi sensati
+
+- [x] gestire la tilde (~) davanti ad alcuni strumenti (es: ~CA1PTK51)
+
+- [ ] il phaseMsgInput di SH1 ha un problema nel plc: la struttura PhaseMessageInput si chiama MessageInput...prevedere questa eccezione!!!
+
+- [ ] HEPA1 non trova i commenti PhaseMsgInput ma ci sono (sono con _SVHP ma ci sono e ho provato mettendo _SVHP nel file CyclePhMsg.ini )
+
+- [ ] fnz.CycleDesc: nella parte cyclemsg prendere anche gli eventuali a capo (esempio ciclo uht production prende solo la prima riga del commento)
