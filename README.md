@@ -61,7 +61,7 @@ prendere i seguenti files:
 
 ### FUNZIONI
 ----------------------
-Fare riferimento al file di [HELP](RES/help.ini) o lanciare il comando senza switch
+Lanciare il programma senza switch per ottenere l'help
 
 1 - IOMESSAGE
 
