@@ -431,19 +431,29 @@ else:
     ####################################
 
     if stdargs.taglist:
+
+        # folder di uscita viene creato se non esiste
+        OutDir = os.getcwd() + cfg.bars + cfg.NomeCartTagNameList + cfg.bars
+        if not os.path.exists (OutDir):
+            os.makedirs(OutDir)
+
         #FILLER
         try:
-            fnz.ExportTagsComments(ctl_tags,os.getcwd() + cfg.bars +  'TAGNAMELISTLANG' +cfg.bars +'TagNameListLang_PLxxx_FIL.ENG')
+            print(OutDir)
+            # fnz.ExportTagsComments(ctl_tags,os.getcwd() + cfg.bars +  'TAGNAMELISTLANG' +cfg.bars +'TagNameListLang_PLxxx_FIL.ENG')
+            fnz.ExportTagsComments(ctl_tags, OutDir +'TagNameListLang_PLxxx_FIL.ENG')
         except:
             pass
         #PROCESSO
         try:
-            fnz.ExportTagsComments(PROC_ctl_tags,os.getcwd() + cfg.bars + 'TAGNAMELISTLANG' +cfg.bars + 'TagNameListLang_PLxxx_PRO.ENG')
+            # fnz.ExportTagsComments(PROC_ctl_tags,os.getcwd() + cfg.bars + 'TAGNAMELISTLANG' +cfg.bars + 'TagNameListLang_PLxxx_PRO.ENG')
+            fnz.ExportTagsComments(PROC_ctl_tags, OutDir + 'TagNameListLang_PLxxx_PRO.ENG')
         except:
             pass
         #STERILCAP
         try:
-            fnz.ExportTagsComments(STC_ctl_tags,os.getcwd() + cfg.bars + 'TAGNAMELISTLANG' +cfg.bars + 'TagNameListLang_PLxxx_STC.ENG')
+            # fnz.ExportTagsComments(STC_ctl_tags,os.getcwd() + cfg.bars + 'TAGNAMELISTLANG' +cfg.bars + 'TagNameListLang_PLxxx_STC.ENG')
+            fnz.ExportTagsComments(STC_ctl_tags, OutDir + 'TagNameListLang_PLxxx_STC.ENG')
         except:
             pass
 

@@ -55,6 +55,7 @@ IntouchEncoding = 'utf-16-le'                       # codifica della maggior par
 NomeCartellaOUT = 'IO_OUT_APP'                          # cartella appoggio per coppie di file IOMESSAGE in cwd
 NomeCartellaFINALE = 'IO_OUT'                 # cartella con risultato finale in cwd per IOMESSAGE
 NomeCartPhasesOUT = 'PHASES_OUT'                    # cartella in cui mettere i file PHASES
+NomeCartTagNameList = 'TAGNAMELISTLANG'             # cartella in cui mettere i file TagNameListLang
 
 ##########
 # COLORS #
