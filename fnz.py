@@ -467,7 +467,7 @@ def ExportTagsComments(tags,outfile):
     """
     if tags is not None:
         # lista di tutti le possibili iniziali delle variabili con commento
-        deviceCodes = ['CONC','DGTA','DGTL','DGTH','FLWL','FLWN','FLWV','LVLM','MMOD','MOTR','PRSM','PRSP','TEMP','VALV','VMOD','VOLU','WGTG']
+        deviceCodes = ['CONC','DGTA','DGTL','DGTH','FLWL','FLWN','FLWV','LVLM','LVLT','MMOD','MOTR','PRSM','PRSP','TEMP','VALV','VMOD','VOLU','WGTG']
 
         # lista con le variabili a livello controllore
         nomi_variabili = tags.names
