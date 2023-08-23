@@ -467,7 +467,7 @@ def ExportTagsComments(tags,outfile):
     """
     if tags is not None:
         # lista di tutti le possibili iniziali delle variabili con commento
-        deviceCodes = ['CONC','DGTA','DGTL','DGTH','FLWL','FLWN','FLWV','LVLM','LVLT','MMOD','MOTR','PRSM','PRSP','TEMP','VALV','VMOD','VOLU','WGTG']
+        deviceCodes = ['CONC','DGTA','DGTL','DGTH','DGTM','FLWL','FLWN','FLWV','LVLM','LVLT','MMOD','MOTR','PRSM','PRSP','TEMP','VALV','VMOD','VOLU','WGTG','SPDH']
 
         # lista con le variabili a livello controllore
         nomi_variabili = tags.names
@@ -482,7 +482,11 @@ def ExportTagsComments(tags,outfile):
         for n in nomi_variabili:
             # la lunghezza delle variabili è 17 (esempio MOTR_SH1_D61PPX01)
             if utils.left(n,4) in deviceCodes and len(n)==17:
-                line = n +' = ' + tags[n].description.replace('\n',' ')
+                comment = tags[n].description.replace('\n',' ')
+                # rimuovo le prime tre lettere e l'underscore (es SH1_) dal commento
+                if comment[3] == '_':
+                    comment = utils.mid(comment,4,100)
+                line = n +' = ' + comment
                 utils.OutFileUCS2LeBom(outfile,line)
 
         print(colored('Tags comment printed to file '+ outfile,cfg.ColorInfo))
