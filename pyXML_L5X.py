@@ -439,20 +439,16 @@ else:
 
         #FILLER
         try:
-            print(OutDir)
-            # fnz.ExportTagsComments(ctl_tags,os.getcwd() + cfg.bars +  'TAGNAMELISTLANG' +cfg.bars +'TagNameListLang_PLxxx_FIL.ENG')
-            fnz.ExportTagsComments(ctl_tags, OutDir +'TagNameListLang_PLxxx_FIL.ENG')
+           fnz.ExportTagsComments(ctl_tags, OutDir +'TagNameListLang_PLxxx_FIL.ENG')
         except:
             pass
         #PROCESSO
         try:
-            # fnz.ExportTagsComments(PROC_ctl_tags,os.getcwd() + cfg.bars + 'TAGNAMELISTLANG' +cfg.bars + 'TagNameListLang_PLxxx_PRO.ENG')
             fnz.ExportTagsComments(PROC_ctl_tags, OutDir + 'TagNameListLang_PLxxx_PRO.ENG')
         except:
             pass
         #STERILCAP
         try:
-            # fnz.ExportTagsComments(STC_ctl_tags,os.getcwd() + cfg.bars + 'TAGNAMELISTLANG' +cfg.bars + 'TagNameListLang_PLxxx_STC.ENG')
             fnz.ExportTagsComments(STC_ctl_tags, OutDir + 'TagNameListLang_PLxxx_STC.ENG')
         except:
             pass
