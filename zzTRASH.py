@@ -72,7 +72,7 @@ def GetPhaseComments(FileL5X,StructCicli,DesinenzaStruct,NomePOSPlc,FileOut):
     CycList =  list(nomi_cicli)
 
 #######   
-    # scorro i nomi dei cicli e li certo nel file l5x
+    # scorro i nomi dei cicli e li cerco nel file l5x
     comments = {}
     for cycle in CycList:
         nomeCiclo =  cycle.replace('\n','')
