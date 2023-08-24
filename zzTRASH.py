@@ -1,10 +1,15 @@
+####
+## QUESTA PAPPARDELLA RICAVA I COMMENTI DEI .PHASE DALL'HEADER DEL RUNG
+##                  ##   xxxx.Phase - MESSAGE FOR HMI ##
+
 import l5x
 import cfg
 
+#### DATI DI PROVA ##
 FilL5X = 'F:\SCRIPTING\XML_L5X\INI\PLC\FILLER\P16255_PLC_02C_M18.L5X'
 prj = l5x.Project(FilL5X)
 programs = prj.programs
-
+#####################
 
 
 
@@ -22,13 +27,14 @@ def GetPhCommentList(textToSearch,l5xFile):
 
     Args:
         textToSearch (str): es: ## D40_00.Production.Phase - MESSAGE FOR HMI ##
-        l5xFile (str): percorso in cui cercare la stringa
+        l5xFile (str): percorso completo del file in cui cercare la stringa
     """
 
     # ricavo il numero della linea all'interno del file in inizia la struttura dei commenti
     lnum = line_num_for_phrase_in_file(textToSearch,l5xFile)
 
     with open(l5xFile,encoding='utf8') as f:
+
         # prendo un area dopo la parola in cui ragionevolmente ci sono tutte le fasi
         lineList = f.readlines()[lnum:lnum+100]
         
@@ -40,8 +46,7 @@ def GetPhCommentList(textToSearch,l5xFile):
         return(lineList[0:commentIdx])
 
 
-
-def GetPhaseComments(FileL5X,StructCicli,DesinenzaStruct,NomePOSPlc):
+def GetPhaseComments(FileL5X,StructCicli,DesinenzaStruct,NomePOSPlc,FileOut):
     """Ricava un dizionario le cui chiavi sono i cicli (es: D40_00.Production.Phase) e i valori sono i commenti
        dal file l5x prendendo dai commenti dei rung
        ATTENZIONE: ad agosto 2023 nei commenti ci sono solo i .Phase
@@ -76,15 +81,26 @@ def GetPhaseComments(FileL5X,StructCicli,DesinenzaStruct,NomePOSPlc):
         CommentStruct = GetPhCommentList(text,FileL5X)
         if CommentStruct: # se manca la stringa nel posto in cui me lo aspetto, la struttura è vuota e quindi non la cago
             comments[StructCicli +'.'+ nomeCiclo +'.'+ DesinenzaStruct] = CommentStruct[1:] #ogni chiave è il nome del ciclo piu caratteri per riconoscerla 
-        
-    return comments
+   
+    # return comments
   
+    # pubblico su file
+    with open(FileOut,'w',encoding=cfg.IntouchEncoding) as f:
+        for key,values in comments.items(): # nei key ci sono i nomi dei cicli
+            f.write('\n')
+            f.write('[CYCL_xxx_'+ key.split('.')[1] +'_Phase]=Program:'+ NomePOSPlc + '.'+ key +'\n') # Header
+            f.write('0= \n') # la prima fase di ogni ciclo
+            for v in values:
+                f.write(v.replace('\n','').replace(']]>','').strip()) # rimuovo i caratteri che non mi servono
+                f.write('\n')
+            
+            
 
 
+# cicli produzione
+GetPhaseComments (FilL5X,cfg.INIREAD('plcprodcyclevar'),'Phase','FILLER','TEST_OUT_PHASE_prod.ENG')
+
+# cicli sanificazione/sterilizzazione
+GetPhaseComments (FilL5X,cfg.INIREAD('plcsancyclevar'),'Phase','FILLER','TEST_OUT_PHASE_san.ENG')
 
 
-
-ProdPhase = GetPhaseComments (FilL5X,cfg.INIREAD('plcprodcyclevar'),'Phase','FILLER')
-
-
-print(ProdPhase)
