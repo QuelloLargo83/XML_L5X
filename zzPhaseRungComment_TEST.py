@@ -4,10 +4,11 @@
 
 import l5x
 import cfg
+import utils
 
 #### DATI DI PROVA ##
-FilL5X = 'F:\SCRIPTING\XML_L5X\INI\PLC\FILLER\P16255_PLC_02C_M18.L5X'
-prj = l5x.Project(FilL5X)
+l5XFile = 'F:\SCRIPTING\XML_L5X\INI\PLC\FILLER\P16255_PLC_02C_M18.L5X'
+prj = l5x.Project(l5XFile)
 programs = prj.programs
 #####################
 
@@ -46,7 +47,7 @@ def GetPhCommentList(textToSearch,l5xFile):
         return(lineList[0:commentIdx])
 
 
-def GetPhaseComments(FileL5X,StructCicli,DesinenzaStruct,NomePOSPlc,FileOut):
+def GetPhaseComments(FileL5X,StructCicli,DesinenzaStruct,NomePOSPlc,FileOut,MacPre):
     """Ricava un dizionario le cui chiavi sono i cicli (es: D40_00.Production.Phase) e i valori sono i commenti
        dal file l5x prendendo dai commenti dei rung
        ATTENZIONE: ad agosto 2023 nei commenti ci sono solo i .Phase
@@ -88,19 +89,18 @@ def GetPhaseComments(FileL5X,StructCicli,DesinenzaStruct,NomePOSPlc,FileOut):
     with open(FileOut,'w',encoding=cfg.IntouchEncoding) as f:
         for key,values in comments.items(): # nei key ci sono i nomi dei cicli
             f.write('\n')
-            f.write('[CYCL_xxx_'+ key.split('.')[1] +'_Phase]=Program:'+ NomePOSPlc + '.'+ key +'\n') # Header
+            f.write('[CYCL_' + MacPre + '_'+ key.split('.')[1] +'_Phase]=Program:'+ NomePOSPlc + '.'+ key +'\n') # Header
             f.write('0= \n') # la prima fase di ogni ciclo
             for v in values:
                 f.write(v.replace('\n','').replace(']]>','').strip()) # rimuovo i caratteri che non mi servono
                 f.write('\n')
-            
-            
 
+################            
+            
 
 # cicli produzione
-GetPhaseComments (FilL5X,cfg.INIREAD('plcprodcyclevar'),'Phase','FILLER','TEST_OUT_PHASE_prod.ENG')
-
+GetPhaseComments (l5XFile,cfg.INIREAD('plcprodcyclevar'),'Phase','FILLER','TEST_OUT_PHASE_prod.ENG','xxx')
 # cicli sanificazione/sterilizzazione
-GetPhaseComments (FilL5X,cfg.INIREAD('plcsancyclevar'),'Phase','FILLER','TEST_OUT_PHASE_san.ENG')
+GetPhaseComments (l5XFile,cfg.INIREAD('plcsancyclevar'),'Phase','FILLER','TEST_OUT_PHASE_san.ENG','xxx')
 
 
