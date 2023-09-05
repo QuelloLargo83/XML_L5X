@@ -157,7 +157,7 @@ else:
   
     if stdargs.cycles:
 
-        oldschool = 0 # se metti 1 cambia il file CyclesPhMsg.ini
+        # oldschool = 0 # se metti 1 cambia il file CyclesPhMsg.ini
 
         #ricavo la lista dei nomi commerciali delle macchine da SETUP_HMI.ini (es: CA1)
         MacList = cfg.INIGETMacCodes() 
@@ -180,129 +180,50 @@ else:
             # # leggo Associazione tra Nome Ciclo e struttura del Phase Message
             Coppie = cfg.INIREAD_COPPIE(cfg.PhaseINI)
 
+                
 
-
-            if oldschool ==1:
-                print ('USING ' + colored('OLD SCHOOL','red') + ' FOR CYCLE')
-                #################
-                # SANIFICAZIONE #
-                #################
-                ctl_tags_fake = None
-                for item in Coppie['SANIFICAZIONE'].items(): 
-
-                    # INTERCETTO I CICLI CHE HANNO PHASE MESSAGE DIPENDENTE DAL SUFFISSO CX o FX CHE PESCO DA INI
-                    if item[0] == 'SipFiller' or item[0] == 'CIP' or item[0] == 'DBLoad':
-                        item = list(item) # per modificare devo convertire in list (tupla non è modificabile)
-                        item[1] = item[1] + '_'+ cfg.INIREAD('fx_cx')
-                        #item = tuple(item)
-                        if item[0] == 'DBLoad':  # condizione speciale perché il phasemsginput è nelle tag a livello controllore
-                            ctl_tags_fake = ctl_tags
+            ## RICAVO I FILES CON LE FASI
+    
+            ctl_tags_fake = None
+            CyclesDict = cfg.CyclesGetNames()
+            
+            for indiceNome in CyclesDict.keys():
+                Mac = utils.left(indiceNome,3) # le prime tre lettere di ogni sezione di Cycles.INI
+                # decido qualche PLC utilizzare per leggere i cicli
+                if Mac in ['CLE','UTH','UDX']:
+                    lstProgrammi = PROC_programs
+                else:
+                    lstProgrammi = programs
+                # Unisco in un unica tabella le info da passare alla funzione che provengono da Cycles.ini e CyclesPhMsg.ini
+                # si tratta di un join tipo SQL tra due liste e si basa sull'uguaglianza tra il nome del ciclo nel reference e il nome del file CyclePhMsgBK.ini
+                try:
+                    joined =  [i + ';' + j[1] for i in CyclesDict[indiceNome] for j in Coppie[Mac].items() if i.partition('.')[2].partition('.')[2].lower() == j[0].lower()]
+                except (KeyError):
+                    continue # se non trovo corrispondenze in uno dei due file vai comunque avanti
+                for cyc in joined:
+                    ref = cyc.split(cfg.SepCycle)[1]
+                    CYCprogram = utils.find_between(ref,'Program:','.')            # da Cycles.INI
+                    CYCcycleVar = utils.find_between(ref,CYCprogram + '.', '.')    # da Cycles.INI
+                    
+                    NomeCiclo = ref.split('.')[2]                                  # dal reference di Cycles.INI
+                    PhaseMsgStruct = cyc.split(';')[2]                             # da CyclesPhMsg.ini
+                    
+                    ## CONDIZIONI PARTICOLARI
+                    if NomeCiclo == 'SipFiller' or (lstProgrammi == programs and NomeCiclo == 'Cip') or NomeCiclo == 'DBLoad':
+                        PhaseMsgStruct = cyc.split(';')[2] + '_'+ cfg.INIREAD('fx_cx')
+                        if NomeCiclo == 'DBLoad':    
+                            ctl_tags_fake = ctl_tags                          # condizione speciale perché il phasemsginput è nelle tag a livello controllore
                         else:
                             ctl_tags_fake = None
-
-                    fnz.CycleDesc('FILLER',PLCSanCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,MacList,verHMI,ctl_tags_fake) #item[0] = nomeCiclo, item[1] = struct PhMSG
-
-                # UHT
-                for item in Coppie['SANIFICAZIONE.UHT'].items():
-                    fnz.CycleDesc('ECOFLUX_H_THERM',PLCSanCycleVar,item[0],item[1],'UHT','UHTPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
-
-                # UDX
-                for item in Coppie['SANIFICAZIONE.UDX'].items():
-                    fnz.CycleDesc('ECOFLUX_H_DOX',PLCSanCycleVar,item[0],item[1],'UDX','UDXPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
-
-                 # /SANIFICAZIONE #
-
-                ##############
-                # PRODUZIONE #
-                ##############
-                # FILLER
-                for item in Coppie['PRODUZIONE'].items():
-                    fnz.CycleDesc('FILLER',PLCProdCycleVar,item[0],item[1],'FIL','Phase_'+ item[0]+'.ENG',programs,MacList,verHMI)
-
-                # SH1 #
-                for item in Coppie['PRODUZIONE.SH1'].items():
-                    fnz.CycleDesc('STERILCAP_VHP_L',PLCProdCycleVar,item[0],item[1],'SH1','SH1Phase_'+ item[0] + '.ENG',programs,MacList,verHMI)
-                
-                # UHT 
-                for item in Coppie['PRODUZIONE.UHT'].items():
-                    fnz.CycleDesc('ECOFLUX_H_THERM',PLCProdCycleVar,item[0],item[1],'UHT','UHTPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
-                
-                # UDX
-                for item in Coppie['PRODUZIONE.UDX'].items():
-                    fnz.CycleDesc('ECOFLUX_H_DOX',PLCProdCycleVar,item[0],item[1],'UDX','UDXPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
-                # /PRODUZIONE #
-
-                ###########
-                # SPECIAL #
-                ###########
-                # UHT Tkw02 sterilization
-                for item in Coppie['SPECIAL1.UHT'].items():
-                    fnz.CycleDesc('ECOFLUX_H_THERM','D80_00',item[0],item[1],'UHT','UHTPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
-
-                 # UHT Rinse
-                for item in Coppie['SPECIAL2.UHT'].items():
-                    fnz.CycleDesc('ECOFLUX_H_THERM','D50_00',item[0],item[1],'UHT','UHTPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
-                
-                 # UDX Drain
-                for item in Coppie['SPECIAL1.UDX'].items():
-                    fnz.CycleDesc('ECOFLUX_H_DOX','D55_00',item[0],item[1],'UDX','UDXPhase_'+item[0]+ '.ENG',PROC_programs,MacList,verHMI)
-
-            else:
-
-                                                             #####   TEST ##############
-                
-
-                ## TENTO DI UNIFICARE.....
-                print ('USING ' + colored('NEW SCHOOL','red') + ' FOR CYCLE')
-                ctl_tags_fake = None
-                CyclesDict = cfg.CyclesGetNames()
-
-                
-                for indiceNome in CyclesDict.keys():
-                    Mac = utils.left(indiceNome,3) # le prime tre lettere di ogni sezione di Cycles.INI
-
-                    # decido qualche PLC utilizzare per leggere i cicli
-                    if Mac in ['CLE','UTH','UDX']:
-                        lstProgrammi = PROC_programs
-                    else:
-                        lstProgrammi = programs
-
-                    # Unisco in un unica tabella le info da passare alla funzione che provengono da Cycles.ini e CyclesPhMsg.ini
-                    # si tratta di un join tipo SQL tra due liste e si basa sull'uguaglianza tra il nome del ciclo nel reference e il nome del file CyclePhMsgBK.ini
-                    try:
-                        joined =  [i + ';' + j[1] for i in CyclesDict[indiceNome] for j in Coppie[Mac].items() if i.partition('.')[2].partition('.')[2].lower() == j[0].lower()]
-                    except (KeyError):
-                        continue # se non trovo corrispondenze in uno dei due file vai comunque avanti
-
-                    for cyc in joined:
-                        ref = cyc.split(cfg.SepCycle)[1]
-                        CYCprogram = utils.find_between(ref,'Program:','.')            # da Cycles.INI
-                        CYCcycleVar = utils.find_between(ref,CYCprogram + '.', '.')    # da Cycles.INI
-                        
-                        NomeCiclo = ref.split('.')[2]                                  # dal reference di Cycles.INI
-
-                        PhaseMsgStruct = cyc.split(';')[2]                             # da CyclesPhMsg.ini
-                        
-                        ## CONDIZIONI PARTICOLARI
-                        if NomeCiclo == 'SipFiller' or (lstProgrammi == programs and NomeCiclo == 'Cip') or NomeCiclo == 'DBLoad':
-                            PhaseMsgStruct = cyc.split(';')[2] + '_'+ cfg.INIREAD('fx_cx')
-                            if NomeCiclo == 'DBLoad':    
-                                ctl_tags_fake = ctl_tags                          # condizione speciale perché il phasemsginput è nelle tag a livello controllore
-                            else:
-                                ctl_tags_fake = None
-
-                        # MALEDETTO CASE SENSITIVE!
-                        if NomeCiclo == 'Cip':
-                            NomeCiclo = 'CIP'
-                        if NomeCiclo == 'Cop':
-                            NomeCiclo = 'COP'
-                        if NomeCiclo == 'DBunload':
-                            NomeCiclo = 'DBUnLoad'
-
-                        fnz.CycleDesc(CYCprogram,CYCcycleVar,NomeCiclo,PhaseMsgStruct,Mac, Mac + '_Phase_' + NomeCiclo + '.ENG', lstProgrammi,MacList,verHMI,ctl_tags_fake)
-                                   
-                                   
-                                     #####          /TEST       #######################
+                    # MALEDETTO CASE SENSITIVE!
+                    if NomeCiclo == 'Cip':
+                        NomeCiclo = 'CIP'
+                    if NomeCiclo == 'Cop':
+                        NomeCiclo = 'COP'
+                    if NomeCiclo == 'DBunload':
+                        NomeCiclo = 'DBUnLoad'
+                    fnz.CycleDesc(CYCprogram,CYCcycleVar,NomeCiclo,PhaseMsgStruct,Mac, Mac + '_Phase_' + NomeCiclo + '.ENG', lstProgrammi,MacList,verHMI,ctl_tags_fake)
+                               
 
 
             print ('INFO -> FILES GENERATED IN FOLDER ' + colored(os.getcwd() + cfg.bars + cfg.NomeCartPhasesOUT+ cfg.bars,cfg.ColorInfo))
